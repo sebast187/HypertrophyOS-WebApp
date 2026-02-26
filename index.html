@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6-Month No-Big-Lifts Blueprint</title>
+    <title>GYM BLUEPRINT</title>
     <style>
         :root {
             --bg-dark: #121212;
@@ -14,6 +14,8 @@
             --text-muted: #aaaaaa;
             --border-color: #333333;
             --accent: #ffeb3b;
+            --message-bg: #252525;
+            --message-border: #00e676;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -43,6 +45,48 @@
         .month-tab.active { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); font-weight: bold; }
         .week-select { background: var(--bg-dark); color: var(--primary); border: 1px solid var(--primary); padding: 10px; border-radius: 5px; font-size: 1rem; cursor: pointer; outline: none; font-weight: bold; }
 
+        /* Monthly Message Boxes */
+        .monthly-message {
+            background: var(--message-bg);
+            border-left: 4px solid var(--message-border);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+        .monthly-message h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        .monthly-message p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .monthly-message.bottom {
+            margin-top: 25px;
+            margin-bottom: 0;
+        }
+
+        /* Weekly Goal Message */
+        .weekly-goal {
+            background: var(--message-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .weekly-goal strong {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        .weekly-goal p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
         /* Tables */
         .day-container { margin-bottom: 40px; }
         .day-title { color: var(--primary); font-size: 1.4rem; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px; background: #2a2a2a; padding: 10px; border-radius: 0 5px 5px 0;}
@@ -70,13 +114,15 @@
             tr { border: 1px solid var(--border-color); margin-bottom: 15px; border-radius: 8px; padding: 5px; background: #1a1a1a; }
             td { border: none; position: relative; padding: 10px 10px 10px 120px; text-align: left; }
             td:before { content: attr(data-label); position: absolute; left: 10px; top: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; }
+            .monthly-message, .weekly-goal { padding: 15px; font-size: 0.9rem; }
+            .monthly-message h3 { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>No-Big-Lifts Blueprint</h1>
+        <h1>GYM BLUEPRINT</h1>
         <p>The Complete 6-Month Hypertrophy System</p>
     </header>
 
@@ -88,19 +134,15 @@
     <div class="container">
         <div id="workout-section" class="section active">
             <div class="filters">
-                <div class="month-tabs" id="monthTabsContainer">
-                    </div>
-                <select class="week-select" id="weekSelect" onchange="renderWeek()">
-                    </select>
+                <div class="month-tabs" id="monthTabsContainer"></div>
+                <select class="week-select" id="weekSelect" onchange="renderWeek()"></select>
             </div>
-            <div id="routineContainer">
-                </div>
+            <div id="routineContainer"></div>
         </div>
 
         <div id="glossary-section" class="section">
             <div class="glossary-grid">
                 
-                <!-- 1. Face Pulls -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="85" y1="10" x2="85" y2="90" stroke="#555" stroke-width="6" stroke-linecap="round"/>
@@ -114,7 +156,6 @@
                     <p>Set cable slightly above face height. Pull the rope towards your eyes, driving elbows out and back. Squeeze your rear delts and upper back. Do not use your lower back to pull.</p>
                 </div>
 
-                <!-- 2. Dead Bug (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="10" y1="85" x2="90" y2="85" stroke="#555" stroke-width="3"/>
@@ -130,7 +171,6 @@
                     <p>Lie on your back, arms straight up, knees bent at 90 degrees. Slowly lower opposite arm and leg to the floor while pressing your lower back hard into the mat. Return and switch.</p>
                 </div>
 
-                <!-- 3. Single-Arm DB Row (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="10" y1="90" x2="90" y2="90" stroke="#555" stroke-width="4"/>
@@ -146,7 +186,6 @@
                     <p>Support yourself on a bench with one hand. Keep your back flat. Pull the dumbbell up towards your hip pocket, squeezing your back muscles at the top. Lower slowly.</p>
                 </div>
 
-                <!-- 4. Glute Kickback (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="15" y1="10" x2="15" y2="90" stroke="#555" stroke-width="6"/>
@@ -162,7 +201,6 @@
                     <p>Attach ankle strap to low cable. Face the machine. Keep leg straight and kick back and up, squeezing the glute at the top. Do not arch your lower back.</p>
                 </div>
 
-                <!-- 5. Preacher Curl (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <path d="M 20 90 L 60 90 L 60 50 L 20 50 Z" fill="none" stroke="#555" stroke-width="3"/>
@@ -177,7 +215,6 @@
                     <p>Rest your upper arms on the angled pad. Hold dumbbells or bar. Curl the weight up towards your shoulders without letting your elbows lift off the pad. Squeeze biceps.</p>
                 </div>
 
-                <!-- 6. Arnold Press (Existing) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <path d="M 30 90 L 30 60 L 60 60 L 60 90" stroke="#555" stroke-width="4" fill="none"/>
@@ -193,7 +230,6 @@
                     <p>Start with dumbbells in front of your face, palms facing you. As you press the weights overhead, rotate your wrists so your palms face forward at the top. Reverse the motion on the way down.</p>
                 </div>
 
-                <!-- 7. Bulgarian Split Squat (Existing) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <rect x="70" y="65" width="20" height="15" fill="none" stroke="#555" stroke-width="3"/>
@@ -209,7 +245,6 @@
                     <p>Place one foot behind you on a bench. Holding dumbbells by your sides, lower your hips straight down until your front thigh is parallel to the ground. Keep your chest up.</p>
                 </div>
 
-                <!-- 8. Hack Squat (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="20" y1="90" x2="80" y2="90" stroke="#555" stroke-width="4"/>
@@ -226,7 +261,6 @@
                     <p>Stand on the platform with back against the pad. Shoulders under pads. Unlock safety bars. Lower your body by bending knees until thighs are parallel, then drive up through heels.</p>
                 </div>
 
-                <!-- 9. Skullcrushers (New) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="10" y1="90" x2="90" y2="90" stroke="#555" stroke-width="4"/>
@@ -242,7 +276,6 @@
                     <p>Lie on a bench holding dumbbells/bar. Keep elbows pinned pointing up. Lower the weight towards your forehead by bending only the elbows, then extend back up.</p>
                 </div>
 
-                <!-- 10. Straight Arm Pulldown (Existing) -->
                 <div class="glossary-card">
                     <svg class="glossary-svg" viewBox="0 0 100 100">
                         <line x1="80" y1="10" x2="80" y2="90" stroke="#555" stroke-width="6" stroke-linecap="round"/>
@@ -272,10 +305,65 @@
             event.target.classList.add('active');
         }
 
-        // --- UPDATED 24-WEEK WORKOUT DATABASE ---
+        // Monthly Messages Data
+        const monthlyMessages = {
+            1: {
+                top: "This is your Complete 'No Big Lifts' Master Plan. I have designed this so that you never do the exact same workout twice in a month. This keeps your muscles guessing and prevents boredom. Each week follows the Push / Pull / Legs split, but the exercises and intensity shift to ensure you are progressing.",
+                bottom: "<strong>Coach's Advice:</strong><br>• Warm-up: Always spend 5 minutes on a treadmill or elliptical and do a few 'empty' sets with very light weight before jumping into the tables above.<br>• Tracking: Since you are using machines and dumbbells, it's very easy to write down your numbers. Try to beat your weight or reps from the previous week by just 1–2%.<br>• Safety: Because we are skipping deadlifts/squats, your lower back is much safer, but still keep your core tight during moves like the Leg Press—don't let your lower back round off the seat!"
+            },
+            2: {
+                top: "In Month 1, we built the foundation. Now, we're going to level up by introducing more cable-based movements and unilateral training (one side at a time). Cables provide 'constant tension,' meaning your muscles never get a break during the rep, and unilateral moves fix any strength imbalances without needing a heavy barbell.",
+                bottom: "<strong>Coach's Tip:</strong> By now, you might notice one arm or leg is stronger than the other. That's why Week 7 is so important. Don't rush those moves; let the weaker side 'catch up' by matching the weight and reps of your stronger side."
+            },
+            3: {
+                top: "Since you've spent two months building a solid foundation and mastering the machines, it's time to turn up the heat. This month is all about Supersets—performing two exercises back-to-back with zero rest in between. This keeps your heart rate up and forces your muscles to adapt to a higher workload.",
+                bottom: "<strong>Coach's Advice:</strong> Because these supersets are intense, you might find you can't lift quite as much weight as you did in Month 2. That is okay. The goal here is the density of work—doing more in less time. Keep your form sharp and focus on the stretch and squeeze!"
+            },
+            4: {
+                top: "Now that we've used supersets to build endurance, we're shifting our focus to Time Under Tension (TUT). This month is designed to make lighter weights feel incredibly heavy by manipulating 'Tempo.' We will focus on Eccentrics (the lowering phase) and Isometrics (the hold). This is where you stop just 'moving weight' and start actually 'sculpting muscle.'",
+                bottom: "<strong>Coach's Note:</strong> You are going to feel a different kind of 'sore' this month. It's not from heavy weight; it's from the muscle being under tension for so long. If you find your form breaking down because of the slow tempo, lower the weight. The tempo is more important than the number on the plates this month."
+            },
+            5: {
+                top: "We are entering the 'pro' territory now. This month is designed to bypass your strongest muscles and force the 'stubborn' ones to grow. We do this by tiring out a specific muscle with an isolation move before doing the big machine move. It makes 50 lbs feel like 100 lbs, which is great for muscle growth without needing to load up massive weights that could hurt your joints.",
+                bottom: "<strong>Coach's Note:</strong> This is the 'grind' month. You might feel like you're hitting a wall, but this variety is exactly what breaks through plateaus. If your energy feels low, make sure you're increasing your water intake and getting at least 7-8 hours of sleep."
+            },
+            6: {
+                top: "You've made it. This is Month 6: The Transformation Peak. We have spent five months building the foundation, mastering the cables, and pushing through intensity. This final month is designed to 'peak' your physique and strength. We are using Drop Sets, Rest-Pause training, and High-Volume finishers to squeeze out every bit of progress. By the end of these four weeks, you won't just look different; you'll be moving weights you thought were impossible back in Month 1—all without a single barbell squat or deadlift in sight.",
+                bottom: "<strong>Coach's Final Pep Talk:</strong> You've just completed 24 weeks of consistent work. You've proven that you don't need 'big three' ego-lifts to build a powerful, athletic body.<br><br><strong>What's Next?</strong> After Week 24, I highly recommend a 'Deload Week.' Go to the gym, but do only 50% of the weight and sets you normally do. Let your joints and nervous system recover. After that, you can either restart this 6-month cycle with much heavier weights, or we can look into a new goal—like fat loss or explosive power."
+            }
+        };
+
+        // Weekly Goals Data
+        const weeklyGoals = {
+            1: "Wake up the muscles and focus on perfect controlled form.",
+            2: "Increase the weight slightly and focus on the 'squeeze' at the top of every move.",
+            3: "Higher reps and shorter rest periods to build endurance and 'the pump.'",
+            4: "Heavier weight, lower reps, and maximum effort on every set.",
+            5: "Slow down the 'negative' (lowering) part of the lift to 3 seconds. Feel the burn!",
+            6: "At the hardest part of the move, squeeze the muscle and hold for 1 full second.",
+            7: "Working one side at a time to ensure both sides of your body are equally strong.",
+            8: "Keep the heart rate up and finish Month 2 with high intensity.",
+            9: "Hit the isolation move first to tire the muscle, then finish it off with a machine press/pull.",
+            10: "Combine a heavy movement with a high-rep movement for maximum blood flow.",
+            11: "Alternate movements within the same workout to keep the intensity high without fatiguing one muscle too quickly.",
+            12: "Do three exercises for the same muscle group back-to-back. This is the hardest week yet.",
+            13: "On every single rep, take a full 4 seconds to lower the weight. Explode up, then slow... slow... slow.",
+            14: "At the point of maximum contraction (the squeeze), hold the weight perfectly still for 2 seconds.",
+            15: "Do a full rep, go halfway back, return to the squeeze, then finish. That's ONE rep. This doubles the work!",
+            16: "Combining the 4-second negative AND the 2-second hold. This is high intensity.",
+            17: "Hit the isolation move (1) immediately followed by the compound move (2) for the same muscle.",
+            18: "Start with the hardest version of a move, then immediately switch to an easier version of the same move to keep going.",
+            19: "Perform 8 reps, rest 10 seconds, then perform as many more as possible (AMRAP) with the same weight.",
+            20: "High sets, high reps. We want to completely fatigue the muscle to prep for the final month.",
+            21: "On the final set of every exercise, perform a triple-drop set. Do your reps, drop the weight by 20%, go to failure, drop another 20%, and go to failure again.",
+            22: "On your last set, reach failure, rest exactly 15 seconds, then squeeze out 3–5 more reps. Rest 15 seconds again, and squeeze out 2 more.",
+            23: "We are going for 100 reps on the finishing move of each day. This is pure metabolic stress.",
+            24: "Maximize the weight while staying in the 6–8 rep range. This is your 'heavy' week to see how much strength you've gained."
+        };
+
+        // FULL 24-WEEK WORKOUT DATABASE
         const workoutData = {};
         
-        // Helper function to structure weeks
         function w(day1, day2, day3) {
             return [
                 { title: "Day 1: Push (Chest, Shoulders, Triceps)", exercises: day1 },
@@ -468,13 +556,27 @@
             const container = document.getElementById('routineContainer');
             container.innerHTML = '';
 
+            // Add Monthly Top Message (only on first week of month)
+            const startWeekOfMonth = ((currentMonth - 1) * 4) + 1;
+            if(weekNumber == startWeekOfMonth) {
+                const monthlyTop = document.createElement('div');
+                monthlyTop.className = 'monthly-message';
+                monthlyTop.innerHTML = `<h3>📘 Month ${currentMonth} Introduction</h3><p>${monthlyMessages[currentMonth].top}</p>`;
+                container.appendChild(monthlyTop);
+            }
+
+            // Add Weekly Goal Message
+            const weeklyGoalDiv = document.createElement('div');
+            weeklyGoalDiv.className = 'weekly-goal';
+            weeklyGoalDiv.innerHTML = `<strong>🎯 Week ${weekNumber} Goal:</strong><p>${weeklyGoals[weekNumber]}</p>`;
+            container.appendChild(weeklyGoalDiv);
+
             const daysData = workoutData[weekNumber];
 
             daysData.forEach(day => {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'day-container';
                 
-                // Determine the 4th column header dynamically (Rest vs Tempo vs Hold)
                 let header4 = "Rest";
                 if(weekNumber >= 13 && weekNumber <= 16) {
                     header4 = weekNumber == 14 ? "Hold/Rest" : "Tempo";
@@ -510,10 +612,18 @@
                 dayDiv.innerHTML = tableHTML;
                 container.appendChild(dayDiv);
             });
+
+            // Add Monthly Bottom Message (only on last week of month)
+            const endWeekOfMonth = currentMonth * 4;
+            if(weekNumber == endWeekOfMonth) {
+                const monthlyBottom = document.createElement('div');
+                monthlyBottom.className = 'monthly-message bottom';
+                monthlyBottom.innerHTML = `<h3>💡 Month ${currentMonth} Coach's Tips</h3><p>${monthlyMessages[currentMonth].bottom}</p>`;
+                container.appendChild(monthlyBottom);
+            }
         }
 
         window.onload = init;
     </script>
 </body>
 </html>
-
