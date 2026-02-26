@@ -74,6 +74,7 @@
             border: 1px solid var(--border-color);
             padding: 15px 20px;
             margin-top: 15px;
+            margin-bottom: 25px;
             border-radius: 8px;
             text-align: center;
         }
@@ -613,14 +614,11 @@
                 container.appendChild(dayDiv);
             });
 
-            // Add Monthly Bottom Message (only on last week of month)
-            const endWeekOfMonth = currentMonth * 4;
-            if(weekNumber == endWeekOfMonth) {
-                const monthlyBottom = document.createElement('div');
-                monthlyBottom.className = 'monthly-message bottom';
-                monthlyBottom.innerHTML = `<h3>💡 Month ${currentMonth} Coach's Tips</h3><p>${monthlyMessages[currentMonth].bottom}</p>`;
-                container.appendChild(monthlyBottom);
-            }
+            // Add Monthly Coach's Tips (at the end of EVERY week within that month)
+            const monthlyBottom = document.createElement('div');
+            monthlyBottom.className = 'monthly-message bottom';
+            monthlyBottom.innerHTML = `<h3>💡 Month ${currentMonth} Coach's Tips</h3><p>${monthlyMessages[currentMonth].bottom}</p>`;
+            container.appendChild(monthlyBottom);
         }
 
         window.onload = init;
