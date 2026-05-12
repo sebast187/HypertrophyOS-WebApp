@@ -57,6 +57,13 @@
         .logo h1 span { color: var(--accent-cyan); }
         .logo p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
 
+        .unit-toggle {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 4px; display: flex; align-items: center; gap: 5px; cursor: pointer;
+        }
+        .unit-btn { padding: 4px 10px; font-size: 0.7rem; font-weight: 800; border-radius: 15px; color: var(--text-muted); transition: var(--transition); }
+        .unit-btn.active { background: var(--accent-cyan); color: #000; }
+
         .glass-card {
             background: var(--bg-panel); border: 1px solid var(--border-light);
             border-radius: 20px; padding: 20px; margin-bottom: 20px;
@@ -100,7 +107,6 @@
         .stat-val { font-family: var(--font-data); font-size: 2rem; color: var(--accent-cyan); font-weight: 800; }
         .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
-        /* Filter System */
         .filter-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .filter-group select { 
             flex: 1; min-width: 30%; padding: 10px; background: rgba(0,0,0,0.5); 
@@ -121,13 +127,12 @@
 
         .week-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
         .week-slider::-webkit-scrollbar { display: none; }
-        .week-btn {
-            flex: 0 0 auto; padding: 10px 20px; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-light); border-radius: 30px;
-            color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
-        }
+        .week-btn { flex: 0 0 auto; padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light); border-radius: 30px; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition); }
         .week-btn.active { background: white; color: #000; border-color: white; }
         
+        .intel-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .intel-box h4 { font-size: 1rem; color: var(--accent-cyan); margin-bottom: 5px; }
+        .intel-box p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
         .goal-box { border-left: 3px solid var(--accent-purple); background: linear-gradient(90deg, rgba(179, 136, 255, 0.1), transparent); padding: 12px; border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted); }
 
         .day-accordion { background: var(--bg-panel-solid); border: 1px solid var(--border-light); border-radius: 16px; margin-bottom: 15px; overflow: hidden; }
@@ -158,8 +163,14 @@
         .check-btn.checked svg { opacity: 1; }
 
         /* ==========================================================================
-           6. ATLAS (SCIENCE / SVGs)
+           6. THE LAB & ATLAS (SCIENCE / SVGs)
            ========================================================================== */
+        .calc-group { margin-bottom: 15px; }
+        .calc-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
+        .calc-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 8px; color: white; font-family: var(--font-data); }
+        .calc-result { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+        .calc-result span:last-child { font-family: var(--font-data); color: var(--accent-cyan); font-weight: bold; }
+
         .atlas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
         .svg-card { text-align: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid var(--border-light);}
         .svg-canvas { width: 100%; max-width: 250px; height: 200px; background: #0a0a0c; border-radius: 12px; border: 1px solid var(--border-light); padding: 15px; margin-bottom: 15px; }
@@ -224,7 +235,14 @@
                 <p>World Gym Edition</p>
                 <h1>Hypertrophy<span>OS</span></h1>
             </div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.HOS.logout()" style="cursor:pointer;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <!-- UNIT TOGGLE -->
+                <div class="unit-toggle" onclick="window.HOS.toggleUnit()">
+                    <div class="unit-btn active" id="unit-kg">KG</div>
+                    <div class="unit-btn" id="unit-lbs">LBS</div>
+                </div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.HOS.logout()" style="cursor:pointer;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </div>
         </header>
 
         <div class="container">
@@ -239,8 +257,6 @@
                     </div>
                     
                     <h3 style="margin-top: 20px; font-size: 1rem; color:var(--accent-cyan); margin-bottom: 10px;">Progressive Overload Tracker</h3>
-                    
-                    <!-- Cascading Filters -->
                     <div class="filter-group">
                         <select id="filter-muscle" onchange="window.HOS.updateModality()">
                             <option value="All">All Muscles</option>
@@ -266,29 +282,28 @@
                         <svg class="chart-svg" id="progression-chart"></svg>
                     </div>
                 </div>
-
-                <div class="glass-card" style="border-left: 3px solid var(--accent-orange);">
-                    <h3 style="color:var(--accent-orange); margin-bottom:8px;">The Tension Directive</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted);">Muscles do not grow because they hurt; they grow because they deform under load. <strong>Execute a strict 3-second eccentric (lowering) on EVERY repetition.</strong> Dropping the weight wastes the mTORC1 signal.</p>
-                </div>
             </main>
 
             <!-- VIEW: WORKOUT MATRIX -->
             <main id="view-matrix" class="view-section">
                 <div class="month-slider" id="month-slider"></div>
                 <div class="week-slider" id="week-slider"></div>
+                
+                <div class="intel-box" id="month-top-msg">Loading...</div>
                 <div class="goal-box" id="weekly-goal">Loading...</div>
+                
                 <div id="days-container"></div>
+                
+                <div class="intel-box" id="month-bot-msg" style="margin-top:20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">Loading...</div>
             </main>
 
             <!-- VIEW: THE LAB -->
             <main id="view-lab" class="view-section">
-                <!-- Keep existing Lab content (Recomp Engine & Sleep Penalty) -->
                 <div class="glass-card">
                     <h2 style="color:var(--accent-cyan); margin-bottom:15px;">Dr. Helms Recomp Engine</h2>
                     <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Calculates the exact math required to metabolize fat while fueling muscle protein synthesis (Max 0.5% BW deficit/week).</p>
                     <div style="margin-bottom: 15px;">
-                        <input type="number" id="calc-bw" placeholder="Enter Bodyweight (lbs)" inputmode="numeric" style="width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border-light); border-radius:8px; color:white; font-family:var(--font-data);">
+                        <input type="number" id="calc-bw" placeholder="Enter Bodyweight (kg)" inputmode="numeric" style="width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border-light); border-radius:8px; color:white; font-family:var(--font-data);">
                     </div>
                     <button class="btn-primary" onclick="window.HOS.calcRecomp()" style="margin-bottom:15px;">Compute Protocol</button>
                     <div id="calc-results" style="display:none; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid var(--border-light);">
@@ -296,6 +311,16 @@
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-size:0.85rem; color:var(--text-muted);">Daily Deficit</span><span id="res-cal" style="font-family:var(--font-data); color:var(--accent-cyan); font-weight:bold;"></span></div>
                         <div style="display:flex; justify-content:space-between;"><span style="font-size:0.85rem; color:var(--text-muted);">Minimum Protein</span><span id="res-pro" style="font-family:var(--font-data); color:var(--accent-cyan); font-weight:bold;"></span></div>
                     </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 style="color:var(--accent-purple); margin-bottom:10px;">The 18% Sleep Penalty</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Muscle Protein Synthesis finishes its construction crew around hour 48. One bad night of sleep reduces synthesis by 18%.</p>
+                    <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px; margin-bottom:15px;">
+                        <li style="margin-bottom:5px;"><strong style="color:white;">Absolute Darkness:</strong> Tape over all LED lights (chargers/smoke detectors). Use an eye mask.</li>
+                        <li style="margin-bottom:5px;"><strong style="color:white;">Thermoregulation:</strong> AC must drop the temperature by 2 AM to sustain deep REM sleep.</li>
+                        <li><strong style="color:white;">Napping:</strong> A strict 20-minute nap reverses sleep-deprived athletic decline by up to 3%.</li>
+                    </ul>
                 </div>
             </main>
 
@@ -328,11 +353,11 @@
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <defs><filter id="glowChest"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-                            <path d="M 60 40 L 60 160" stroke="#333" stroke-width="15" stroke-linecap="round"/> <!-- Torso -->
-                            <path d="M 60 70 C 80 70, 120 70, 140 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/> <!-- Arm -->
-                            <ellipse cx="75" cy="70" rx="15" ry="25" fill="var(--accent-green)" filter="url(#glowChest)"/> <!-- Pec -->
-                            <path d="M 40 40 L 40 160" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/> <!-- Seat Back -->
-                            <line x1="140" y1="70" x2="180" y2="70" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/> <!-- Handle -->
+                            <path d="M 60 40 L 60 160" stroke="#333" stroke-width="15" stroke-linecap="round"/>
+                            <path d="M 60 70 C 80 70, 120 70, 140 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/>
+                            <ellipse cx="75" cy="70" rx="15" ry="25" fill="var(--accent-green)" filter="url(#glowChest)"/>
+                            <path d="M 40 40 L 40 160" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/>
+                            <line x1="140" y1="70" x2="180" y2="70" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/>
                         </svg>
                         <div class="svg-desc">
                             <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Converging Machine Press</h4>
@@ -340,15 +365,15 @@
                         </div>
                     </div>
 
-                    <!-- SVG 3: Lat Pulldown -->
+                    <!-- SVG 3: Wide Lat Pulldown -->
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <defs><filter id="glowBack"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-                            <path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/> <!-- Torso -->
-                            <path d="M 100 90 L 80 30" stroke="#333" stroke-width="10" stroke-linecap="round"/> <!-- Arm UP -->
-                            <path d="M 100 90 Q 80 120 100 160" fill="none" stroke="var(--accent-purple)" stroke-width="14" filter="url(#glowBack)"/> <!-- Lat -->
-                            <line x1="40" y1="30" x2="160" y2="30" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/> <!-- Bar -->
-                            <line x1="100" y1="0" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/> <!-- Cable -->
+                            <path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M 100 90 L 80 30" stroke="#333" stroke-width="10" stroke-linecap="round"/>
+                            <path d="M 100 90 Q 80 120 100 160" fill="none" stroke="var(--accent-purple)" stroke-width="14" filter="url(#glowBack)"/>
+                            <line x1="40" y1="30" x2="160" y2="30" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/>
+                            <line x1="100" y1="0" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>
                         </svg>
                         <div class="svg-desc">
                             <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Wide Lat Pulldown</h4>
@@ -356,15 +381,47 @@
                         </div>
                     </div>
 
-                    <!-- SVG 4: Tricep Pushdown -->
+                    <!-- SVG 4: Seated Cable Row -->
+                    <div class="svg-card">
+                        <svg class="svg-canvas" viewBox="0 0 200 200">
+                            <defs><filter id="glowMidBack"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                            <path d="M 80 40 L 80 160" stroke="#333" stroke-width="16" stroke-linecap="round"/> <!-- Torso -->
+                            <path d="M 80 80 L 140 80" stroke="#333" stroke-width="12" stroke-linecap="round"/> <!-- Arm pulling back -->
+                            <ellipse cx="65" cy="80" rx="10" ry="25" fill="var(--accent-purple)" filter="url(#glowMidBack)"/> <!-- Rhomboids -->
+                            <line x1="140" y1="80" x2="190" y2="80" stroke="#fff" stroke-dasharray="4 4" stroke-width="3"/> <!-- Cable -->
+                            <rect x="40" y="140" width="40" height="40" fill="var(--accent-cyan)" rx="5"/> <!-- Seat -->
+                        </svg>
+                        <div class="svg-desc">
+                            <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Cable Row</h4>
+                            <p>Allow shoulders to stretch forward, then retract hard. Squeezes the <strong>Rhomboids</strong> and <strong>Mid-Traps</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- SVG 5: Machine Shoulder Press -->
+                    <div class="svg-card">
+                        <svg class="svg-canvas" viewBox="0 0 200 200">
+                            <defs><filter id="glowDelt"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                            <path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/> <!-- Torso -->
+                            <path d="M 100 80 L 100 30" stroke="#333" stroke-width="12" stroke-linecap="round"/> <!-- Arm up -->
+                            <circle cx="90" cy="80" r="14" fill="var(--accent-orange)" filter="url(#glowDelt)"/> <!-- Anterior Delt -->
+                            <line x1="80" y1="30" x2="120" y2="30" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/> <!-- Handle -->
+                            <line x1="60" y1="60" x2="60" y2="180" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/> <!-- Backpad -->
+                        </svg>
+                        <div class="svg-desc">
+                            <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Shoulder Press</h4>
+                            <p>Fixed path removes instability, allowing maximum force output from the <strong>Anterior Deltoid</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- SVG 6: Tricep Pushdown -->
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <defs><filter id="glowTri"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-                            <path d="M 70 40 L 70 160" stroke="#333" stroke-width="15" stroke-linecap="round"/> <!-- Torso -->
-                            <path d="M 70 60 L 100 100 L 100 150" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/> <!-- Arm -->
-                            <path d="M 72 65 Q 90 85 95 100" fill="none" stroke="var(--accent-cyan)" stroke-width="8" filter="url(#glowTri)"/> <!-- Tricep -->
-                            <line x1="100" y1="0" x2="100" y2="100" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/> <!-- Cable -->
-                            <line x1="100" y1="100" x2="100" y2="150" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/> <!-- Rope -->
+                            <path d="M 70 40 L 70 160" stroke="#333" stroke-width="15" stroke-linecap="round"/>
+                            <path d="M 70 60 L 100 100 L 100 150" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M 72 65 Q 90 85 95 100" fill="none" stroke="var(--accent-green)" stroke-width="8" filter="url(#glowTri)"/>
+                            <line x1="100" y1="0" x2="100" y2="100" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>
+                            <line x1="100" y1="100" x2="100" y2="150" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/>
                         </svg>
                         <div class="svg-desc">
                             <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Rope Tricep Pushdown</h4>
@@ -372,15 +429,15 @@
                         </div>
                     </div>
                     
-                    <!-- SVG 5: Leg Extension -->
+                    <!-- SVG 7: Leg Extension -->
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <defs><filter id="glowQuad2"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-                            <path d="M 50 140 L 120 140" stroke="#333" stroke-width="20" stroke-linecap="round"/> <!-- Thigh -->
-                            <path d="M 120 140 L 180 140" stroke="#333" stroke-width="12" stroke-linecap="round"/> <!-- Calf -->
-                            <path d="M 60 132 Q 90 120 115 132" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowQuad2)"/> <!-- Quad Top -->
-                            <rect x="20" y="150" width="100" height="50" fill="var(--accent-cyan)" rx="5"/> <!-- Seat -->
-                            <circle cx="170" cy="140" r="10" fill="var(--accent-cyan)"/> <!-- Pad -->
+                            <path d="M 50 140 L 120 140" stroke="#333" stroke-width="20" stroke-linecap="round"/>
+                            <path d="M 120 140 L 180 140" stroke="#333" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 60 132 Q 90 120 115 132" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowQuad2)"/>
+                            <rect x="20" y="150" width="100" height="50" fill="var(--accent-cyan)" rx="5"/>
+                            <circle cx="170" cy="140" r="10" fill="var(--accent-cyan)"/>
                         </svg>
                         <div class="svg-desc">
                             <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Leg Extensions</h4>
@@ -388,7 +445,38 @@
                         </div>
                     </div>
 
-                    <!-- SVG 6: Cable Lateral -->
+                    <!-- SVG 8: Lying Leg Curl -->
+                    <div class="svg-card">
+                        <svg class="svg-canvas" viewBox="0 0 200 200">
+                            <defs><filter id="glowHam"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                            <path d="M 30 100 L 120 100" stroke="#333" stroke-width="18" stroke-linecap="round"/> <!-- Thigh lying -->
+                            <path d="M 120 100 L 120 40" stroke="#333" stroke-width="12" stroke-linecap="round"/> <!-- Calf curled -->
+                            <path d="M 80 100 Q 100 115 120 100" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowHam)"/> <!-- Hamstring -->
+                            <rect x="20" y="110" width="100" height="15" fill="var(--accent-cyan)" rx="3"/> <!-- Bench -->
+                            <circle cx="120" cy="40" r="10" fill="var(--accent-cyan)"/> <!-- Roller pad -->
+                        </svg>
+                        <div class="svg-desc">
+                            <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Lying Leg Curls</h4>
+                            <p>Drives blood directly into the <strong>Hamstrings</strong>. Keep your hips pinned down into the pad to prevent cheating.</p>
+                        </div>
+                    </div>
+
+                    <!-- SVG 9: Preacher Curl -->
+                    <div class="svg-card">
+                        <svg class="svg-canvas" viewBox="0 0 200 200">
+                            <defs><filter id="glowBicep"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                            <path d="M 50 140 L 90 80 L 140 50" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/> <!-- Arm -->
+                            <path d="M 80 90 Q 95 65 110 65" fill="none" stroke="var(--accent-green)" stroke-width="12" filter="url(#glowBicep)"/> <!-- Bicep -->
+                            <polygon points="40,160 100,80 120,95 60,175" fill="var(--accent-cyan)" opacity="0.3"/> <!-- Pad -->
+                            <circle cx="140" cy="50" r="12" fill="#fff"/> <!-- Weight -->
+                        </svg>
+                        <div class="svg-desc">
+                            <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Preacher Curls</h4>
+                            <p>Locks the shoulder in place, removing momentum and forcing the <strong>Biceps Brachii</strong> to pull the entire load.</p>
+                        </div>
+                    </div>
+
+                    <!-- SVG 10: Cable Lateral -->
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <path d="M 100 40 L 100 160 M 70 60 L 130 60" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/>
@@ -402,7 +490,7 @@
                         </div>
                     </div>
 
-                    <!-- SVG 7: Bayesian Curl -->
+                    <!-- SVG 11: Bayesian Curl -->
                     <div class="svg-card">
                         <svg class="svg-canvas" viewBox="0 0 200 200">
                             <path d="M 40 30 L 50 80 L 120 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
@@ -465,7 +553,7 @@
         let app, auth, db, analytics;
         let useFirebase = false;
         
-        if (firebaseConfig.apiKey) {
+        if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
             try { 
                 app = initializeApp(firebaseConfig); 
                 auth = getAuth(app); 
@@ -476,9 +564,30 @@
             catch(e) { console.error("Firebase init failed", e); }
         }
 
+        /* --- MONTHLY & WEEKLY INTEL DATA --- */
+        const MonthlyIntel = {
+            1: { top: "Welcome to Hypertrophy OS. This month is about laying the foundation using rigid machine paths to master tension.", bot: "Coach's Note: Don't chase weight yet, chase tension. Focus entirely on the 3-second eccentric." },
+            2: { top: "Frequency Shift. We transition to a 5-day split hitting legs twice to balance upper/lower volume and stability.", bot: "Coach's Note: You will be sorer this month due to frequency. Feed the machine with adequate protein and sleep." },
+            3: { top: "Volume Accumulation. Sets increase to 4 for compound lifts. We are pushing the total tonnage up significantly.", bot: "Coach's Note: Monitor your sleep carefully. High volume demands extreme recovery. No junk sets." },
+            4: { top: "Heavy Tension. Reps drop, weight goes up. We are maximizing mechanical tension and fast-twitch fiber recruitment.", bot: "Coach's Note: Take longer rests (90-120s) between heavy sets. Let your ATP completely replenish." },
+            5: { top: "Pre-Exhaust Phase. Isolate the muscle first, then hit the compound. Make 50 weight feel like 100.", bot: "Coach's Note: Your ego will take a hit on the compound lifts because you are pre-fatigued. Let it." },
+            6: { top: "The Drop Zone. We push past failure on the final sets using Drop Sets and Rest-Pause. Peak metabolic stress.", bot: "Coach's Note: Leave absolutely nothing in the tank this month. You will deload after Week 24." }
+        };
+
+        const WeeklyGoals = {
+            1: "Foundation: 3-Second Eccentrics on every rep to trigger mTORC1.",
+            2: "Stability Check: Maintain perfect tension throughout cable movements.",
+            3: "Volume Accumulation: 4 sets per compound. Push closer to failure.",
+            4: "Heavy Loads: Decrease reps, increase weight. Maximize mechanical tension.",
+            5: "Frequency Adaptation: Focus on recovering between the two leg sessions.",
+            9: "Supersets: Zero rest between exercises. Push through the lactic acid.",
+            13: "Time Under Tension: 4 seconds down. Grow through fiber deformation.",
+            17: "Pre-Exhaust: Isolate first, then compound. Make light weight feel heavy.",
+            21: "The Drop Zone: Triple drop sets on the final set. Total muscle fatigue.",
+            24: "Victory Lap: Heaviest week. Test your 6-month strength gains."
+        };
+
         /* --- 5-DAY SPLIT WORLD-GYM DATABASE --- */
-        // Structure A (1 Leg Day): Push, Pull, Legs, Push, Pull
-        // Structure B (2 Leg Days): Push, Pull, Legs, Upper, Full Body
         const wA = (d1, d2, d3, d4, d5) => ([
             { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, { title: "Day 3: Leg Matrix", ex: d3 }, { title: "Day 4: Push Matrix II", ex: d4 }, { title: "Day 5: Pull Matrix II", ex: d5 }
         ]);
@@ -493,9 +602,7 @@
             if(i>16 && i<=20) t = "Pre-Exhaust";
             if(i>20) t = "Drop-Set / Max Tension";
 
-            // Alternate structures based on Month (i.e. every 4 weeks)
             if (Math.ceil(i/4) % 2 !== 0) {
-                // Month 1, 3, 5 = Structure A (1 Leg Day)
                 Blueprint[i] = wA(
                     [["Converging Machine Press", "3x10", t], ["Machine Shoulder Press", "3x10", t], ["Cable Lateral Raises", "3x15", t], ["Tricep Rope Pushdowns", "3x12", t], ["Pec Deck Flys", "3x15", t]],
                     [["Wide Lat Pulldowns", "3x10", t], ["Seated Cable Rows", "3x10", t], ["Single-Arm DB Row", "3x10", t], ["Machine Preacher Curls", "3x12", t], ["Cable Crunches", "3x15", t]],
@@ -504,7 +611,6 @@
                     [["Underhand Lat Pulldown", "3x10", t], ["Chest Supported Row", "3x10", t], ["Face Pulls", "3x15", t], ["Cable Hammer Curls", "3x12", t], ["Machine Crunches", "3x15", t]]
                 );
             } else {
-                // Month 2, 4, 6 = Structure B (2 Leg Days, Day 5 is Full Body)
                 Blueprint[i] = wB(
                     [["Machine Chest Press", "3x12", t], ["Arnold Press", "3x10", t], ["Cable Lateral Raises", "4x12", t], ["Single-Arm Pushdowns", "3x12", t], ["Pec Deck Flys", "3x12", t]],
                     [["Neutral Grip Pulldown", "3x12", t], ["One-Arm Cable Rows", "3x12", t], ["Reverse Pec Deck", "3x15", t], ["Bayesian Cable Curls", "3x12", t], ["Hanging Leg Raises", "3x12", t]],
@@ -515,16 +621,6 @@
             }
         }
 
-        const Goals = {
-            1: "Foundation: 3-Second Eccentrics on every rep to trigger mTORC1.",
-            2: "Stability: Maintain perfect tension throughout cable movements.",
-            3: "Volume Accumulation: 4 sets per compound. Push closer to failure.",
-            4: "Heavy Loads: Decrease reps, increase weight. Maximize mechanical tension.",
-            // Automatically handled fallback logic below
-        };
-
-        /* --- EXERCISE CATEGORIZATION LOGIC --- */
-        // Dynamic algorithm to map exercises without manually writing 100 entries.
         function getExerciseMeta(name) {
             let n = name.toLowerCase();
             let mod = "Machine";
@@ -538,7 +634,6 @@
             if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) mus = "Arms";
             if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) mus = "Legs";
             
-            // Fix edge case overlaps
             if(n.includes("leg press")) mus = "Legs";
             if(n.includes("shoulder press")) mus = "Shoulders";
             if(n.includes("leg curl")) mus = "Legs";
@@ -549,7 +644,9 @@
 
         /* --- STATE MANAGEMENT --- */
         const State = {
-            user: null, view: localStorage.getItem('h_v') || 'view-dash',
+            user: null, 
+            view: localStorage.getItem('h_v') || 'view-dash',
+            unit: localStorage.getItem('h_u') || 'kg', // Default to KG
             month: parseInt(localStorage.getItem('h_m')) || 1,
             week: parseInt(localStorage.getItem('h_w')) || 1,
             logs: JSON.parse(localStorage.getItem('h_l') || '{}')
@@ -565,7 +662,7 @@
             if(!useFirebase || !State.user) return;
             clearTimeout(syncTimer);
             syncTimer = setTimeout(async () => {
-                try { await setDoc(doc(db, "users", State.user.uid), { week: State.week, month: State.month, logs: State.logs }); } 
+                try { await setDoc(doc(db, "users", State.user.uid), { week: State.week, month: State.month, unit: State.unit, logs: State.logs }); } 
                 catch(e) { console.error("Cloud Sync Error", e); }
             }, 2000);
         };
@@ -579,7 +676,7 @@
                 Blueprint[w].forEach(d => d.ex.forEach(e => rawList.add(e[0])));
             }
             exListCache = Array.from(rawList).map(e => ({ name: e, ...getExerciseMeta(e) })).sort((a,b) => a.name.localeCompare(b.name));
-            window.HOS.updateModality(); // Auto trigger chain
+            window.HOS.updateModality(); 
         }
 
         function renderChart() {
@@ -670,6 +767,14 @@
             renderChart();
         }
 
+        function updateUnitUI() {
+            document.getElementById('unit-kg').classList.toggle('active', State.unit === 'kg');
+            document.getElementById('unit-lbs').classList.toggle('active', State.unit === 'lbs');
+            document.getElementById('calc-bw').placeholder = `Enter Bodyweight (${State.unit})`;
+            if(State.view === 'view-matrix') renderMatrix();
+            if(document.getElementById('calc-bw').value) window.HOS.calcRecomp();
+        }
+
         function renderMatrix() {
             // Month Slider
             const mSld = document.getElementById('month-slider'); mSld.innerHTML = '';
@@ -678,14 +783,14 @@
                 b.className = `month-btn ${i===State.month ? 'active':''}`;
                 b.innerText = `Month ${i}`;
                 b.onclick = () => { 
-                    State.month = i; State.week = ((i-1)*4)+1; // Reset week to first week of month
+                    State.month = i; State.week = ((i-1)*4)+1;
                     localStorage.setItem('h_m', i); localStorage.setItem('h_w', State.week);
                     syncToCloud(); renderMatrix(); 
                 };
                 mSld.appendChild(b);
             }
 
-            // Week Slider (Filtered by Month)
+            // Week Slider
             const sld = document.getElementById('week-slider'); sld.innerHTML = '';
             const startWk = ((State.month - 1) * 4) + 1;
             for(let i=startWk; i<=startWk+3; i++){
@@ -696,8 +801,11 @@
                 sld.appendChild(b);
             }
             
-            // Goal Logic
-            let gText = Goals[State.week];
+            // Intel Logic
+            document.getElementById('month-top-msg').innerHTML = `<h4>📘 Month ${State.month} Overview</h4><p>${MonthlyIntel[State.month].top}</p>`;
+            document.getElementById('month-bot-msg').innerHTML = `<h4>💡 Month ${State.month} Protocol</h4><p>${MonthlyIntel[State.month].bot}</p>`;
+            
+            let gText = WeeklyGoals[State.week];
             if(!gText) {
                 if(State.week > 20) gText = "The Drop Zone: Triple drop sets on the final set.";
                 else if(State.week > 16) gText = "Pre-Exhaust: Isolate first, then compound.";
@@ -706,7 +814,7 @@
                 else if(State.week > 4) gText = "Stability & Cable Mastery: Perfect tension.";
                 else gText = "Progressive Overload: Increase weight steadily.";
             }
-            document.getElementById('weekly-goal').innerText = `Target: ${gText}`;
+            document.getElementById('weekly-goal').innerHTML = `<strong>🎯 Week ${State.week} Goal:</strong> ${gText}`;
 
             // Render Days
             const container = document.getElementById('days-container'); container.innerHTML = '';
@@ -723,6 +831,8 @@
                     <h3>${day.title}</h3><span class="day-prog">${pct}%</span></div><div class="day-body"></div>`;
                 
                 const body = card.querySelector('.day-body');
+                const unitLabel = State.unit === 'kg' ? 'KG' : 'LBS';
+
                 day.ex.forEach((e, eIdx) => {
                     let sets = parseInt(e[1].split('x')[0])||3;
                     let targetReps = e[1].split('x')[1] || "10";
@@ -734,7 +844,7 @@
                         const l = State.logs[k] || {w:'',r:targetReps, done:false};
                         rows += `<tr class="${l.done ? 'done-row':''}">
                             <td class="set-idx">${s}</td>
-                            <td><input type="number" class="log-input" value="${l.w}" placeholder="lbs" onchange="window.HOS.save('${k}','w',this.value)"></td>
+                            <td><input type="number" class="log-input" value="${l.w}" placeholder="${unitLabel}" onchange="window.HOS.save('${k}','w',this.value)"></td>
                             <td><input type="text" class="log-input" value="${l.r}" onchange="window.HOS.save('${k}','r',this.value)"></td>
                             <td><div class="check-btn ${l.done?'checked':''}" onclick="window.HOS.check('${k}',this,event)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div></td>
                         </tr>`;
@@ -744,7 +854,7 @@
                         <div class="ex-card">
                             <div class="ex-title">${e[0]}</div>
                             <div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div>
-                            <table class="log-table"><tr><th>Set</th><th>Lbs</th><th>Reps</th><th>Log</th></tr>${rows}</table>
+                            <table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>Log</th></tr>${rows}</table>
                         </div>`;
                 });
                 container.appendChild(card);
@@ -754,6 +864,11 @@
 
         /* --- EXPORTED CONTROLLERS --- */
         window.HOS = {
+            toggleUnit: () => {
+                State.unit = State.unit === 'kg' ? 'lbs' : 'kg';
+                localStorage.setItem('h_u', State.unit);
+                updateUnitUI(); syncToCloud(); Toast(`Switched to ${State.unit.toUpperCase()}`);
+            },
             switchView: (vId, btn) => {
                 document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
                 document.getElementById(vId).classList.add('active');
@@ -774,9 +889,16 @@
             calcRecomp: () => {
                 const bw = parseFloat(document.getElementById('calc-bw').value);
                 if(!bw) return Toast("Enter valid weight.");
-                document.getElementById('res-fat').innerText = (bw*0.005).toFixed(2) + " lbs/wk";
-                document.getElementById('res-cal').innerText = "-" + Math.round((bw*0.005*3500)/7) + " kcal";
-                document.getElementById('res-pro').innerText = Math.round(bw*0.7) + "g";
+                
+                if(State.unit === 'kg') {
+                    document.getElementById('res-fat').innerText = (bw * 0.005).toFixed(2) + " kg/wk";
+                    document.getElementById('res-cal').innerText = "-" + Math.round((bw * 0.005 * 7700) / 7) + " kcal/day";
+                    document.getElementById('res-pro').innerText = Math.round(bw * 1.6) + " g/day";
+                } else {
+                    document.getElementById('res-fat').innerText = (bw * 0.005).toFixed(2) + " lbs/wk";
+                    document.getElementById('res-cal').innerText = "-" + Math.round((bw * 0.005 * 3500) / 7) + " kcal/day";
+                    document.getElementById('res-pro').innerText = Math.round(bw * 0.7) + " g/day";
+                }
                 document.getElementById('calc-results').style.display = 'block';
             },
             startTimer: (sec) => {
@@ -792,7 +914,6 @@
             logout: async () => { if(useFirebase) await signOut(auth); location.reload(); },
             renderChart: renderChart,
             
-            // Cascading Dropdown Logic
             updateModality: () => {
                 const m = document.getElementById('filter-muscle').value;
                 const modDrop = document.getElementById('filter-modality');
@@ -824,6 +945,7 @@
             setTimeout(() => document.getElementById('auth-gate').style.display = 'none', 400);
             document.getElementById('app-core').style.display = 'block';
             document.getElementById('app-nav').style.display = 'flex';
+            updateUnitUI();
             buildFilters();
             window.HOS.switchView(State.view, document.querySelector(`.nav-item[onclick*="${State.view}"]`));
             renderMatrix();
@@ -856,9 +978,11 @@
                         if(d.exists()) {
                             State.month = d.data().month || 1;
                             State.week = d.data().week || 1; 
+                            State.unit = d.data().unit || 'kg';
                             State.logs = d.data().logs || {};
                             localStorage.setItem('h_m', State.month);
                             localStorage.setItem('h_w', State.week); 
+                            localStorage.setItem('h_u', State.unit); 
                             localStorage.setItem('h_l', JSON.stringify(State.logs));
                         }
                     } catch(e) {}
