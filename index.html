@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HypertrophyOS - 5-Day Gym Protocol</title>
+    <title>HypertrophyOS - 5-Day Pro Gym Protocol</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
 
@@ -104,6 +104,7 @@
         .stat-val { font-family: var(--font-data); font-size: 2rem; color: var(--accent-cyan); font-weight: 800; }
         .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
+        /* Filter System */
         .filter-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .filter-group select { 
             flex: 1; min-width: 30%; padding: 10px; background: rgba(0,0,0,0.5); 
@@ -131,7 +132,7 @@
             border: 1px solid var(--border-light); border-radius: 30px;
             color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
         }
-        .week-btn.active { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
+        .week-btn.active { background: white; color: #000; border-color: white; }
         
         .intel-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
         .intel-box h4 { font-size: 1rem; color: var(--accent-cyan); margin-bottom: 5px; }
@@ -512,6 +513,69 @@
                         <p>Working from a stretched position yields the highest hypertrophy rates for the <strong>Biceps Brachii</strong>.</p>
                     </div>
                 </div>
+
+                <!-- SVG 12: Seated Calf Raise -->
+                <div class="svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <defs><filter id="glowCalf"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <path d="M 60 140 L 100 140 L 100 80 L 140 80" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/>
+                        <path d="M 100 120 Q 120 100 100 80" fill="none" stroke="var(--accent-purple)" stroke-width="12" filter="url(#glowCalf)"/>
+                        <rect x="20" y="140" width="60" height="20" fill="var(--accent-cyan)" rx="5"/>
+                        <circle cx="100" cy="140" r="10" fill="#fff"/>
+                        <line x1="130" y1="70" x2="160" y2="70" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Calf Raise</h4>
+                        <p>Bending the knee isolates the <strong>Soleus</strong>. Pause for 2 seconds at the bottom to kill the achilles stretch reflex.</p>
+                    </div>
+                </div>
+
+                <!-- SVG 13: Cable Crunch -->
+                <div class="svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <defs><filter id="glowAbs"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <path d="M 50 160 L 100 160 L 100 100 C 100 70, 70 70, 70 100" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round"/>
+                        <path d="M 90 100 Q 110 130 90 150" fill="none" stroke="var(--accent-orange)" stroke-width="12" filter="url(#glowAbs)"/>
+                        <line x1="70" y1="100" x2="140" y2="40" stroke="#fff" stroke-width="3" stroke-dasharray="4 4"/>
+                        <line x1="40" y1="160" x2="120" y2="160" stroke="var(--accent-cyan)" stroke-width="6"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Cable Crunch</h4>
+                        <p>Allows for actual progressive overload of the <strong>Rectus Abdominis</strong>. Flex the spine, do not just hinge at the hips.</p>
+                    </div>
+                </div>
+
+                <!-- SVG 14: Chest-Supported Row -->
+                <div class="svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <defs><filter id="glowMid"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <line x1="40" y1="140" x2="160" y2="60" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/>
+                        <path d="M 120 85 L 70 120" stroke="#333" stroke-width="18" stroke-linecap="round"/>
+                        <path d="M 100 100 L 100 160" stroke="#333" stroke-width="12" stroke-linecap="round"/>
+                        <ellipse cx="90" cy="100" rx="15" ry="8" fill="var(--accent-purple)" transform="rotate(-35 90 100)" filter="url(#glowMid)"/>
+                        <circle cx="100" cy="160" r="10" fill="#fff"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Chest-Supported Row</h4>
+                        <p>Removes the lower back from the equation entirely, forcing the <strong>Lats and Rhomboids</strong> to do 100% of the pulling.</p>
+                    </div>
+                </div>
+
+                <!-- SVG 15: Glute Drive / Hip Thrust -->
+                <div class="svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <defs><filter id="glowGlute"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <path d="M 40 100 L 100 100 L 140 160" fill="none" stroke="#333" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="95" cy="100" r="14" fill="var(--accent-orange)" filter="url(#glowGlute)"/>
+                        <rect x="20" y="90" width="40" height="20" fill="var(--accent-cyan)" rx="5"/>
+                        <line x1="100" y1="100" x2="100" y2="70" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Glute Drive</h4>
+                        <p>Provides extreme tension on the <strong>Gluteus Maximus</strong> in the fully shortened position. Squeeze hard at the top.</p>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -576,11 +640,11 @@
 
     /* --- MONTHLY & WEEKLY INTEL DATA --- */
     const MonthlyIntel = {
-        1: { top: "Welcome to Hypertrophy OS. This month is about laying the foundation using rigid machine paths to master tension.", bot: "Coach's Note: Don't chase weight yet, chase tension. Focus entirely on the 3-second eccentric." },
-        2: { top: "Frequency Shift. We transition to a 5-day split hitting legs twice to balance upper/lower volume and stability.", bot: "Coach's Note: You will be sorer this month due to frequency. Feed the machine with adequate protein and sleep." },
-        3: { top: "Volume Accumulation. Sets increase to 4 for compound lifts. We are pushing the total tonnage up significantly.", bot: "Coach's Note: Monitor your sleep carefully. High volume demands extreme recovery. No junk sets." },
-        4: { top: "Heavy Tension. Reps drop, weight goes up. We are maximizing mechanical tension and fast-twitch fiber recruitment.", bot: "Coach's Note: Take longer rests (90-120s) between heavy sets. Let your ATP completely replenish." },
-        5: { top: "Pre-Exhaust Phase. Isolate the muscle first, then hit the compound. Make 50 weight feel like 100.", bot: "Coach's Note: Your ego will take a hit on the compound lifts because you are pre-fatigued. Let it." },
+        1: { top: "Welcome to Hypertrophy OS. This month is about laying the foundation using rigid machine paths to master tension. 5 days a week: Push, Pull, Legs, Push II, Pull II.", bot: "Coach's Note: Don't chase weight yet, chase tension. Focus entirely on the strict 3-second eccentric." },
+        2: { top: "Frequency Shift. We transition to a 5-day split hitting legs twice to balance upper/lower volume and stability. Push, Pull, Lower, Upper, Full Body.", bot: "Coach's Note: You will be sorer this month due to frequency. Feed the machine with adequate protein and sleep." },
+        3: { top: "Volume Accumulation. Sets increase for compound lifts. We are pushing the total tonnage up significantly with Supersets.", bot: "Coach's Note: Monitor your sleep carefully. High volume demands extreme recovery. No junk sets." },
+        4: { top: "Heavy Tension & Isometrics. Reps drop, weight goes up. We are maximizing mechanical tension and using 4-second negatives.", bot: "Coach's Note: Take longer rests (90-120s) between heavy sets. Let your ATP completely replenish." },
+        5: { top: "Pre-Exhaust Phase. Isolate the muscle first, then hit the compound. Make 50kg feel like 100kg.", bot: "Coach's Note: Your ego will take a hit on the compound lifts because you are pre-fatigued. Let it." },
         6: { top: "The Drop Zone. We push past failure on the final sets using Drop Sets and Rest-Pause. Peak metabolic stress.", bot: "Coach's Note: Leave absolutely nothing in the tank this month. You will deload after Week 24." }
     };
 
@@ -589,52 +653,82 @@
         2: "Stability Check: Maintain perfect tension throughout cable movements.",
         3: "Volume Accumulation: 4 sets per compound. Push closer to failure.",
         4: "Heavy Loads: Decrease reps, increase weight. Maximize mechanical tension.",
-        5: "Frequency Adaptation: Focus on recovering between the two leg sessions.",
+        5: "Cable Mastery: Perfect tension on the cables. Control the eccentric.",
+        6: "Mind-Muscle Sync: Do not drop the weight. Hold the stretch.",
+        7: "Unilateral Focus: Isolate each limb to fix strength imbalances.",
+        8: "Burnout Week: High reps to close out the stability block.",
         9: "Supersets: Zero rest between exercises. Push through the lactic acid.",
-        13: "Time Under Tension: 4 seconds down. Grow through fiber deformation.",
+        10: "The Pump: Maximize blood flow with opposing supersets.",
+        11: "Density: Complete the workload in 15% less time than week 9.",
+        12: "Giant Sets: 3 exercises back to back. Total muscle fatigue.",
+        13: "Time Under Tension: 4 seconds down on every single rep.",
+        14: "Statue Hold: 2 second isometric hold at the bottom of the stretch.",
+        15: "1.5 Rep Method: A full rep, then a half rep. Doubles the tension.",
+        16: "Tempo Integration: Combine the 4s down with the 2s hold.",
         17: "Pre-Exhaust: Isolate first, then compound. Make light weight feel heavy.",
-        21: "The Drop Zone: Triple drop sets on the final set. Total muscle fatigue.",
+        18: "Mechanical Drop Sets: Move from harder to easier variations.",
+        19: "Pause-Go: Stop all momentum at the bottom. Pure concentric power.",
+        20: "Peak Volume: Highest total sets of the entire cycle. Survive.",
+        21: "The Drop Zone: Triple drop sets on the final set.",
+        22: "Rest-Pause: Hit failure, wait 15s, hit failure again.",
+        23: "Centurion: 100 total reps on the final movement of the day.",
         24: "Victory Lap: Heaviest week. Test your 6-month strength gains."
     };
 
     /* --- 5-DAY SPLIT WORLD-GYM DATABASE --- */
-    // Each array represents a day with exactly 5 gym-based exercises.
+    // Helper to format days cleanly
     const wA = (d1, d2, d3, d4, d5) => ([
-        { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, { title: "Day 3: Leg Matrix", ex: d3 }, { title: "Day 4: Push Matrix II", ex: d4 }, { title: "Day 5: Pull Matrix II", ex: d5 }
+        { title: "Day 1: Push Matrix", ex: d1 }, 
+        { title: "Day 2: Pull Matrix", ex: d2 }, 
+        { title: "Day 3: Leg Matrix", ex: d3 }, 
+        { title: "Day 4: Push Matrix II", ex: d4 }, 
+        { title: "Day 5: Pull Matrix II", ex: d5 }
     ]);
     const wB = (d1, d2, d3, d4, d5) => ([
-        { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, { title: "Day 3: Lower Matrix", ex: d3 }, { title: "Day 4: Upper Matrix", ex: d4 }, { title: "Day 5: Full Body Integration", ex: d5 }
+        { title: "Day 1: Push Matrix", ex: d1 }, 
+        { title: "Day 2: Pull Matrix", ex: d2 }, 
+        { title: "Day 3: Lower Matrix", ex: d3 }, 
+        { title: "Day 4: Upper Matrix", ex: d4 }, 
+        { title: "Day 5: Full Body Integration", ex: d5 }
     ]);
 
     const Blueprint = {};
+    
+    // Program generation for all 24 weeks explicitly!
     for(let i=1; i<=24; i++) {
         let t = "Tempo: 3s ↓";
-        if(i>12 && i<=16) t = "4s Down, 2s Hold";
-        if(i>16 && i<=20) t = "Pre-Exhaust";
-        if(i>20) t = "Drop-Set / Max Tension";
+        
+        // Month 1 & 2 Sets/Reps
+        let cSets = "3x10"; let iSets = "3x12"; let hSets = "3x15";
+        
+        // Modifier Logic based on Week Phase
+        if (i >= 9 && i <= 12) { t = "Superset (No Rest)"; cSets = "4x10"; iSets = "4x12"; hSets = "3x15"; } // Month 3
+        if (i >= 13 && i <= 16) { t = "Tempo: 4s ↓, 2s Hold"; cSets = "3x8"; iSets = "3x10"; hSets = "3x12"; } // Month 4
+        if (i >= 17 && i <= 20) { t = "Pre-Exhaust"; cSets = "4x12"; iSets = "4x15"; hSets = "4x15"; } // Month 5
+        if (i >= 21 && i <= 24) { t = "Drop-Set to Failure"; cSets = "3x8"; iSets = "3x10"; hSets = "1xMax"; } // Month 6
 
-        // Alternate structures based on Month (i.e. every 4 weeks)
+        // Month 1, 3, 5 (Odd Months) - Structure A (1 Leg Day, 4 Upper)
         if (Math.ceil(i/4) % 2 !== 0) {
-            // Month 1, 3, 5 = Structure A (1 Leg Day)
             Blueprint[i] = wA(
-                [["Converging Machine Press", "3x10", t], ["Machine Shoulder Press", "3x10", t], ["Cable Lateral Raises", "3x15", t], ["Tricep Rope Pushdowns", "3x12", t], ["Pec Deck Flys", "3x15", t]],
-                [["Wide Lat Pulldowns", "3x10", t], ["Seated Cable Rows", "3x10", t], ["Single-Arm DB Row", "3x10", t], ["Machine Preacher Curls", "3x12", t], ["Cable Crunches", "3x15", t]],
-                [["Leg Press", "4x12", t], ["Hack Squat", "3x10", t], ["Leg Extensions", "4x15", t], ["Seated Leg Curls", "4x12", t], ["Standing Calf Raises", "4x20", t]],
-                [["Incline Machine Press", "3x10", t], ["DB Front Raises", "3x12", t], ["Cable Chest Flys", "3x12", t], ["Overhead Cable Ext", "3x12", t], ["Seated Dip Machine", "3x10", t]],
-                [["Underhand Lat Pulldown", "3x10", t], ["Chest Supported Row", "3x10", t], ["Face Pulls", "3x15", t], ["Cable Hammer Curls", "3x12", t], ["Machine Crunches", "3x15", t]]
+                [["Converging Machine Press", cSets, t], ["Machine Shoulder Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Tricep Rope Pushdowns", iSets, t], ["Pec Deck Flys", hSets, t]],
+                [["Wide Lat Pulldowns", cSets, t], ["Seated Cable Rows", cSets, t], ["Chest Supported DB Row", cSets, t], ["Machine Preacher Curls", iSets, t], ["Cable Crunches", hSets, t]],
+                [["Leg Press", cSets, t], ["Hack Squat", cSets, t], ["Leg Extensions", iSets, t], ["Lying Leg Curls", iSets, t], ["Standing Calf Raises", hSets, t]],
+                [["Incline Machine Press", cSets, t], ["DB Front Raises", iSets, t], ["Cable Chest Flys", iSets, t], ["Overhead Cable Ext", iSets, t], ["Seated Dip Machine", cSets, t]],
+                [["Underhand Lat Pulldown", cSets, t], ["One-Arm Cable Rows", cSets, t], ["Face Pulls", hSets, t], ["Cable Hammer Curls", iSets, t], ["Machine Crunches", hSets, t]]
             );
         } else {
-            // Month 2, 4, 6 = Structure B (2 Leg Days, Day 5 is Full Body)
+            // Month 2, 4, 6 (Even Months) - Structure B (2 Leg Days)
             Blueprint[i] = wB(
-                [["Machine Chest Press", "3x12", t], ["Arnold Press", "3x10", t], ["Cable Lateral Raises", "4x12", t], ["Single-Arm Pushdowns", "3x12", t], ["Pec Deck Flys", "3x12", t]],
-                [["Neutral Grip Pulldown", "3x12", t], ["One-Arm Cable Rows", "3x12", t], ["Reverse Pec Deck", "3x15", t], ["Bayesian Cable Curls", "3x12", t], ["Hanging Leg Raises", "3x12", t]],
-                [["Hack Squat", "3x10", t], ["Lying Leg Curls", "3x12", t], ["Single-Leg Press", "3x10", t], ["Machine Glute Drive", "3x15", t], ["Seated Calf Raises", "3x20", t]],
-                [["Incline Machine Press", "3x10", t], ["Wide Lat Pulldowns", "3x10", t], ["Machine Shoulder Press", "3x10", t], ["DB Bicep Curls", "3x12", t], ["Tricep Pushdowns", "3x12", t]],
-                [["Leg Press", "3x12", t], ["Converging Machine Press", "3x12", t], ["Seated Cable Rows", "3x12", t], ["Leg Extensions", "3x15", t], ["Face Pulls", "3x15", t]]
+                [["Machine Chest Press", cSets, t], ["Arnold Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Single-Arm Pushdowns", iSets, t], ["Pec Deck Flys", hSets, t]],
+                [["Neutral Grip Pulldown", cSets, t], ["Seated Cable Rows", cSets, t], ["Reverse Pec Deck", iSets, t], ["Bayesian Cable Curls", iSets, t], ["Hanging Leg Raises", hSets, t]],
+                [["Hack Squat", cSets, t], ["Seated Leg Curls", iSets, t], ["Single-Leg Press", cSets, t], ["Machine Glute Drive", iSets, t], ["Seated Calf Raises", hSets, t]],
+                [["Incline Machine Press", cSets, t], ["Wide Lat Pulldowns", cSets, t], ["Machine Shoulder Press", cSets, t], ["DB Bicep Curls", iSets, t], ["Tricep Pushdowns", iSets, t]],
+                [["Leg Press", cSets, t], ["Converging Machine Press", cSets, t], ["Chest Supported DB Row", cSets, t], ["Leg Extensions", iSets, t], ["Face Pulls", hSets, t]]
             );
         }
     }
 
+    // Dynamic categorizer for Filters
     function getExerciseMeta(name) {
         let n = name.toLowerCase();
         let mod = "Machine";
@@ -648,6 +742,7 @@
         if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) mus = "Arms";
         if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) mus = "Legs";
         
+        // Edge cases
         if(n.includes("leg press")) mus = "Legs";
         if(n.includes("shoulder press")) mus = "Shoulders";
         if(n.includes("leg curl")) mus = "Legs";
@@ -660,13 +755,13 @@
     const State = {
         user: null, 
         view: localStorage.getItem('h_v') || 'view-dash',
-        unit: localStorage.getItem('h_u') || 'kg', // Memory for Unit
-        month: parseInt(localStorage.getItem('h_m')) || 1, // Memory for Month
-        week: parseInt(localStorage.getItem('h_w')) || 1, // Memory for Week
-        labBw: localStorage.getItem('h_labBw') || '', // Memory for Bodyweight input
-        dashMusc: localStorage.getItem('h_dMusc') || 'All', // Memory for Chart Filter
-        dashMod: localStorage.getItem('h_dMod') || 'All', // Memory for Chart Filter
-        dashEx: localStorage.getItem('h_dEx') || '', // Memory for Chart Exercise
+        unit: localStorage.getItem('h_u') || 'kg',
+        month: parseInt(localStorage.getItem('h_m')) || 1,
+        week: parseInt(localStorage.getItem('h_w')) || 1,
+        labBw: localStorage.getItem('h_labBw') || '',
+        dashMusc: localStorage.getItem('h_dMusc') || 'All',
+        dashMod: localStorage.getItem('h_dMod') || 'All',
+        dashEx: localStorage.getItem('h_dEx') || '',
         logs: JSON.parse(localStorage.getItem('h_l') || '{}')
     };
 
@@ -706,7 +801,7 @@
         }
         exListCache = Array.from(rawList).map(e => ({ name: e, ...getExerciseMeta(e) })).sort((a,b) => a.name.localeCompare(b.name));
         
-        // Restore dropdown state
+        // Restore dropdown state exactly
         document.getElementById('filter-muscle').value = State.dashMusc;
         window.HOS.updateModality(true); 
     }
@@ -844,14 +939,7 @@
         document.getElementById('month-bot-msg').innerHTML = `<h4>💡 Month ${State.month} Protocol</h4><p>${MonthlyIntel[State.month].bot}</p>`;
         
         let gText = WeeklyGoals[State.week];
-        if(!gText) {
-            if(State.week > 20) gText = "The Drop Zone: Triple drop sets on the final set.";
-            else if(State.week > 16) gText = "Pre-Exhaust: Isolate first, then compound.";
-            else if(State.week > 12) gText = "Time Under Tension: 4 seconds down.";
-            else if(State.week > 8) gText = "Supersets: Zero rest between exercises.";
-            else if(State.week > 4) gText = "Stability & Cable Mastery: Perfect tension.";
-            else gText = "Progressive Overload: Increase weight steadily.";
-        }
+        if(!gText) { gText = "Progressive Overload: Push harder than last week. Strict form."; }
         document.getElementById('weekly-goal').innerHTML = `<strong>🎯 Week ${State.week} Goal:</strong> ${gText}`;
 
         // Render Days
@@ -985,7 +1073,7 @@
                 }
             });
             
-            if(isInit) exDrop.value = State.dashEx;
+            if(isInit && State.dashEx) exDrop.value = State.dashEx;
             
             window.HOS.saveChartEx(); // Trigger chart
         },
