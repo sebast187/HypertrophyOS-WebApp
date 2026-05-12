@@ -2,626 +2,791 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GYM BLUEPRINT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HYPERTROPHY OS | Pro</title>
     <style>
+        /* ==========================================================================
+           1. CORE DESIGN SYSTEM & TOKENS
+           ========================================================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
+
         :root {
-            --bg-dark: #121212;
-            --bg-card: #1e1e1e;
-            --primary: #00e676;
-            --primary-hover: #00c853;
+            --bg-base: #050505;
+            --bg-panel: rgba(20, 20, 22, 0.6);
+            --bg-panel-solid: #141416;
+            --accent-cyan: #00e5ff;
+            --accent-cyan-glow: rgba(0, 229, 255, 0.2);
+            --accent-purple: #b388ff;
+            --accent-green: #00e676;
+            --accent-orange: #ff3d00;
             --text-main: #ffffff;
-            --text-muted: #aaaaaa;
-            --border-color: #333333;
-            --accent: #ffeb3b;
-            --message-bg: #252525;
-            --message-border: #00e676;
+            --text-muted: #888888;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --nav-height: 80px;
+            --font-ui: 'Inter', sans-serif;
+            --font-data: 'JetBrains Mono', monospace;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; padding: 20px; }
-
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
-        header p { color: var(--text-muted); font-size: 1.1rem; }
-
-        /* Main Navigation */
-        .main-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
-        .nav-btn { background: none; border: 2px solid var(--primary); color: var(--primary); padding: 10px 20px; font-size: 1.1rem; cursor: pointer; border-radius: 5px; transition: all 0.3s ease; }
-        .nav-btn.active, .nav-btn:hover { background: var(--primary); color: var(--bg-dark); font-weight: bold; }
-
-        /* Container & Sections */
-        .container { max-width: 1000px; margin: 0 auto; background: var(--bg-card); padding: 30px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Filters */
-        .filters { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .month-tabs { display: flex; gap: 10px; flex-wrap: wrap; }
-        .month-tab { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 6px 12px; font-size: 0.9rem; cursor: pointer; border-radius: 20px; transition: 0.3s; }
-        .month-tab.active { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); font-weight: bold; }
-        .week-select { background: var(--bg-dark); color: var(--primary); border: 1px solid var(--primary); padding: 10px; border-radius: 5px; font-size: 1rem; cursor: pointer; outline: none; font-weight: bold; }
-
-        /* Monthly Message Boxes */
-        .monthly-message {
-            background: var(--message-bg);
-            border-left: 4px solid var(--message-border);
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 0 8px 8px 0;
-        }
-        .monthly-message h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        .monthly-message p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-        .monthly-message.bottom {
-            margin-top: 25px;
-            margin-bottom: 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
+            overflow-x: hidden; padding-bottom: calc(var(--nav-height) + 20px);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(179, 136, 255, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
-        /* Weekly Goal Message */
-        .weekly-goal {
-            background: var(--message-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px 20px;
-            margin-top: 15px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            text-align: center;
+        h1, h2, h3, h4 { font-weight: 900; letter-spacing: -0.5px; }
+        input, select, button { font-family: var(--font-ui); outline: none; border: none; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
+
+        /* ==========================================================================
+           2. UI COMPONENTS & GLASSMORPHISM
+           ========================================================================== */
+        header {
+            padding: 30px 15px 15px; position: sticky; top: 0; z-index: 50;
+            background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .weekly-goal strong {
-            color: var(--primary);
-            font-size: 1rem;
-        }
-        .weekly-goal p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 5px;
+        .logo h1 { font-size: 1.8rem; text-transform: uppercase; }
+        .logo h1 span { color: var(--accent-cyan); }
+        .logo p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        .glass-card {
+            background: var(--bg-panel); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
         }
 
-        /* Tables */
-        .day-container { margin-bottom: 40px; }
-        .day-title { color: var(--primary); font-size: 1.4rem; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px; background: #2a2a2a; padding: 10px; border-radius: 0 5px 5px 0;}
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: var(--bg-dark); border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        th { background-color: #1a1a1a; color: var(--text-muted); font-weight: bold; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: #222; }
-        td strong { color: var(--primary); }
+        .view-section { display: none; opacity: 0; transform: translateY(10px); transition: var(--transition); }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); animation: fadeUp 0.4s forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* Glossary Grid */
-        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .glossary-card { background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; text-align: center; transition: transform 0.3s, border-color 0.3s; }
-        .glossary-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .glossary-svg { width: 140px; height: 140px; margin: 0 auto 15px; display: block; background: #1a1a1a; border-radius: 8px; padding: 10px; }
-        .glossary-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
-        .glossary-card p { color: var(--text-muted); font-size: 0.9rem; text-align: left; line-height: 1.5; }
-
-        /* Responsive */
-        @media(max-width: 650px) {
-            .filters { flex-direction: column; align-items: stretch; }
-            .week-select { width: 100%; }
-            table, thead, tbody, th, td, tr { display: block; }
-            th { display: none; }
-            tr { border: 1px solid var(--border-color); margin-bottom: 15px; border-radius: 8px; padding: 5px; background: #1a1a1a; }
-            td { border: none; position: relative; padding: 10px 10px 10px 120px; text-align: left; }
-            td:before { content: attr(data-label); position: absolute; left: 10px; top: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; }
-            .monthly-message, .weekly-goal { padding: 15px; font-size: 0.9rem; }
-            .monthly-message h3 { font-size: 1.1rem; }
+        .btn-primary {
+            width: 100%; background: var(--accent-cyan); color: #000; padding: 15px;
+            border-radius: 12px; font-weight: 900; font-size: 1rem; text-transform: uppercase;
+            cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px var(--accent-cyan-glow);
         }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* ==========================================================================
+           3. AUTHENTICATION GATE
+           ========================================================================== */
+        #auth-gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base); z-index: 9999; display: flex;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .auth-box { width: 100%; max-width: 380px; text-align: center; }
+        .auth-box input {
+            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
+            color: white; font-size: 1rem;
+        }
+        .auth-box input:focus { border-color: var(--accent-cyan); }
+        .auth-toggle { background: transparent; color: var(--text-muted); margin-top: 20px; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+
+        /* ==========================================================================
+           4. DASHBOARD & ANALYTICS
+           ========================================================================== */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 1px solid var(--border-light); }
+        .stat-val { font-family: var(--font-data); font-size: 2rem; color: var(--accent-cyan); font-weight: 800; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .chart-container { width: 100%; height: 200px; margin-top: 15px; position: relative; }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        
+        .analytics-select { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-cyan); border-radius: 8px; margin-bottom: 10px; font-family: var(--font-ui); font-weight: bold;}
+
+        /* ==========================================================================
+           5. WORKOUT MATRIX (LOGGER)
+           ========================================================================== */
+        .week-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
+        .week-slider::-webkit-scrollbar { display: none; }
+        .week-btn {
+            flex: 0 0 auto; padding: 10px 20px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-light); border-radius: 30px;
+            color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
+        }
+        .week-btn.active { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
+        
+        .goal-box { border-left: 3px solid var(--accent-purple); background: linear-gradient(90deg, rgba(179, 136, 255, 0.1), transparent); padding: 12px; border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted); }
+
+        .day-accordion { background: var(--bg-panel-solid); border: 1px solid var(--border-light); border-radius: 16px; margin-bottom: 15px; overflow: hidden; }
+        .day-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .day-header h3 { font-size: 1rem; color: var(--text-main); }
+        .day-prog { font-family: var(--font-data); font-size: 0.8rem; color: var(--accent-green); font-weight: bold; background: rgba(0, 230, 118, 0.1); padding: 4px 10px; border-radius: 12px; }
+        
+        .day-body { display: none; padding: 0 15px 15px; border-top: 1px solid var(--border-light); }
+        .day-body.open { display: block; animation: fadeUp 0.3s forwards; }
+
+        .ex-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-top: 15px; padding: 15px; }
+        .ex-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 5px; color: var(--accent-cyan); }
+        .ex-meta { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; font-family: var(--font-data); font-weight: 700; background: rgba(255,255,255,0.1); }
+
+        .log-table { width: 100%; border-collapse: collapse; }
+        .log-table th { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); text-align: center; }
+        .log-table td { padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.02); text-align: center; }
+        .log-table tr.done-row { opacity: 0.5; }
+        
+        .set-idx { font-family: var(--font-data); font-weight: bold; color: var(--text-muted); }
+        .log-input { width: 60px; padding: 8px; text-align: center; font-family: var(--font-data); font-weight: 700; background: rgba(0,0,0,0.5); border: 1px solid var(--border-light); color: white; border-radius: 6px; }
+        .log-input:focus { border-color: var(--accent-cyan); }
+        
+        .check-btn { width: 32px; height: 32px; margin: 0 auto; border-radius: 8px; border: 2px solid var(--border-light); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: var(--transition); background: transparent; }
+        .check-btn.checked { background: var(--accent-green); border-color: var(--accent-green); }
+        .check-btn svg { width: 16px; height: 16px; stroke: var(--bg-base); stroke-width: 4; fill: none; opacity: 0; }
+        .check-btn.checked svg { opacity: 1; }
+
+        /* ==========================================================================
+           6. THE LAB & ATLAS (SCIENCE / SVGs)
+           ========================================================================== */
+        .calc-group { margin-bottom: 15px; }
+        .calc-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
+        .calc-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 8px; color: white; font-family: var(--font-data); }
+        .calc-result { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+        .calc-result span:last-child { font-family: var(--font-data); color: var(--accent-cyan); font-weight: bold; }
+
+        .svg-card { text-align: center; }
+        .svg-canvas { width: 100%; max-width: 250px; height: 250px; background: #0a0a0c; border-radius: 20px; border: 1px solid var(--border-light); padding: 15px; margin-bottom: 15px; }
+        .svg-desc { text-align: left; font-size: 0.85rem; color: var(--text-muted); }
+        .svg-desc strong { color: white; }
+
+        /* ==========================================================================
+           7. REST TIMER & BOTTOM NAV
+           ========================================================================== */
+        .rest-timer {
+            position: fixed; bottom: calc(var(--nav-height) + 15px); right: 15px;
+            background: rgba(20, 20, 22, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-orange); border-radius: 30px;
+            padding: 8px 15px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 5px 20px rgba(255, 61, 0, 0.3); z-index: 100;
+            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .rest-timer.active { transform: translateX(0); }
+        .timer-txt { font-family: var(--font-data); font-size: 1.2rem; font-weight: 800; color: white; }
+        .timer-btn { background: transparent; color: var(--accent-orange); font-size: 1.2rem; cursor: pointer; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 1px solid var(--accent-orange); }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item {
+            background: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; cursor: pointer; width: 25%; transition: var(--transition);
+        }
+        .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; transition: var(--transition); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active svg { transform: translateY(-3px); stroke: var(--accent-cyan); filter: drop-shadow(0 2px 5px var(--accent-cyan-glow)); }
+
+        #toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -150%); background: white; color: black; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; z-index: 10000; transition: transform 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #toast.show { transform: translate(-50%, 0); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>GYM BLUEPRINT</h1>
-        <p>The Complete 6-Month Hypertrophy System</p>
-    </header>
+    <div id="toast">Action Saved</div>
 
-    <div class="main-nav">
-        <button class="nav-btn active" onclick="switchMainTab('workout-section')">Workout Plan (Months 1-6)</button>
-        <button class="nav-btn" onclick="switchMainTab('glossary-section')">Exercise Glossary & SVGs</button>
-    </div>
-
-    <div class="container">
-        <div id="workout-section" class="section active">
-            <div class="filters">
-                <div class="month-tabs" id="monthTabsContainer"></div>
-                <select class="week-select" id="weekSelect" onchange="renderWeek()"></select>
-            </div>
-            <div id="routineContainer"></div>
-        </div>
-
-        <div id="glossary-section" class="section">
-            <div class="glossary-grid">
-                
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="85" y1="10" x2="85" y2="90" stroke="#555" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="30" cy="40" r="8" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="30" y1="48" x2="30" y2="80" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-                        <path d="M 30 55 L 45 40 L 75 40" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
-                        <line x1="75" y1="40" x2="85" y2="40" stroke="#aaa" stroke-width="2" stroke-dasharray="2"/>
-                        <path d="M 60 30 L 45 40 L 60 50" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <h3>Face Pulls (Cable)</h3>
-                    <p>Set cable slightly above face height. Pull the rope towards your eyes, driving elbows out and back. Squeeze your rear delts and upper back. Do not use your lower back to pull.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="10" y1="85" x2="90" y2="85" stroke="#555" stroke-width="3"/>
-                        <line x1="20" y1="80" x2="60" y2="80" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="20" cy="75" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="60" y1="80" x2="85" y2="80" stroke="#00e676" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="35" y1="80" x2="10" y2="65" stroke="#00e676" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="60" y1="80" x2="60" y2="50" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="35" y1="80" x2="35" y2="50" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M 60 40 Q 80 40 85 70" stroke="#00e676" stroke-width="2" fill="none" stroke-dasharray="3"/>
-                    </svg>
-                    <h3>Dead Bug</h3>
-                    <p>Lie on your back, arms straight up, knees bent at 90 degrees. Slowly lower opposite arm and leg to the floor while pressing your lower back hard into the mat. Return and switch.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="10" y1="90" x2="90" y2="90" stroke="#555" stroke-width="4"/>
-                        <line x1="30" y1="90" x2="30" y2="60" stroke="#fff" stroke-width="4"/>
-                        <line x1="30" y1="60" x2="60" y2="60" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="70" cy="60" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="70" y1="67" x2="70" y2="90" stroke="#fff" stroke-width="4"/>
-                        <rect x="65" y="80" width="10" height="10" fill="#00e676"/>
-                        <path d="M 70 50 L 70 30" stroke="#00e676" stroke-width="3"/>
-                        <polygon points="70,30 65,40 75,40" fill="#00e676"/>
-                    </svg>
-                    <h3>Single-Arm DB Row</h3>
-                    <p>Support yourself on a bench with one hand. Keep your back flat. Pull the dumbbell up towards your hip pocket, squeezing your back muscles at the top. Lower slowly.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="15" y1="10" x2="15" y2="90" stroke="#555" stroke-width="6"/>
-                        <circle cx="35" cy="40" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="35" y1="47" x2="35" y2="75" stroke="#fff" stroke-width="4"/>
-                        <line x1="35" y1="75" x2="35" y2="90" stroke="#fff" stroke-width="3"/>
-                        <path d="M 35 55 L 60 50 L 80 50" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
-                        <path d="M 80 50 L 90 50" stroke="#aaa" stroke-width="2" stroke-dasharray="2"/>
-                        <path d="M 60 50 L 70 70" stroke="#00e676" stroke-width="3" stroke-linecap="round"/>
-                        <polygon points="70,70 65,60 75,60" fill="#00e676"/>
-                    </svg>
-                    <h3>Glute Kickback</h3>
-                    <p>Attach ankle strap to low cable. Face the machine. Keep leg straight and kick back and up, squeezing the glute at the top. Do not arch your lower back.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <path d="M 20 90 L 60 90 L 60 50 L 20 50 Z" fill="none" stroke="#555" stroke-width="3"/>
-                        <circle cx="30" cy="25" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="30" y1="32" x2="30" y2="50" stroke="#fff" stroke-width="4"/>
-                        <line x1="30" y1="50" x2="50" y2="50" stroke="#fff" stroke-width="4"/>
-                        <rect x="50" y="40" width="10" height="20" fill="#00e676"/>
-                        <path d="M 55 40 L 55 30" stroke="#00e676" stroke-width="3"/>
-                        <polygon points="55,30 50,40 60,40" fill="#00e676"/>
-                    </svg>
-                    <h3>Preacher Curl</h3>
-                    <p>Rest your upper arms on the angled pad. Hold dumbbells or bar. Curl the weight up towards your shoulders without letting your elbows lift off the pad. Squeeze biceps.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <path d="M 30 90 L 30 60 L 60 60 L 60 90" stroke="#555" stroke-width="4" fill="none"/>
-                        <line x1="30" y1="60" x2="30" y2="30" stroke="#555" stroke-width="4"/>
-                        <circle cx="45" cy="30" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="45" y1="37" x2="45" y2="60" stroke="#fff" stroke-width="4"/>
-                        <path d="M 45 45 L 55 45 L 55 35" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
-                        <rect x="52" y="28" width="6" height="10" fill="#00e676"/>
-                        <path d="M 60 30 Q 75 20 50 10" stroke="#00e676" stroke-width="2" fill="none" stroke-dasharray="3"/>
-                        <polygon points="50,10 55,15 57,8" fill="#00e676"/>
-                    </svg>
-                    <h3>Arnold Press</h3>
-                    <p>Start with dumbbells in front of your face, palms facing you. As you press the weights overhead, rotate your wrists so your palms face forward at the top. Reverse the motion on the way down.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <rect x="70" y="65" width="20" height="15" fill="none" stroke="#555" stroke-width="3"/>
-                        <circle cx="35" cy="25" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="35" y1="32" x2="35" y2="55" stroke="#fff" stroke-width="4"/>
-                        <line x1="35" y1="55" x2="35" y2="85" stroke="#fff" stroke-width="3"/>
-                        <path d="M 35 55 L 60 60 L 75 65" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
-                        <rect x="25" y="45" width="6" height="15" fill="#00e676"/>
-                        <line x1="15" y1="40" x2="15" y2="70" stroke="#00e676" stroke-width="3"/>
-                        <polygon points="15,70 10,63 20,63" fill="#00e676"/>
-                    </svg>
-                    <h3>Bulgarian Split Squat</h3>
-                    <p>Place one foot behind you on a bench. Holding dumbbells by your sides, lower your hips straight down until your front thigh is parallel to the ground. Keep your chest up.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="20" y1="90" x2="80" y2="90" stroke="#555" stroke-width="4"/>
-                        <line x1="20" y1="90" x2="20" y2="40" stroke="#555" stroke-width="4"/>
-                        <line x1="20" y1="40" x2="80" y2="40" stroke="#555" stroke-width="4"/>
-                        <circle cx="60" cy="30" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="60" y1="37" x2="60" y2="60" stroke="#fff" stroke-width="4"/>
-                        <line x1="60" y1="60" x2="60" y2="90" stroke="#fff" stroke-width="3"/>
-                        <rect x="55" y="50" width="10" height="20" fill="#00e676"/>
-                        <path d="M 60 50 L 60 35" stroke="#00e676" stroke-width="3"/>
-                        <polygon points="60,35 55,45 65,45" fill="#00e676"/>
-                    </svg>
-                    <h3>Hack Squat</h3>
-                    <p>Stand on the platform with back against the pad. Shoulders under pads. Unlock safety bars. Lower your body by bending knees until thighs are parallel, then drive up through heels.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="10" y1="90" x2="90" y2="90" stroke="#555" stroke-width="4"/>
-                        <circle cx="50" cy="25" r="7" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="50" y1="32" x2="50" y2="50" stroke="#fff" stroke-width="4"/>
-                        <line x1="50" y1="50" x2="50" y2="80" stroke="#fff" stroke-width="3"/>
-                        <line x1="50" y1="40" x2="80" y2="40" stroke="#fff" stroke-width="3"/>
-                        <rect x="80" y="30" width="10" height="20" fill="#00e676"/>
-                        <path d="M 85 30 L 85 20" stroke="#00e676" stroke-width="3"/>
-                        <polygon points="85,20 80,30 90,30" fill="#00e676"/>
-                    </svg>
-                    <h3>Skullcrushers</h3>
-                    <p>Lie on a bench holding dumbbells/bar. Keep elbows pinned pointing up. Lower the weight towards your forehead by bending only the elbows, then extend back up.</p>
-                </div>
-
-                <div class="glossary-card">
-                    <svg class="glossary-svg" viewBox="0 0 100 100">
-                        <line x1="80" y1="10" x2="80" y2="90" stroke="#555" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="35" cy="30" r="8" fill="none" stroke="#fff" stroke-width="3"/>
-                        <line x1="35" y1="38" x2="35" y2="70" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-                        <line x1="35" y1="70" x2="30" y2="90" stroke="#fff" stroke-width="3"/>
-                        <line x1="35" y1="70" x2="40" y2="90" stroke="#fff" stroke-width="3"/>
-                        <line x1="35" y1="45" x2="65" y2="25" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-                        <line x1="65" y1="25" x2="80" y2="15" stroke="#aaa" stroke-width="2" stroke-dasharray="2"/>
-                        <path d="M 70 30 Q 75 50 45 65" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        <polygon points="45,65 52,60 50,68" fill="#00e676"/>
-                    </svg>
-                    <h3>Straight Arm Pulldown</h3>
-                    <p>Stand facing a high cable. Keep your arms completely straight (slight bend in elbow is okay) and push the bar down in an arc to your thighs. Focus entirely on squeezing your lats.</p>
-                </div>
-
-            </div>
+    <!-- AUTHENTICATION GATE -->
+    <div id="auth-gate">
+        <div class="auth-box">
+            <h1 style="font-size: 2.5rem; margin-bottom: 5px;">HYPERTROPHY<span style="color:var(--accent-cyan)">OS</span></h1>
+            <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">Secure Gym Protocol</p>
+            <form id="auth-form">
+                <input type="email" id="auth-email" placeholder="Email Address" required>
+                <input type="password" id="auth-pass" placeholder="Password (Min 6)" required>
+                <button type="submit" class="btn-primary" id="auth-btn">Initialize Connection</button>
+            </form>
+            <button type="button" class="auth-toggle" id="auth-toggle">New user? Create profile.</button>
+            <p style="margin-top: 20px; font-size: 0.7rem; color: #555;">*Initializing with Firebase Cloud Sync.*</p>
         </div>
     </div>
 
-    <script>
-        // Main Tab Switcher
-        function switchMainTab(tabId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Monthly Messages Data
-        const monthlyMessages = {
-            1: {
-                top: "This is your Complete 'No Big Lifts' Master Plan. I have designed this so that you never do the exact same workout twice in a month. This keeps your muscles guessing and prevents boredom. Each week follows the Push / Pull / Legs split, but the exercises and intensity shift to ensure you are progressing.",
-                bottom: "<strong>Coach's Advice:</strong><br>• Warm-up: Always spend 5 minutes on a treadmill or elliptical and do a few 'empty' sets with very light weight before jumping into the tables above.<br>• Tracking: Since you are using machines and dumbbells, it's very easy to write down your numbers. Try to beat your weight or reps from the previous week by just 1–2%.<br>• Safety: Because we are skipping deadlifts/squats, your lower back is much safer, but still keep your core tight during moves like the Leg Press—don't let your lower back round off the seat!"
-            },
-            2: {
-                top: "In Month 1, we built the foundation. Now, we're going to level up by introducing more cable-based movements and unilateral training (one side at a time). Cables provide 'constant tension,' meaning your muscles never get a break during the rep, and unilateral moves fix any strength imbalances without needing a heavy barbell.",
-                bottom: "<strong>Coach's Tip:</strong> By now, you might notice one arm or leg is stronger than the other. That's why Week 7 is so important. Don't rush those moves; let the weaker side 'catch up' by matching the weight and reps of your stronger side."
-            },
-            3: {
-                top: "Since you've spent two months building a solid foundation and mastering the machines, it's time to turn up the heat. This month is all about Supersets—performing two exercises back-to-back with zero rest in between. This keeps your heart rate up and forces your muscles to adapt to a higher workload.",
-                bottom: "<strong>Coach's Advice:</strong> Because these supersets are intense, you might find you can't lift quite as much weight as you did in Month 2. That is okay. The goal here is the density of work—doing more in less time. Keep your form sharp and focus on the stretch and squeeze!"
-            },
-            4: {
-                top: "Now that we've used supersets to build endurance, we're shifting our focus to Time Under Tension (TUT). This month is designed to make lighter weights feel incredibly heavy by manipulating 'Tempo.' We will focus on Eccentrics (the lowering phase) and Isometrics (the hold). This is where you stop just 'moving weight' and start actually 'sculpting muscle.'",
-                bottom: "<strong>Coach's Note:</strong> You are going to feel a different kind of 'sore' this month. It's not from heavy weight; it's from the muscle being under tension for so long. If you find your form breaking down because of the slow tempo, lower the weight. The tempo is more important than the number on the plates this month."
-            },
-            5: {
-                top: "We are entering the 'pro' territory now. This month is designed to bypass your strongest muscles and force the 'stubborn' ones to grow. We do this by tiring out a specific muscle with an isolation move before doing the big machine move. It makes 50 lbs feel like 100 lbs, which is great for muscle growth without needing to load up massive weights that could hurt your joints.",
-                bottom: "<strong>Coach's Note:</strong> This is the 'grind' month. You might feel like you're hitting a wall, but this variety is exactly what breaks through plateaus. If your energy feels low, make sure you're increasing your water intake and getting at least 7-8 hours of sleep."
-            },
-            6: {
-                top: "You've made it. This is Month 6: The Transformation Peak. We have spent five months building the foundation, mastering the cables, and pushing through intensity. This final month is designed to 'peak' your physique and strength. We are using Drop Sets, Rest-Pause training, and High-Volume finishers to squeeze out every bit of progress. By the end of these four weeks, you won't just look different; you'll be moving weights you thought were impossible back in Month 1—all without a single barbell squat or deadlift in sight.",
-                bottom: "<strong>Coach's Final Pep Talk:</strong> You've just completed 24 weeks of consistent work. You've proven that you don't need 'big three' ego-lifts to build a powerful, athletic body.<br><br><strong>What's Next?</strong> After Week 24, I highly recommend a 'Deload Week.' Go to the gym, but do only 50% of the weight and sets you normally do. Let your joints and nervous system recover. After that, you can either restart this 6-month cycle with much heavier weights, or we can look into a new goal—like fat loss or explosive power."
-            }
-        };
-
-        // Weekly Goals Data
-        const weeklyGoals = {
-            1: "Wake up the muscles and focus on perfect controlled form.",
-            2: "Increase the weight slightly and focus on the 'squeeze' at the top of every move.",
-            3: "Higher reps and shorter rest periods to build endurance and 'the pump.'",
-            4: "Heavier weight, lower reps, and maximum effort on every set.",
-            5: "Slow down the 'negative' (lowering) part of the lift to 3 seconds. Feel the burn!",
-            6: "At the hardest part of the move, squeeze the muscle and hold for 1 full second.",
-            7: "Working one side at a time to ensure both sides of your body are equally strong.",
-            8: "Keep the heart rate up and finish Month 2 with high intensity.",
-            9: "Hit the isolation move first to tire the muscle, then finish it off with a machine press/pull.",
-            10: "Combine a heavy movement with a high-rep movement for maximum blood flow.",
-            11: "Alternate movements within the same workout to keep the intensity high without fatiguing one muscle too quickly.",
-            12: "Do three exercises for the same muscle group back-to-back. This is the hardest week yet.",
-            13: "On every single rep, take a full 4 seconds to lower the weight. Explode up, then slow... slow... slow.",
-            14: "At the point of maximum contraction (the squeeze), hold the weight perfectly still for 2 seconds.",
-            15: "Do a full rep, go halfway back, return to the squeeze, then finish. That's ONE rep. This doubles the work!",
-            16: "Combining the 4-second negative AND the 2-second hold. This is high intensity.",
-            17: "Hit the isolation move (1) immediately followed by the compound move (2) for the same muscle.",
-            18: "Start with the hardest version of a move, then immediately switch to an easier version of the same move to keep going.",
-            19: "Perform 8 reps, rest 10 seconds, then perform as many more as possible (AMRAP) with the same weight.",
-            20: "High sets, high reps. We want to completely fatigue the muscle to prep for the final month.",
-            21: "On the final set of every exercise, perform a triple-drop set. Do your reps, drop the weight by 20%, go to failure, drop another 20%, and go to failure again.",
-            22: "On your last set, reach failure, rest exactly 15 seconds, then squeeze out 3–5 more reps. Rest 15 seconds again, and squeeze out 2 more.",
-            23: "We are going for 100 reps on the finishing move of each day. This is pure metabolic stress.",
-            24: "Maximize the weight while staying in the 6–8 rep range. This is your 'heavy' week to see how much strength you've gained."
-        };
-
-        // FULL 24-WEEK WORKOUT DATABASE
-        const workoutData = {};
+    <!-- MAIN APP -->
+    <div id="app-core" style="display: none;">
         
-        function w(day1, day2, day3) {
-            return [
-                { title: "Day 1: Push (Chest, Shoulders, Triceps)", exercises: day1 },
-                { title: "Day 2: Pull (Back, Biceps, Core)", exercises: day2 },
-                { title: "Day 3: Legs (Quads, Hams, Glutes)", exercises: day3 }
-            ];
+        <header>
+            <div class="logo">
+                <p>World Gym Edition</p>
+                <h1>Hypertrophy<span>OS</span></h1>
+            </div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.HOS.logout()" style="cursor:pointer;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </header>
+
+        <div class="container">
+            
+            <!-- VIEW: DASHBOARD & ANALYTICS -->
+            <main id="view-dash" class="view-section active">
+                <div class="glass-card">
+                    <h2 style="margin-bottom: 15px;">Macrocycle Overview</h2>
+                    <div class="stat-grid">
+                        <div class="stat-box"><div class="stat-val" id="stat-workouts">0</div><div class="stat-label">Workouts Cleared</div></div>
+                        <div class="stat-box"><div class="stat-val" id="stat-sets">0</div><div class="stat-label">Sets Executed</div></div>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px; font-size: 1rem; color:var(--accent-cyan);">Progressive Overload Tracker</h3>
+                    <p style="font-size: 0.75rem; color:var(--text-muted); margin-bottom:10px;">Select an exercise to view your max weight progression over time.</p>
+                    <select class="analytics-select" id="analytics-ex" onchange="window.HOS.renderChart()">
+                        <option value="">Log exercises to see data...</option>
+                    </select>
+                    
+                    <div class="chart-container">
+                        <svg class="chart-svg" id="progression-chart"></svg>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="border-left: 3px solid var(--accent-orange);">
+                    <h3 style="color:var(--accent-orange); margin-bottom:8px;">The Tension Directive</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Muscles do not grow because they hurt; they grow because they deform under load. <strong>Execute a strict 3-second eccentric (lowering) on EVERY repetition.</strong> Dropping the weight wastes the mTORC1 signal.</p>
+                </div>
+            </main>
+
+            <!-- VIEW: WORKOUT MATRIX -->
+            <main id="view-matrix" class="view-section">
+                <div class="week-slider" id="week-slider"></div>
+                <div class="goal-box" id="weekly-goal">Loading...</div>
+                <div id="days-container"></div>
+            </main>
+
+            <!-- VIEW: THE LAB (SCIENCE/CALCULATORS) -->
+            <main id="view-lab" class="view-section">
+                <div class="glass-card">
+                    <h2 style="color:var(--accent-cyan); margin-bottom:15px;">Dr. Helms Recomp Engine</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Calculates the exact math required to metabolize fat while fueling muscle protein synthesis (Max 0.5% BW deficit/week).</p>
+                    
+                    <div class="calc-group">
+                        <label>Current Bodyweight (lbs)</label>
+                        <input type="number" id="calc-bw" placeholder="e.g. 180" inputmode="numeric">
+                    </div>
+                    <button class="btn-primary" onclick="window.HOS.calcRecomp()" style="margin-bottom:15px;">Compute Protocol</button>
+                    
+                    <div id="calc-results" style="display:none;">
+                        <div class="calc-result"><span>Max Fat Loss Target</span><span id="res-fat"></span></div>
+                        <div class="calc-result"><span>Daily Caloric Deficit</span><span id="res-cal"></span></div>
+                        <div class="calc-result"><span>Minimum Protein</span><span id="res-pro"></span></div>
+                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:10px;">*Calculated based on 0.5% BW cap and 0.7g/lb protein minimum to maximize mTORC1 activation.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 style="color:var(--accent-purple); margin-bottom:10px;">The 18% Sleep Penalty</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Muscle Protein Synthesis finishes its construction crew around hour 48. One bad night of sleep reduces synthesis by 18%. Optimize your chamber:</p>
+                    <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px; margin-bottom:15px;">
+                        <li style="margin-bottom:5px;"><strong style="color:white;">Absolute Darkness:</strong> Tape over all LED lights (chargers/smoke detectors). Use an eye mask.</li>
+                        <li style="margin-bottom:5px;"><strong style="color:white;">Thermoregulation:</strong> AC must drop the temperature by 2 AM to sustain deep REM sleep.</li>
+                        <li><strong style="color:white;">Napping:</strong> A strict 20-minute nap reverses sleep-deprived athletic decline by up to 3%.</li>
+                    </ul>
+                    
+                    <h3 style="color:var(--accent-green); margin-bottom:10px; margin-top:20px;">Pre-Mission Fuel</h3>
+                    <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px;">
+                        <li style="margin-bottom:5px;"><strong style="color:white;">T-Minus 90 Mins:</strong> Slow digesting carbs & protein (e.g., Oats + Greek Yogurt).</li>
+                        <li><strong style="color:white;">T-Minus 30 Mins:</strong> Fast digesting carbs (e.g., Rice Cakes + Honey) for immediate ATP availability.</li>
+                    </ul>
+                </div>
+            </main>
+
+            <!-- VIEW: ATLAS (SVGS) -->
+            <main id="view-atlas" class="view-section">
+                <div class="glass-card svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <defs>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="6" result="blur" />
+                                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Hack Squat Anatomy -->
+                        <path d="M 100 20 C 130 20, 140 70, 120 110 C 110 130, 100 180, 100 180" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round"/>
+                        <path d="M 100 110 L 80 110 L 70 180" fill="none" stroke="#222" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- Highlighted Quads -->
+                        <path d="M 98 30 C 120 25, 140 60, 115 105 C 100 80, 95 60, 98 30 Z" fill="var(--accent-orange)" filter="url(#glow)"/>
+                        <!-- Machine Setup -->
+                        <line x1="40" y1="20" x2="80" y2="140" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/>
+                        <line x1="60" y1="140" x2="160" y2="160" stroke="var(--accent-cyan)" stroke-width="8" stroke-linecap="round"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); font-size:1.1rem; margin-bottom:5px;">Hack Squat (Machine)</h4>
+                        <p><strong>Biomechanics:</strong> Bypasses lower-back fatigue by stabilizing the spine against the angled pad. Yields vastly superior quadriceps isolation and mechanical tension compared to barbell squats.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <path d="M 100 40 L 100 160 M 70 60 L 130 60" fill="none" stroke="#222" stroke-width="15" stroke-linecap="round"/>
+                        <path d="M 70 60 C 40 80, 30 120, 40 160" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round"/>
+                        <circle cx="65" cy="70" r="18" fill="var(--accent-cyan)" filter="url(#glow)"/>
+                        <line x1="40" y1="160" x2="180" y2="150" stroke="#fff" stroke-width="3" stroke-dasharray="6 6"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); font-size:1.1rem; margin-bottom:5px;">Cross-Body Cable Lateral Raise</h4>
+                        <p><strong>Biomechanics:</strong> Setting the cable behind your back or across your body ensures the resistance curve perfectly matches the strength profile of the lateral deltoid, keeping tension high at the bottom of the movement.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card svg-card">
+                    <svg class="svg-canvas" viewBox="0 0 200 200">
+                        <path d="M 40 30 L 50 80 L 120 70" fill="none" stroke="#222" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M 42 40 C 60 35, 70 60, 55 75 C 45 65, 40 50, 42 40 Z" fill="var(--accent-green)" filter="url(#glow)"/>
+                        <line x1="120" y1="70" x2="160" y2="180" stroke="var(--accent-cyan)" stroke-width="3"/>
+                    </svg>
+                    <div class="svg-desc">
+                        <h4 style="color:var(--accent-cyan); font-size:1.1rem; margin-bottom:5px;">Bayesian Cable Curls</h4>
+                        <p><strong>Biomechanics:</strong> Facing away from the cable stack forces the bicep to work from a fully stretched (lengthened) position. Modern sports science confirms lengthened partials yield the highest rates of hypertrophy.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- FLOATING REST TIMER -->
+    <div class="rest-timer" id="rest-timer">
+        <span class="timer-txt" id="timer-val">01:30</span>
+        <button class="timer-btn" onclick="window.HOS.startTimer(90)">▶</button>
+        <button class="timer-btn" onclick="window.HOS.stopTimer()" style="font-size:0.8rem;">⏹</button>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" id="app-nav" style="display: none;">
+        <div class="nav-item active" onclick="window.HOS.switchView('view-dash', this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard
+        </div>
+        <div class="nav-item" onclick="window.HOS.switchView('view-matrix', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Matrix
+        </div>
+        <div class="nav-item" onclick="window.HOS.switchView('view-lab', this)">
+            <svg viewBox="0 0 24 24"><path d="M10 2v7.31"></path><path d="M14 9.3V1.99"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.5 16.5h13"></path></svg> The Lab
+        </div>
+        <div class="nav-item" onclick="window.HOS.switchView('view-atlas', this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> Atlas
+        </div>
+    </nav>
+
+    <!-- ==========================================================================
+         JAVASCRIPT ENGINE (Firebase + SPA Logic + SVG Graph)
+         ========================================================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+        /* --- 🔴 YOUR FIREBASE CONFIGURATION 🔴 --- */
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8oSFSnuxESP5AwXO2-GWHD8A-_0CvLnE",
+            authDomain: "gym-blueprint.firebaseapp.com",
+            projectId: "gym-blueprint",
+            storageBucket: "gym-blueprint.firebasestorage.app",
+            messagingSenderId: "1088980958398",
+            appId: "1:1088980958398:web:cc799f0a27afc196c532ef",
+            measurementId: "G-8KD1KYKQ9D"
+        };
+
+        let app, auth, db, analytics;
+        let useFirebase = false;
+        
+        if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            try { 
+                app = initializeApp(firebaseConfig); 
+                auth = getAuth(app); 
+                db = getFirestore(app); 
+                analytics = getAnalytics(app);
+                useFirebase = true; 
+            } 
+            catch(e) { console.error("Firebase init failed", e); }
         }
 
-        // --- MONTH 1: Foundation ---
-        workoutData[1] = w(
-            [["Machine Chest Press", "Machine", "3 x 12", "60s"], ["Dumbbell Lateral Raises", "Dumbbells", "3 x 15", "45s"], ["Machine Shoulder Press", "Machine", "3 x 12", "60s"], ["Cable Tricep Pushdowns (Straight Bar)", "Cable", "3 x 12", "45s"], ["Pushups (on knees if needed)", "Bodyweight", "3 x Max", "60s"]],
-            [["Lat Pulldowns (Wide Grip)", "Cable", "3 x 12", "60s"], ["Seated Cable Rows (Close Grip)", "Cable", "3 x 12", "60s"], ["Single-Arm Dumbbell Rows", "Dumbbells", "3 x 10/each", "45s"], ["Alternating Dumbbell Curls", "Dumbbells", "3 x 12", "45s"], ["Plank", "Floor", "3 x 45 Sec", "60s"]],
-            [["Leg Press", "Machine", "3 x 15", "90s"], ["Leg Extensions", "Machine", "3 x 15", "60s"], ["Lying Leg Curls", "Machine", "3 x 15", "60s"], ["Standing Calf Raises", "Machine/Step", "3 x 20", "45s"], ["Glute Kickbacks", "Cable/Machine", "3 x 12/each", "45s"]]
-        );
-        workoutData[2] = w(
-            [["Incline Dumbbell Press", "Bench/DB", "3 x 10", "60s"], ["Pec Deck (Chest Fly)", "Machine", "3 x 12", "45s"], ["Dumbbell Front Raises", "Dumbbells", "3 x 12", "45s"], ["Overhead Dumbbell Extension", "Dumbbell", "3 x 12", "60s"], ["Dips (Assisted)", "Machine", "3 x 10", "60s"]],
-            [["Underhand Lat Pulldown", "Cable", "3 x 10", "60s"], ["One-Arm Cable Rows", "Cable", "3 x 12", "45s"], ["Face Pulls", "Cable (Rope)", "3 x 15", "45s"], ["Hammer Curls", "Dumbbells", "3 x 12", "45s"], ["Reverse Crunches", "Floor", "3 x 15", "45s"]],
-            [["Bulgarian Split Squats", "Dumbbells", "3 x 8/each", "90s"], ["Seated Hamstring Curls", "Machine", "3 x 12", "60s"], ["Goblet Squat", "Dumbbell", "3 x 12", "60s"], ["Seated Calf Raises", "Machine", "3 x 15", "45s"], ["Back Extensions", "Hyper-Ext Bench", "3 x 12", "60s"]]
-        );
-        workoutData[3] = w(
-            [["Chest Press Machine", "Machine", "4 x 15", "45s"], ["Cable Lateral Raises", "Cable", "4 x 15", "30s"], ["Low-to-High Cable Flys", "Cable", "3 x 15", "45s"], ["Rope Tricep Pushdowns", "Cable", "4 x 15", "30s"], ["Arnold Press", "Dumbbells", "3 x 10", "60s"]],
-            [["Straight Arm Pulldowns", "Cable", "4 x 15", "45s"], ["Assisted Pull-Ups", "Machine", "3 x Max", "60s"], ["T-Bar Row (Machine)", "Machine", "3 x 12", "60s"], ["Cable Bicep Curls", "Cable", "4 x 15", "30s"], ["Russian Twists", "Bodyweight/DB", "3 x 20", "45s"]],
-            [["Leg Press (Feet High & Wide)", "Machine", "4 x 15", "60s"], ["Dumbbell Step-Ups", "Bench/DB", "3 x 12/each", "60s"], ["Leg Extensions", "Machine", "4 x 15", "45s"], ["Lying Hamstring Curls", "Machine", "4 x 15", "45s"], ["Adductor/Abductor Machine", "Machine", "3 x 15/each", "45s"]]
-        );
-        workoutData[4] = w(
-            [["Flat Dumbbell Bench Press", "Dumbbells", "4 x 8", "90s"], ["Seated Machine Shoulder Press", "Machine", "4 x 8", "90s"], ["Weighted Dips", "Machine/Belt", "3 x 8", "60s"], ["Heavy Tricep Skullcrushers", "Dumbbells", "3 x 10", "60s"], ["High-to-Low Cable Flys", "Cable", "3 x 10", "60s"]],
-            [["Close Grip Lat Pulldown", "Cable", "4 x 8", "90s"], ["Chest-Supported Rows", "Machine/DB", "4 x 8", "90s"], ["Rear Delt Flys", "Machine/DB", "3 x 12", "60s"], ["Preacher Curls", "Machine/Bench", "3 x 10", "60s"], ["Hanging Leg Raises", "Captains Chair", "3 x 12", "60s"]],
-            [["Heavy Leg Press", "Machine", "4 x 8", "120s"], ["Dumbbell Lunges", "Dumbbells", "3 x 10/each", "60s"], ["Seated Hamstring Curls", "Machine", "4 x 10", "60s"], ["Leg Extensions", "Machine", "4 x 10", "60s"], ["Standing Calf Raises", "Machine", "4 x 12", "45s"]]
-        );
+        /* --- 24 WEEK WORLD-GYM WORKOUT DATABASE --- */
+        // Free weights/calisthenics replaced with heavy gym machinery
+        const w = (d1, d2, d3) => ([
+            { title: "Day 1: Push (Chest, Shoulders, Triceps)", ex: d1 },
+            { title: "Day 2: Pull (Back, Biceps, Core)", ex: d2 },
+            { title: "Day 3: Legs (Quads, Hams, Glutes)", ex: d3 }
+        ]);
 
-        // --- MONTH 2: Stability & Cable Mastery ---
-        workoutData[5] = w(
-            [["Machine Chest Press", "Machine", "3 x 12", "60s"], ["Arnold Press", "Dumbbells", "3 x 10", "60s"], ["Cable Lateral Raises", "Cable", "3 x 15", "45s"], ["Single-Arm Cable Pushdowns", "Cable", "3 x 12/each", "45s"], ["Pushups", "Bodyweight", "3 x Max", "60s"]],
-            [["Lat Pulldown (Neutral Grip)", "V-Bar", "3 x 12", "60s"], ["One-Arm Dumbbell Row", "Dumbbell", "3 x 10/each", "60s"], ["Face Pulls", "Cable (Rope)", "3 x 15", "45s"], ["Rope Bicep Curls", "Cable (Rope)", "3 x 12", "45s"], ["Dead Bug", "Floor", "3 x 15/each", "45s"]],
-            [["Leg Press (Standard Stance)", "Machine", "3 x 15", "90s"], ["Goblet Squat (Heels Elevated)", "Dumbbell", "3 x 12", "60s"], ["Seated Hamstring Curls", "Machine", "3 x 15", "60s"], ["Walking Lunges", "Bodyweight/DB", "3 x 20 steps", "60s"], ["Seated Calf Raises", "Machine", "3 x 15", "45s"]]
-        );
-        workoutData[6] = w(
-            [["Incline Machine Press", "Machine", "3 x 10", "60s"], ["Pec Deck (Chest Fly)", "Machine", "3 x 12", "60s"], ["Machine Shoulder Press", "Machine", "3 x 10", "60s"], ["Overhead Rope Extensions", "Cable", "3 x 12", "45s"], ["Bench Dips", "Bench", "3 x 15", "45s"]],
-            [["Straight Arm Pulldowns", "Cable", "3 x 15", "45s"], ["Seated Cable Rows (Wide)", "Cable", "3 x 10", "60s"], ["Reverse Grip Pulldowns", "Cable", "3 x 12", "60s"], ["Preacher Curls", "Machine/Bench", "3 x 10", "45s"], ["Hanging Knee Raises", "Captains Chair", "3 x 15", "60s"]],
-            [["Leg Press (High & Wide Stance)", "Machine", "3 x 12", "90s"], ["Leg Extensions", "Machine", "3 x 15", "60s"], ["Lying Hamstring Curls", "Machine", "3 x 12", "60s"], ["Dumbbell Glute Bridges", "Floor + DB", "3 x 15", "60s"], ["Standing Calf Raises", "Machine", "3 x 20", "45s"]]
-        );
-        workoutData[7] = w(
-            [["Single-Arm DB Chest Press", "Dumbbells", "3 x 10/each", "45s"], ["Single-Arm Cable Lateral Raise", "Cable", "3 x 12/each", "30s"], ["Single-Arm Shoulder Press", "Dumbbell", "3 x 10/each", "45s"], ["Single-Arm Tricep Kickbacks", "Dumbbell", "3 x 12/each", "30s"], ["Diamond Pushups", "Bodyweight", "3 x Max", "60s"]],
-            [["Single-Arm Lat Pulldown", "Cable", "3 x 12/each", "45s"], ["Single-Arm Cable Row", "Cable", "3 x 12/each", "45s"], ["Single-Arm Rear Delt Fly", "Cable", "3 x 15/each", "30s"], ["Single-Arm Concentration Curl", "Dumbbell", "3 x 12/each", "30s"], ["Side Plank", "Floor", "3 x 30s/each", "45s"]],
-            [["Single-Leg Press", "Machine", "3 x 10/each", "60s"], ["Bulgarian Split Squats", "Bodyweight/DB", "3 x 10/each", "60s"], ["Single-Leg Extensions", "Machine", "3 x 12/each", "45s"], ["Single-Leg Hamstring Curls", "Machine", "3 x 12/each", "45s"], ["Single-Leg Calf Raises", "Floor/Step", "3 x 15/each", "30s"]]
-        );
-        workoutData[8] = w(
-            [["Chest Press Machine", "Machine", "4 x 15", "45s"], ["Lateral Raises (Drop Set)", "Dumbbells", "3 x 10+10", "45s"], ["Cable Chest Flys", "Cable", "3 x 15", "45s"], ["Rope Tricep Pushdowns", "Cable", "4 x 15", "30s"], ["Pushups (Failure)", "Bodyweight", "1 x Max", "-"]],
-            [["Assisted Pull-Ups", "Machine", "3 x 10", "60s"], ["Seated Cable Rows", "Cable", "4 x 12", "45s"], ["Face Pulls", "Cable", "4 x 20", "45s"], ["Hammer Curls", "Dumbbells", "3 x 15", "45s"], ["Bicycle Crunches", "Floor", "3 x 30", "45s"]],
-            [["Leg Press", "Machine", "4 x 20", "60s"], ["Leg Extensions", "Machine", "3 x 20", "45s"], ["Leg Curls", "Machine", "3 x 20", "45s"], ["Step-Ups", "Bench", "3 x 12/each", "45s"], ["Calf Raises", "Machine", "4 x 25", "30s"]]
-        );
+        const Blueprint = {
+            // Month 1: Foundation
+            1: w([["Converging Machine Press", "3x12", "Tempo: 3s ↓"], ["Cable Lateral Raises", "3x15", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x12", "Tempo: 3s ↓"], ["Tricep Rope Pushdowns", "3x12", "Tempo: 3s ↓"], ["Pec Deck Flys", "3x15", "Tempo: 3s ↓"]],
+                 [["Wide Lat Pulldowns", "3x12", "Tempo: 3s ↓"], ["Seated Cable Rows", "3x12", "Tempo: 3s ↓"], ["Single-Arm DB Row", "3x10", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x12", "Tempo: 3s ↓"], ["Cable Crunches", "3x15", "Tempo: 3s ↓"]],
+                 [["Leg Press", "3x15", "Tempo: 3s ↓"], ["Leg Extensions", "3x15", "Tempo: 3s ↓"], ["Seated Leg Curls", "3x15", "Tempo: 3s ↓"], ["Standing Calf Raises", "3x20", "Tempo: 3s ↓"], ["Machine Glute Drive", "3x12", "Tempo: 3s ↓"]]),
+            2: w([["Incline Machine Press", "3x10", "Tempo: 3s ↓"], ["Pec Deck Flys", "3x12", "Tempo: 3s ↓"], ["DB Front Raises", "3x12", "Tempo: 3s ↓"], ["Overhead Cable Extension", "3x12", "Tempo: 3s ↓"], ["Seated Dip Machine", "3x10", "Tempo: 3s ↓"]],
+                 [["Underhand Lat Pulldown", "3x10", "Tempo: 3s ↓"], ["One-Arm Cable Rows", "3x12", "Tempo: 3s ↓"], ["Cable Face Pulls", "3x15", "Tempo: 3s ↓"], ["Cable Hammer Curls", "3x12", "Tempo: 3s ↓"], ["Machine Crunches", "3x15", "Tempo: 3s ↓"]],
+                 [["Hack Squat", "3x8", "Tempo: 3s ↓"], ["Lying Leg Curls", "3x12", "Tempo: 3s ↓"], ["Leg Press (High Stance)", "3x12", "Tempo: 3s ↓"], ["Seated Calf Raises", "3x15", "Tempo: 3s ↓"], ["Back Extensions", "3x12", "Tempo: 3s ↓"]]),
+            3: w([["Chest Press Machine", "4x15", "Tempo: 3s ↓"], ["Cable Lateral Raises", "4x15", "Tempo: 3s ↓"], ["Low-to-High Cable Flys", "3x15", "Tempo: 3s ↓"], ["Rope Tricep Pushdowns", "4x15", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x10", "Tempo: 3s ↓"]],
+                 [["Straight Arm Pulldowns", "4x15", "Tempo: 3s ↓"], ["Lat Pulldowns", "3x12", "Tempo: 3s ↓"], ["T-Bar Row Machine", "3x12", "Tempo: 3s ↓"], ["Bayesian Cable Curls", "4x15", "Tempo: 3s ↓"], ["Cable Twists", "3x20", "Tempo: 3s ↓"]],
+                 [["Single-Leg Press", "4x10", "Tempo: 3s ↓"], ["Hack Squat", "3x12", "Tempo: 3s ↓"], ["Leg Extensions", "4x15", "Tempo: 3s ↓"], ["Lying Hamstring Curls", "4x15", "Tempo: 3s ↓"], ["Adductor Machine", "3x15", "Tempo: 3s ↓"]]),
+            4: w([["Flat DB Press", "4x8", "Tempo: 3s ↓"], ["Seated Machine Shoulder Press", "4x8", "Tempo: 3s ↓"], ["Seated Dip Machine", "3x8", "Tempo: 3s ↓"], ["DB Skullcrushers", "3x10", "Tempo: 3s ↓"], ["High-to-Low Cable Flys", "3x10", "Tempo: 3s ↓"]],
+                 [["Close Grip Lat Pulldown", "4x8", "Tempo: 3s ↓"], ["Chest-Supported Rows", "4x8", "Tempo: 3s ↓"], ["Reverse Pec Deck", "3x12", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x10", "Tempo: 3s ↓"], ["Hanging Leg Raises", "3x12", "Tempo: 3s ↓"]],
+                 [["Heavy Leg Press", "4x8", "Tempo: 3s ↓"], ["Machine Glute Drive", "3x10", "Tempo: 3s ↓"], ["Seated Hamstring Curls", "4x10", "Tempo: 3s ↓"], ["Leg Extensions", "4x10", "Tempo: 3s ↓"], ["Standing Calf Raises", "4x12", "Tempo: 3s ↓"]]),
+            
+            // Month 2: Stability & Cable Mastery
+            5: w([["Machine Chest Press", "3x12", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x10", "Tempo: 3s ↓"], ["Cable Lateral Raises", "3x15", "Tempo: 3s ↓"], ["Single-Arm Cable Pushdowns", "3x12", "Tempo: 3s ↓"], ["Pec Deck Flys", "3x15", "Tempo: 3s ↓"]],
+                 [["Neutral Grip Pulldown", "3x12", "Tempo: 3s ↓"], ["One-Arm DB Row", "3x10", "Tempo: 3s ↓"], ["Cable Face Pulls", "3x15", "Tempo: 3s ↓"], ["Rope Bicep Curls", "3x12", "Tempo: 3s ↓"], ["Cable Crunches", "3x15", "Tempo: 3s ↓"]],
+                 [["Leg Press", "3x15", "Tempo: 3s ↓"], ["Hack Squat", "3x12", "Tempo: 3s ↓"], ["Seated Hamstring Curls", "3x15", "Tempo: 3s ↓"], ["Leg Extensions", "3x20", "Tempo: 3s ↓"], ["Seated Calf Raises", "3x15", "Tempo: 3s ↓"]]),
+            6: w([["Incline Machine Press", "3x10", "Tempo: 3s ↓"], ["Pec Deck Flys", "3x12", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x10", "Tempo: 3s ↓"], ["Overhead Rope Extensions", "3x12", "Tempo: 3s ↓"], ["Seated Dip Machine", "3x15", "Tempo: 3s ↓"]],
+                 [["Straight Arm Pulldowns", "3x15", "Tempo: 3s ↓"], ["Seated Cable Rows (Wide)", "3x10", "Tempo: 3s ↓"], ["Reverse Grip Pulldowns", "3x12", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x10", "Tempo: 3s ↓"], ["Hanging Knee Raises", "3x15", "Tempo: 3s ↓"]],
+                 [["Leg Press (High/Wide)", "3x12", "Tempo: 3s ↓"], ["Leg Extensions", "3x15", "Tempo: 3s ↓"], ["Lying Hamstring Curls", "3x12", "Tempo: 3s ↓"], ["Machine Glute Drive", "3x15", "Tempo: 3s ↓"], ["Standing Calf Raises", "3x20", "Tempo: 3s ↓"]]),
+            7: w([["Single-Arm Machine Press", "3x10", "Tempo: 3s ↓"], ["Single-Arm Cable Lateral", "3x12", "Tempo: 3s ↓"], ["Single-Arm DB Shoulder Press", "3x10", "Tempo: 3s ↓"], ["Single-Arm Cable Kickback", "3x12", "Tempo: 3s ↓"], ["Pec Deck Flys", "3x15", "Tempo: 3s ↓"]],
+                 [["Single-Arm Lat Pulldown", "3x12", "Tempo: 3s ↓"], ["Single-Arm Cable Row", "3x12", "Tempo: 3s ↓"], ["Single-Arm Reverse Fly", "3x15", "Tempo: 3s ↓"], ["Single-Arm Cable Curl", "3x12", "Tempo: 3s ↓"], ["Side Plank", "3x30s", "Hold"]],
+                 [["Single-Leg Press", "3x10", "Tempo: 3s ↓"], ["Single-Leg Extensions", "3x12", "Tempo: 3s ↓"], ["Single-Leg Hamstring Curls", "3x12", "Tempo: 3s ↓"], ["Machine Glute Kickback", "3x12", "Tempo: 3s ↓"], ["Single-Leg Calf Raises", "3x15", "Tempo: 3s ↓"]]),
+            8: w([["Chest Press Machine", "4x15", "Tempo: 3s ↓"], ["Lateral Raises (Drop Set)", "3x10+10", "Drop Set"], ["Cable Chest Flys", "3x15", "Tempo: 3s ↓"], ["Rope Tricep Pushdowns", "4x15", "Tempo: 3s ↓"], ["Machine Shoulder Press", "1xMax", "Failure"]],
+                 [["Lat Pulldowns", "3x10", "Tempo: 3s ↓"], ["Seated Cable Rows", "4x12", "Tempo: 3s ↓"], ["Face Pulls", "4x20", "Tempo: 3s ↓"], ["DB Hammer Curls", "3x15", "Tempo: 3s ↓"], ["Machine Crunches", "3x30", "Tempo: 3s ↓"]],
+                 [["Leg Press", "4x20", "Tempo: 3s ↓"], ["Leg Extensions", "3x20", "Tempo: 3s ↓"], ["Leg Curls", "3x20", "Tempo: 3s ↓"], ["Hack Squat", "3x12", "Tempo: 3s ↓"], ["Calf Raises", "4x25", "Tempo: 3s ↓"]]),
 
-        // --- MONTH 3: Intensity & Sculpt (Supersets) ---
-        workoutData[9] = w(
-            [["Superset: Machine Flys + Machine Chest Press", "Machines", "3 x 12 each", "60s"], ["Superset: Lateral Raises + DB Front Raises", "Dumbbells", "3 x 15 each", "60s"], ["Overhead Tricep Extension", "Dumbbell", "3 x 12", "45s"], ["Tricep Rope Pushdowns", "Cable", "3 x 15", "45s"]],
-            [["Superset: Straight Arm Pulldown + Lat Pulldown", "Cable", "3 x 12 each", "60s"], ["Superset: Face Pulls + Seated Cable Rows", "Cable", "3 x 15 each", "60s"], ["Hammer Curls", "Dumbbells", "3 x 12", "45s"], ["Preacher Curls", "Machine/Bench", "3 x 12", "45s"], ["Leg Raises", "Captains Chair", "3 x 15", "60s"]],
-            [["Superset: Leg Extensions + Leg Press", "Machines", "3 x 15 each", "90s"], ["Superset: Seated Leg Curls + DB Lunges", "Machine/DB", "3 x 12 each", "90s"], ["Glute Bridge", "Floor/Bench", "3 x 15", "60s"], ["Standing Calf Raises", "Machine", "4 x 20", "45s"]]
-        );
-        workoutData[10] = w(
-            [["Superset: Incline DB Press + Pushups", "DB/Floor", "3 x 10+Max", "60s"], ["Superset: Machine Shoulder Press + Lateral Raises", "Machine/DB", "3 x 10+15", "60s"], ["Single-Arm Cable Pushdowns", "Cable", "3 x 15/each", "30s"], ["Dips (Assisted)", "Machine", "3 x 10", "60s"]],
-            [["Superset: Single-Arm DB Row + Lat Pulldowns", "DB/Cable", "3 x 10+12", "60s"], ["Superset: Reverse Flys + Cable Face Pulls", "DB/Cable", "3 x 15+15", "60s"], ["Incline DB Curls", "Bench/DB", "3 x 12", "45s"], ["Cable Bicep Curls", "Cable", "3 x 15", "45s"], ["Russian Twists", "Floor/Weight", "3 x 40 total", "45s"]],
-            [["Superset: Goblet Squats + Leg Extensions", "DB/Machine", "3 x 12+15", "90s"], ["Superset: Lying Leg Curls + Glute Kickbacks", "Machines", "3 x 15+15", "60s"], ["Step-Ups", "Bench", "3 x 12/each", "60s"], ["Seated Calf Raises", "Machine", "4 x 15", "45s"]]
-        );
-        workoutData[11] = w(
-            [["Superset: Chest Press Machine + Shoulder Lateral Raises", "Machines/DB", "3 x 12 each", "60s"], ["Superset: Incline Flys + Arnold Press", "DBs", "3 x 12 each", "60s"], ["Superset: Tricep Pushdowns + Overhead Extensions", "Cable", "3 x 12 each", "45s"]],
-            [["Superset: V-Bar Pulldowns + Seated Rows", "Cable", "3 x 12 each", "60s"], ["Superset: Reverse Grip Rows + Rear Delt Flys", "Cable/Machine", "3 x 12 each", "60s"], ["Superset: Hammer Curls + Reverse Curls", "DBs/Bar", "3 x 12 each", "45s"], ["Plank", "Floor", "3 x 60s", "45s"]],
-            [["Superset: Leg Press + Seated Hamstring Curls", "Machines", "3 x 12 each", "90s"], ["Superset: Bulgarian Split Squats + Calf Raises", "DB/Machine", "3 x 10 each", "60s"], ["Superset: Leg Extensions + Glute Bridges", "Machine/Floor", "3 x 15 each", "60s"]]
-        );
-        workoutData[12] = w(
-            [["Giant Set: Machine Press -> DB Lateral Raises -> Cable Flys", "Mixed", "4 x 10 each", "90s after 3"], ["Giant Set: Tricep Pushdown -> Dips -> Pushups", "Mixed", "3 x 12 each", "60s after 3"]],
-            [["Giant Set: Lat Pulldowns -> Seated Rows -> Face Pulls", "Mixed", "4 x 10 each", "90s after 3"], ["Giant Set: DB Curls -> Hammer Curls -> Cable Curls", "Mixed", "3 x 12 each", "60s after 3"]],
-            [["Giant Set: Leg Press -> Leg Extensions -> Leg Curls", "Mixed", "4 x 12 each", "120s after 3"], ["Giant Set: Lunges -> Calf Raises -> Glute Bridges", "Mixed", "3 x 15 each", "60s after 3"]]
-        );
+            // Month 3: Intensity & Sculpt (Supersets)
+            9: w([["Superset: Flys + Machine Press", "3x12", "No Rest"], ["Superset: Laterals + Front Raises", "3x15", "No Rest"], ["Overhead Cable Extension", "3x12", "Tempo: 3s ↓"], ["Tricep Rope Pushdowns", "3x15", "Tempo: 3s ↓"]],
+                 [["Superset: Straight Arm + Lat Pulldown", "3x12", "No Rest"], ["Superset: Face Pulls + Seated Rows", "3x15", "No Rest"], ["DB Hammer Curls", "3x12", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x12", "Tempo: 3s ↓"], ["Hanging Leg Raises", "3x15", "Tempo: 3s ↓"]],
+                 [["Superset: Leg Extensions + Leg Press", "3x15", "No Rest"], ["Superset: Leg Curls + Glute Drive", "3x12", "No Rest"], ["Hack Squat", "3x15", "Tempo: 3s ↓"], ["Standing Calf Raises", "4x20", "Tempo: 3s ↓"]]),
+            10: w([["Superset: Incline Press + Pec Deck", "3x10+15", "No Rest"], ["Superset: Shoulder Press + Laterals", "3x10+15", "No Rest"], ["Single-Arm Cable Pushdowns", "3x15", "Tempo: 3s ↓"], ["Seated Dip Machine", "3x10", "Tempo: 3s ↓"]],
+                 [["Superset: DB Row + Lat Pulldowns", "3x10+12", "No Rest"], ["Superset: Reverse Flys + Face Pulls", "3x15+15", "No Rest"], ["Incline DB Curls", "3x12", "Tempo: 3s ↓"], ["Cable Bicep Curls", "3x15", "Tempo: 3s ↓"], ["Cable Twists", "3x20", "Tempo: 3s ↓"]],
+                 [["Superset: Hack Squat + Leg Extensions", "3x12+15", "No Rest"], ["Superset: Lying Curls + Glute Kickbacks", "3x15+15", "No Rest"], ["Single-Leg Press", "3x12", "Tempo: 3s ↓"], ["Seated Calf Raises", "4x15", "Tempo: 3s ↓"]]),
+            11: w([["Superset: Chest Press + Lateral Raises", "3x12", "No Rest"], ["Superset: Incline Flys + Shoulder Press", "3x12", "No Rest"], ["Superset: Tricep Pushdowns + Overhead Ext", "3x12", "No Rest"]],
+                  [["Superset: V-Bar Pulldowns + Seated Rows", "3x12", "No Rest"], ["Superset: Reverse Rows + Rear Delt Flys", "3x12", "No Rest"], ["Superset: Hammer Curls + Reverse Curls", "3x12", "No Rest"], ["Machine Crunches", "3x20", "Tempo: 3s ↓"]],
+                  [["Superset: Leg Press + Seated Curls", "3x12", "No Rest"], ["Superset: Hack Squat + Calf Raises", "3x10", "No Rest"], ["Superset: Leg Extensions + Glute Drives", "3x15", "No Rest"]]),
+            12: w([["Giant Set: Press -> Laterals -> Flys", "4x10", "90s Rest"], ["Giant Set: Pushdown -> Dip Machine -> Overhead Ext", "3x12", "60s Rest"]],
+                  [["Giant Set: Pulldowns -> Rows -> Face Pulls", "4x10", "90s Rest"], ["Giant Set: DB Curls -> Hammer Curls -> Cable Curls", "3x12", "60s Rest"]],
+                  [["Giant Set: Leg Press -> Extensions -> Curls", "4x12", "120s Rest"], ["Giant Set: Hack Squat -> Calf Raises -> Glute Drive", "3x15", "60s Rest"]]),
 
-        // --- MONTH 4: Mind-Muscle Connection & Eccentric ---
-        workoutData[13] = w(
-            [["Machine Chest Press", "Machine", "3 x 10", "Tempo: 4-0-1"], ["Dumbbell Arnold Press", "Dumbbells", "3 x 10", "Tempo: 4-0-1"], ["Cable Lateral Raises", "Cable", "3 x 12", "Tempo: 4-0-1"], ["Tricep Rope Pushdowns", "Cable", "3 x 12", "Tempo: 4-0-1"], ["Dumbbell Chest Flys", "Dumbbells", "3 x 12", "Tempo: 4-0-1"]],
-            [["Wide Grip Lat Pulldown", "Cable", "3 x 10", "Tempo: 4-0-1"], ["Seated Cable Rows", "Cable", "3 x 10", "Tempo: 4-0-1"], ["Straight Arm Pulldowns", "Cable", "3 x 12", "Tempo: 4-0-1"], ["Hammer Curls", "Dumbbells", "3 x 12", "Tempo: 4-0-1"], ["Dead Bug (Legs only)", "Floor", "3 x 15", "Slow & Controlled"]],
-            [["Leg Press", "Machine", "3 x 12", "Tempo: 4-0-1"], ["Leg Extensions", "Machine", "3 x 15", "Tempo: 4-0-1"], ["Seated Hamstring Curls", "Machine", "3 x 15", "Tempo: 4-0-1"], ["Dumbbell Step-Ups", "Bench", "3 x 10/each", "Tempo: 4-0-1"], ["Seated Calf Raises", "Machine", "3 x 20", "Tempo: 2-0-1"]]
-        );
-        workoutData[14] = w(
-            [["Pec Deck (Chest Fly)", "Machine", "3 x 12", "2s Hold"], ["Incline Machine Press", "Machine", "3 x 10", "2s Hold"], ["Machine Shoulder Press", "Machine", "3 x 10", "2s Hold"], ["Cable Cross-body Extensions", "Cables", "3 x 15", "2s Hold"], ["Dumbbell Front Raises", "Dumbbells", "3 x 12", "2s Hold"]],
-            [["V-Bar Pulldowns", "Cable", "3 x 10", "2s Hold"], ["Chest-Supported DB Row", "Bench/DB", "3 x 10", "2s Hold"], ["Face Pulls", "Cable", "3 x 15", "2s Hold"], ["Preacher Curls", "Machine", "3 x 12", "2s Hold"], ["Hanging Leg Raises", "Captains Chair", "3 x 12", "2s Hold"]],
-            [["Leg Extensions", "Machine", "3 x 15", "2s Hold"], ["Lying Hamstring Curls", "Machine", "3 x 15", "2s Hold"], ["Goblet Squat", "Dumbbell", "3 x 12", "2s Hold"], ["Glute Bridges", "Floor", "3 x 15", "2s Hold"], ["Standing Calf Raises", "Machine", "3 x 20", "2s Hold"]]
-        );
-        workoutData[15] = w(
-            [["Machine Chest Press", "Machine", "3 x 8", "1.5 Reps"], ["Dumbbell Lateral Raises", "Dumbbells", "3 x 10", "1.5 Reps"], ["Dumbbell Shoulder Press", "Dumbbells", "3 x 8", "1.5 Reps"], ["Tricep Pushdowns", "Cable", "3 x 12", "1.5 Reps"]],
-            [["Lat Pulldowns", "Cable", "3 x 8", "1.5 Reps"], ["Seated Cable Row", "Cable", "3 x 8", "1.5 Reps"], ["Dumbbell Bicep Curls", "Dumbbells", "3 x 10", "1.5 Reps"], ["Reverse Flys", "Machine/DB", "3 x 12", "1.5 Reps"]],
-            [["Leg Press", "Machine", "3 x 10", "1.5 Reps"], ["Leg Extensions", "Machine", "3 x 12", "1.5 Reps"], ["Seated Leg Curls", "Machine", "3 x 12", "1.5 Reps"], ["Calf Raises", "Machine", "3 x 15", "1.5 Reps"]]
-        );
-        workoutData[16] = w(
-            [["Incline DB Press", "Dumbbells", "4 x 8", "Tempo: 4-2-1"], ["Cable Lateral Raises", "Cable", "4 x 10", "Tempo: 4-2-1"], ["Overhead DB Extension", "Dumbbell", "4 x 10", "Tempo: 4-2-1"]],
-            [["Lat Pulldowns (Neutral)", "V-Bar", "4 x 8", "Tempo: 4-2-1"], ["One-Arm DB Row", "Dumbbell", "4 x 8", "Tempo: 4-2-1"], ["Cable Bicep Curls", "Cable", "4 x 12", "Tempo: 4-2-1"]],
-            [["Leg Press", "Machine", "4 x 10", "Tempo: 4-2-1"], ["Bulgarian Split Squats", "DB/Bodyweight", "3 x 8", "Tempo: 3-1-1"], ["Lying Leg Curls", "Machine", "4 x 12", "Tempo: 4-2-1"]]
-        );
+            // Month 4: Mind-Muscle & Eccentric
+            13: w([["Machine Chest Press", "3x10", "4s Eccentric"], ["DB Shoulder Press", "3x10", "4s Eccentric"], ["Cable Lateral Raises", "3x12", "4s Eccentric"], ["Tricep Rope Pushdowns", "3x12", "4s Eccentric"], ["Pec Deck Flys", "3x12", "4s Eccentric"]],
+                  [["Wide Grip Lat Pulldown", "3x10", "4s Eccentric"], ["Seated Cable Rows", "3x10", "4s Eccentric"], ["Straight Arm Pulldowns", "3x12", "4s Eccentric"], ["DB Hammer Curls", "3x12", "4s Eccentric"], ["Cable Crunches", "3x15", "4s Eccentric"]],
+                  [["Leg Press", "3x12", "4s Eccentric"], ["Leg Extensions", "3x15", "4s Eccentric"], ["Seated Hamstring Curls", "3x15", "4s Eccentric"], ["Hack Squat", "3x10", "4s Eccentric"], ["Seated Calf Raises", "3x20", "4s Eccentric"]]),
+            14: w([["Pec Deck Flys", "3x12", "2s Hold"], ["Incline Machine Press", "3x10", "2s Hold"], ["Machine Shoulder Press", "3x10", "2s Hold"], ["Cable Cross-body Ext", "3x15", "2s Hold"], ["Cable Front Raises", "3x12", "2s Hold"]],
+                  [["V-Bar Pulldowns", "3x10", "2s Hold"], ["Chest-Supported Row", "3x10", "2s Hold"], ["Cable Face Pulls", "3x15", "2s Hold"], ["Machine Preacher Curls", "3x12", "2s Hold"], ["Hanging Leg Raises", "3x12", "2s Hold"]],
+                  [["Leg Extensions", "3x15", "2s Hold"], ["Lying Hamstring Curls", "3x15", "2s Hold"], ["Hack Squat", "3x12", "2s Hold"], ["Machine Glute Drive", "3x15", "2s Hold"], ["Standing Calf Raises", "3x20", "2s Hold"]]),
+            15: w([["Machine Chest Press", "3x8", "1.5 Reps"], ["DB Lateral Raises", "3x10", "1.5 Reps"], ["Machine Shoulder Press", "3x8", "1.5 Reps"], ["Tricep Pushdowns", "3x12", "1.5 Reps"]],
+                  [["Lat Pulldowns", "3x8", "1.5 Reps"], ["Seated Cable Row", "3x8", "1.5 Reps"], ["DB Bicep Curls", "3x10", "1.5 Reps"], ["Reverse Pec Deck", "3x12", "1.5 Reps"]],
+                  [["Leg Press", "3x10", "1.5 Reps"], ["Leg Extensions", "3x12", "1.5 Reps"], ["Seated Leg Curls", "3x12", "1.5 Reps"], ["Calf Raises", "3x15", "1.5 Reps"]]),
+            16: w([["Incline Machine Press", "4x8", "4s Down, 2s Hold"], ["Cable Lateral Raises", "4x10", "4s Down, 2s Hold"], ["Overhead Cable Ext", "4x10", "4s Down, 2s Hold"]],
+                  [["Lat Pulldowns (Neutral)", "4x8", "4s Down, 2s Hold"], ["Chest Supported Row", "4x8", "4s Down, 2s Hold"], ["Bayesian Cable Curls", "4x12", "4s Down, 2s Hold"]],
+                  [["Leg Press", "4x10", "4s Down, 2s Hold"], ["Hack Squat", "3x8", "4s Down, 2s Hold"], ["Lying Leg Curls", "4x12", "4s Down, 2s Hold"]]),
 
-        // --- MONTH 5: Pre-Exhaust & Mechanical Advantage ---
-        workoutData[17] = w(
-            [["Superset: Pec Deck Flys + Machine Chest Press", "Machines", "3 x 12 each", "60s"], ["Superset: Lateral Raises + Shoulder Press Machine", "DB/Machine", "3 x 12 each", "60s"], ["Superset: Tricep Pushdown + Bench Dips", "Cable/Bench", "3 x 15 each", "45s"]],
-            [["Superset: Straight Arm Pulldown + Lat Pulldown", "Cables", "3 x 12 each", "60s"], ["Superset: Face Pulls + Seated Cable Rows", "Cables", "3 x 12 each", "60s"], ["Superset: Preacher Curls + Standing Hammer Curls", "Machine/DB", "3 x 12 each", "45s"], ["Plank to Side Plank Transition", "Floor", "3 x 45s", "45s"]],
-            [["Superset: Leg Extensions + Leg Press", "Machines", "3 x 15 each", "90s"], ["Superset: Seated Leg Curls + Dumbbell Step-Ups", "Machine/Bench", "3 x 12 each", "90s"], ["Superset: Glute Bridge + Goblet Squat", "Floor/DB", "3 x 15 each", "60s"]]
-        );
-        workoutData[18] = w(
-            [["Mech Drop: Incline DB Press -> Flat DB Press", "Bench/DB", "3 x 10 each", "60s"], ["Mech Drop: Arnold Press -> Standard Shoulder Press", "Dumbbells", "3 x 10 each", "60s"], ["Mech Drop: Diamond Pushups -> Standard Pushups", "Bodyweight", "3 x Max", "60s"]],
-            [["Mech Drop: Wide Lat Pulldown -> Neutral Pulldown", "Cable", "3 x 10 each", "60s"], ["Mech Drop: Single-Arm DB Row -> Double-Arm DB Row", "Dumbbells", "3 x 10 each", "60s"], ["Mech Drop: Incline DB Curls -> Standing Curls", "Bench/DB", "3 x 10 each", "45s"]],
-            [["Mech Drop: Leg Press (Low Feet) -> Leg Press (High Feet)", "Machine", "3 x 12 each", "90s"], ["Mech Drop: Bulgarian Split Squats -> Standard Lunges", "Dumbbells", "3 x 8 each", "90s"], ["Mech Drop: Weighted Calf Raises -> Bodyweight Calf Raises", "Machine/Step", "3 x 15 each", "45s"]]
-        );
-        workoutData[19] = w(
-            [["Chest Press Machine", "Machine", "3 x 8 + AMRAP", "60s"], ["Dumbbell Lateral Raises", "Dumbbells", "3 x 10 + AMRAP", "45s"], ["Overhead Tricep Extension", "DB/Cable", "3 x 10 + AMRAP", "45s"]],
-            [["Seated Cable Rows", "Cable", "3 x 8 + AMRAP", "60s"], ["Lat Pulldowns", "Cable", "3 x 8 + AMRAP", "60s"], ["Cable Bicep Curls", "Cable", "3 x 12 + AMRAP", "45s"]],
-            [["Leg Press", "Machine", "4 x 10 + AMRAP", "90s"], ["Leg Extensions", "Machine", "3 x 12 + AMRAP", "60s"], ["Hamstring Curls", "Machine", "3 x 12 + AMRAP", "60s"]]
-        );
-        workoutData[20] = w(
-            [["Dumbbell Bench Press", "Dumbbells", "4 x 12", "60s"], ["Machine Shoulder Press", "Machine", "4 x 12", "60s"], ["Cable Flys", "Cable", "4 x 15", "45s"], ["Tricep Rope Pushdowns", "Cable", "4 x 20", "30s"]],
-            [["Assisted Pull-ups", "Machine", "4 x 10", "60s"], ["T-Bar Row (Machine)", "Machine", "4 x 12", "60s"], ["Face Pulls", "Cable", "4 x 20", "45s"], ["Hammer Curls", "Dumbbells", "4 x 15", "45s"]],
-            [["Leg Press", "Machine", "5 x 15", "90s"], ["Walking Lunges", "Bodyweight", "4 x 24 steps", "60s"], ["Leg Curls", "Machine", "4 x 15", "45s"], ["Calf Raises", "Machine", "5 x 20", "30s"]]
-        );
+            // Month 5 & 6 (Compressed for brevity, mimicking 24-week progression)
+            17: w([["Pec Deck -> Machine Press", "3x12", "Pre-Exhaust"], ["Laterals -> Shoulder Press", "3x12", "Pre-Exhaust"], ["Pushdown -> Dip Machine", "3x15", "Pre-Exhaust"]],
+                  [["Straight Arm -> Pulldown", "3x12", "Pre-Exhaust"], ["Face Pulls -> Seated Rows", "3x12", "Pre-Exhaust"], ["Preacher Curls -> Hammer Curls", "3x12", "Pre-Exhaust"]],
+                  [["Extensions -> Leg Press", "3x15", "Pre-Exhaust"], ["Seated Curls -> Hack Squat", "3x12", "Pre-Exhaust"], ["Glute Drive -> Single-Leg Press", "3x15", "Pre-Exhaust"]]),
+            18: w([["Mech Drop: Incline -> Flat Press", "3x10", "No Rest"], ["Mech Drop: Cable -> DB Laterals", "3x10", "No Rest"], ["Mech Drop: Overhead -> Pushdowns", "3x15", "No Rest"]],
+                  [["Mech Drop: Wide -> Neutral Pulldown", "3x10", "No Rest"], ["Mech Drop: Single -> Double Row", "3x10", "No Rest"], ["Mech Drop: Bayesian -> Standard Curl", "3x10", "No Rest"]],
+                  [["Mech Drop: Low -> High Leg Press", "3x12", "No Rest"], ["Mech Drop: Hack Squat -> Glute Drive", "3x8", "No Rest"], ["Mech Drop: Machine -> Bodyweight Calf", "3x15", "No Rest"]]),
+            19: w([["Chest Press Machine", "3x8+AMRAP", "AMRAP"], ["Cable Lateral Raises", "3x10+AMRAP", "AMRAP"], ["Overhead Tricep Ext", "3x10+AMRAP", "AMRAP"]],
+                  [["Seated Cable Rows", "3x8+AMRAP", "AMRAP"], ["Lat Pulldowns", "3x8+AMRAP", "AMRAP"], ["Cable Bicep Curls", "3x12+AMRAP", "AMRAP"]],
+                  [["Leg Press", "4x10+AMRAP", "AMRAP"], ["Leg Extensions", "3x12+AMRAP", "AMRAP"], ["Hamstring Curls", "3x12+AMRAP", "AMRAP"]]),
+            20: w([["Converging Press", "4x12", "Tempo: 3s ↓"], ["Machine Shoulder Press", "4x12", "Tempo: 3s ↓"], ["Cable Flys", "4x15", "Tempo: 3s ↓"], ["Rope Pushdowns", "4x20", "Tempo: 3s ↓"]],
+                  [["Lat Pulldowns", "4x10", "Tempo: 3s ↓"], ["T-Bar Machine Row", "4x12", "Tempo: 3s ↓"], ["Face Pulls", "4x20", "Tempo: 3s ↓"], ["Hammer Curls", "4x15", "Tempo: 3s ↓"]],
+                  [["Leg Press", "5x15", "Tempo: 3s ↓"], ["Hack Squat", "4x12", "Tempo: 3s ↓"], ["Leg Curls", "4x15", "Tempo: 3s ↓"], ["Calf Raises", "5x20", "Tempo: 3s ↓"]]),
+            21: w([["Machine Chest Press", "3x10", "Drop Set"], ["Machine Shoulder Press", "3x10", "Drop Set"], ["Cable Lateral Raises", "3x15", "Drop Set"], ["Tricep Pushdowns", "3x12", "Drop Set"]],
+                  [["Lat Pulldowns", "3x10", "Drop Set"], ["Seated Cable Rows", "3x10", "Drop Set"], ["Face Pulls", "3x15", "Drop Set"], ["Cable Curls", "3x12", "Drop Set"]],
+                  [["Leg Press", "3x12", "Drop Set"], ["Leg Extensions", "3x15", "Drop Set"], ["Hamstring Curls", "3x15", "Drop Set"], ["Standing Calf Raises", "3x20", "Drop Set"]]),
+            22: w([["Incline Machine Press", "3x8", "Rest-Pause"], ["Pec Deck Flys", "3x12", "Rest-Pause"], ["Machine Lateral Raises", "3x15", "Rest-Pause"], ["Seated Dip Machine", "3x10", "Rest-Pause"]],
+                  [["One-Arm Cable Rows", "3x10", "Rest-Pause"], ["Underhand Pulldowns", "3x8", "Rest-Pause"], ["Reverse Pec Deck", "3x15", "Rest-Pause"], ["Machine Preacher Curls", "3x10", "Rest-Pause"]],
+                  [["Leg Press (Close)", "3x10", "Rest-Pause"], ["Hack Squat", "3x10", "Rest-Pause"], ["Lying Curls", "3x12", "Rest-Pause"], ["Glute Drive", "3x15", "Rest-Pause"]]),
+            23: w([["Flat Machine Press", "4x10", "Tempo: 3s ↓"], ["Machine Shoulder Press", "4x10", "Tempo: 3s ↓"], ["Overhead Rope Ext", "4x12", "Tempo: 3s ↓"], ["Pec Deck Flys", "100 Reps", "Burnout"]],
+                  [["V-Bar Pulldowns", "4x10", "Tempo: 3s ↓"], ["Chest Supported Row", "4x10", "Tempo: 3s ↓"], ["Cable Bicep Curls", "4x12", "Tempo: 3s ↓"], ["Face Pulls", "100 Reps", "Burnout"]],
+                  [["Single-Leg Press", "3x10", "Tempo: 3s ↓"], ["Leg Extensions", "4x15", "Tempo: 3s ↓"], ["Seated Leg Curls", "4x15", "Tempo: 3s ↓"], ["Leg Press (Light)", "100 Reps", "Burnout"]]),
+            24: w([["Heavy Machine Press", "5x6", "Max Tension"], ["Heavy Shoulder Press", "5x6", "Max Tension"], ["Heavy Dip Machine", "4x8", "Max Tension"], ["Heavy Cable Pushdowns", "4x10", "Max Tension"]],
+                  [["Heavy Lat Pulldown", "5x6", "Max Tension"], ["Heavy Seated Row", "5x6", "Max Tension"], ["Heavy Single-Arm Row", "4x8", "Max Tension"], ["Heavy Hammer Curls", "4x8", "Max Tension"]],
+                  [["Heavy Leg Press", "5x6", "Max Tension"], ["Heavy Hack Squat", "4x8", "Max Tension"], ["Heavy Hamstring Curls", "4x8", "Max Tension"], ["Heavy Calf Raises", "4x12", "Max Tension"]])
+        };
 
-        // --- MONTH 6: Transformation Peak ---
-        workoutData[21] = w(
-            [["Machine Chest Press", "Machine", "3 x 10 (Last Set Drop)", "60s"], ["Dumbbell Shoulder Press", "Dumbbells", "3 x 10 (Last Set Drop)", "60s"], ["Cable Lateral Raises", "Cable", "3 x 15 (Last Set Drop)", "45s"], ["Tricep Rope Pushdowns", "Cable", "3 x 12 (Last Set Drop)", "45s"], ["Low-to-High Cable Flys", "Cable", "3 x 15", "45s"]],
-            [["Lat Pulldowns (Wide)", "Cable", "3 x 10 (Last Set Drop)", "60s"], ["Seated Cable Rows", "Cable", "3 x 10 (Last Set Drop)", "60s"], ["Face Pulls", "Cable (Rope)", "3 x 15 (Last Set Drop)", "45s"], ["Hammer Curls", "Dumbbells", "3 x 12 (Last Set Drop)", "45s"], ["Hanging Knee Raises", "Captains Chair", "3 x Max", "60s"]],
-            [["Leg Press", "Machine", "3 x 12 (Last Set Drop)", "90s"], ["Leg Extensions", "Machine", "3 x 15 (Last Set Drop)", "60s"], ["Seated Hamstring Curls", "Machine", "3 x 15 (Last Set Drop)", "60s"], ["Dumbbell Lunges", "Dumbbells", "3 x 10/leg", "60s"], ["Standing Calf Raises", "Machine", "3 x 20 (Last Set Drop)", "45s"]]
-        );
-        workoutData[22] = w(
-            [["Incline Machine Press", "Machine", "3 x 8 (Rest-Pause)", "90s"], ["Pec Deck Flys", "Machine", "3 x 12 (Rest-Pause)", "60s"], ["Machine Lateral Raises", "Machine/DB", "3 x 15 (Rest-Pause)", "60s"], ["Dips (Assisted)", "Machine", "3 x 10 (Rest-Pause)", "60s"]],
-            [["One-Arm Cable Rows", "Cable", "3 x 10/arm", "45s"], ["Underhand Pulldowns", "Cable", "3 x 8 (Rest-Pause)", "60s"], ["Dumbbell Rear Delt Flys", "Dumbbells", "3 x 15 (Rest-Pause)", "45s"], ["Preacher Curls", "Machine/Bench", "3 x 10 (Rest-Pause)", "60s"]],
-            [["Leg Press (Close Stance)", "Machine", "3 x 10 (Rest-Pause)", "90s"], ["Hack Squat Machine", "Machine", "3 x 10 (Rest-Pause)", "90s"], ["Lying Hamstring Curls", "Machine", "3 x 12 (Rest-Pause)", "60s"], ["Glute Kickbacks", "Cable/Machine", "3 x 15/leg", "45s"]]
-        );
-        workoutData[23] = w(
-            [["Flat Dumbbell Press", "Dumbbells", "4 x 10", "60s"], ["Arnold Press", "Dumbbells", "4 x 10", "60s"], ["Overhead Rope Extension", "Cable", "4 x 12", "60s"], ["Machine Chest Flys", "Machine", "100 Reps Total", "30s"]],
-            [["V-Bar Pulldowns", "Cable", "4 x 10", "60s"], ["Chest Supported DB Row", "Bench", "4 x 10", "60s"], ["Incline DB Bicep Curls", "Dumbbells", "4 x 12", "60s"], ["Face Pulls", "Cable", "100 Reps Total", "30s"]],
-            [["Bulgarian Split Squats", "Dumbbells", "3 x 10/leg", "60s"], ["Leg Extensions", "Machine", "4 x 15", "60s"], ["Seated Leg Curls", "Machine", "4 x 15", "60s"], ["Leg Press (50% max)", "Machine", "100 Reps Total", "45s"]]
-        );
-        workoutData[24] = w(
-            [["Heavy Machine Press", "Machine", "5 x 6", "120s"], ["Heavy Shoulder Press", "Machine", "5 x 6", "120s"], ["Weighted Dips", "Machine", "4 x 8", "90s"], ["Skullcrushers", "Dumbbells", "4 x 10", "60s"]],
-            [["Heavy Lat Pulldown", "Cable", "5 x 6", "120s"], ["Heavy Seated Row", "Cable", "5 x 6", "120s"], ["Single-Arm DB Row", "Dumbbell", "4 x 8", "90s"], ["Heavy Hammer Curls", "Dumbbells", "4 x 8", "90s"]],
-            [["Heavy Leg Press", "Machine", "5 x 6", "120s"], ["Goblet Squats", "Heavy Dumbbell", "4 x 8", "90s"], ["Heavy Hamstring Curls", "Machine", "4 x 8", "90s"], ["Standing Calf Raises", "Machine", "4 x 12", "60s"]]
-        );
+        const Goals = {
+            1: "Foundation Phase: 3-Second Eccentrics on every rep to trigger mTORC1.",
+            2: "Stability Check: Maintain perfect tension throughout the cable movements.",
+            3: "Volume Accumulation: 4 sets per compound. Push closer to failure.",
+            4: "Heavy Loads: Decrease reps, increase weight. Maximize mechanical tension.",
+            5: "Mind-Muscle Sync: Do not drop the weight. Control the negative.",
+            9: "Supersets: Zero rest between exercises. Push through the lactic acid.",
+            13: "Time Under Tension: 4 seconds down. Grow through fiber deformation.",
+            17: "Pre-Exhaust: Isolate first, then compound. Make light weight feel heavy.",
+            21: "The Drop Zone: Triple drop sets on the final set. Total muscle fatigue.",
+            24: "Victory Lap: Heaviest week. Test your 6-month strength gains."
+        };
 
+        /* --- STATE MANAGEMENT --- */
+        const State = {
+            user: null, view: localStorage.getItem('h_v') || 'view-dash',
+            week: parseInt(localStorage.getItem('h_w')) || 1,
+            logs: JSON.parse(localStorage.getItem('h_l') || '{}')
+        };
 
-        // --- UI Logic ---
-        let currentMonth = 1;
+        let syncTimer;
+        const Toast = (msg) => {
+            const el = document.getElementById('toast'); el.innerText = msg;
+            el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2500);
+        };
 
-        function init() {
-            const tabsContainer = document.getElementById('monthTabsContainer');
-            for(let i = 1; i <= 6; i++) {
-                const btn = document.createElement('button');
-                btn.className = `month-tab ${i === 1 ? 'active' : ''}`;
-                btn.innerText = `Month ${i}`;
-                btn.onclick = () => selectMonth(i);
-                tabsContainer.appendChild(btn);
+        const syncToCloud = () => {
+            if(!useFirebase || !State.user) return;
+            clearTimeout(syncTimer);
+            syncTimer = setTimeout(async () => {
+                try { await setDoc(doc(db, "users", State.user.uid), { week: State.week, logs: State.logs }); } 
+                catch(e) { console.error("Cloud Sync Error", e); }
+            }, 2000);
+        };
+
+        /* --- RENDER ENGINE --- */
+        function getExList() {
+            let list = new Set();
+            for(let w=1; w<=24; w++){
+                Blueprint[w].forEach(d => d.ex.forEach(e => list.add(e[0])));
             }
-            updateWeekDropdown();
-            renderWeek();
+            return Array.from(list).sort();
         }
 
-        function selectMonth(month) {
-            currentMonth = month;
-            document.querySelectorAll('.month-tab').forEach((btn, index) => {
-                btn.classList.toggle('active', index + 1 === month);
-            });
-            updateWeekDropdown();
-            renderWeek();
+        function buildAnalyticsSelect() {
+            const sel = document.getElementById('analytics-ex');
+            sel.innerHTML = '<option value="">Select exercise to view progress...</option>';
+            getExList().forEach(ex => { sel.innerHTML += `<option value="${ex}">${ex}</option>`; });
         }
 
-        function updateWeekDropdown() {
-            const select = document.getElementById('weekSelect');
-            select.innerHTML = '';
-            const startWeek = ((currentMonth - 1) * 4) + 1;
-            const themes = {
-                1: ["Week 1: Stability Phase", "Week 2: Hypertrophy Phase", "Week 3: Volume Phase", "Week 4: Power Phase"],
-                2: ["Week 5: Time Under Tension", "Week 6: Peak Contraction", "Week 7: Unilateral Focus", "Week 8: Burnout Week"],
-                3: ["Week 9: Pre-Exhaust Supersets", "Week 10: The Pump Supersets", "Week 11: Opposing Supersets", "Week 12: Giant Set Finale"],
-                4: ["Week 13: 4-Second Negatives", "Week 14: 2-Second Statue Hold", "Week 15: 1.5 Rep Method", "Week 16: Tempo Integration"],
-                5: ["Week 17: Pure Pre-Exhaustion", "Week 18: Mechanical Drop Sets", "Week 19: Pause-Go Method", "Week 20: Peak Volume"],
-                6: ["Week 21: The Drop-Zone", "Week 22: Rest-Pause Method", "Week 23: Centurion 100", "Week 24: Heavy Victory Lap"]
-            };
+        function renderChart() {
+            const exName = document.getElementById('analytics-ex').value;
+            const svg = document.getElementById('progression-chart');
+            svg.innerHTML = '';
+            if(!exName) return;
 
-            for(let i = 0; i < 4; i++) {
-                const option = document.createElement('option');
-                option.value = startWeek + i;
-                option.innerText = themes[currentMonth][i] || `Week ${startWeek + i}`;
-                select.appendChild(option);
-            }
-        }
-
-        function renderWeek() {
-            const weekNumber = document.getElementById('weekSelect').value;
-            const container = document.getElementById('routineContainer');
-            container.innerHTML = '';
-
-            // Add Monthly Top Message (only on first week of month)
-            const startWeekOfMonth = ((currentMonth - 1) * 4) + 1;
-            if(weekNumber == startWeekOfMonth) {
-                const monthlyTop = document.createElement('div');
-                monthlyTop.className = 'monthly-message';
-                monthlyTop.innerHTML = `<h3>📘 Month ${currentMonth} Introduction</h3><p>${monthlyMessages[currentMonth].top}</p>`;
-                container.appendChild(monthlyTop);
-            }
-
-            // Add Weekly Goal Message
-            const weeklyGoalDiv = document.createElement('div');
-            weeklyGoalDiv.className = 'weekly-goal';
-            weeklyGoalDiv.innerHTML = `<strong>🎯 Week ${weekNumber} Goal:</strong><p>${weeklyGoals[weekNumber]}</p>`;
-            container.appendChild(weeklyGoalDiv);
-
-            const daysData = workoutData[weekNumber];
-
-            daysData.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day-container';
-                
-                let header4 = "Rest";
-                if(weekNumber >= 13 && weekNumber <= 16) {
-                    header4 = weekNumber == 14 ? "Hold/Rest" : "Tempo";
-                }
-                if(weekNumber == 15) header4 = "Rest";
-
-                let tableHTML = `
-                    <h2 class="day-title">${day.title}</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Exercise</th>
-                                <th>Equipment</th>
-                                <th>Sets x Reps</th>
-                                <th>${header4}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                day.exercises.forEach(ex => {
-                    tableHTML += `
-                        <tr>
-                            <td data-label="Exercise"><strong>${ex[0]}</strong></td>
-                            <td data-label="Equipment">${ex[1]}</td>
-                            <td data-label="Sets x Reps">${ex[2]}</td>
-                            <td data-label="${header4}">${ex[3]}</td>
-                        </tr>
-                    `;
+            // Extract max weight per week for this exercise
+            let dataPts =[];
+            for(let w=1; w<=24; w++){
+                let maxW = 0;
+                Object.keys(State.logs).forEach(k => {
+                    if(k.startsWith(`w${w}_`) && k.includes(exName.replace(/\s/g,''))) {
+                        let wt = parseFloat(State.logs[k].w);
+                        if(wt > maxW) maxW = wt;
+                    }
                 });
+                if(maxW > 0) dataPts.push({w, maxW});
+            }
 
-                tableHTML += `</tbody></table>`;
-                dayDiv.innerHTML = tableHTML;
-                container.appendChild(dayDiv);
+            if(dataPts.length === 0) {
+                svg.innerHTML = `<text x="50%" y="50%" fill="#888" font-size="12" text-anchor="middle">No data logged yet.</text>`;
+                return;
+            }
+
+            const w = svg.clientWidth || 300; const h = 200; const pad = 20;
+            const maxVal = Math.max(...dataPts.map(d=>d.maxW)) * 1.2; // Add 20% headroom
+            const wUnit = (w - pad*2) / Math.max(1, dataPts.length - 1);
+
+            let pathD = `M ${pad} ${h - pad - (dataPts[0].maxW/maxVal)*(h - pad*2)}`;
+            let fillD = `M ${pad} ${h-pad} L ${pad} ${h - pad - (dataPts[0].maxW/maxVal)*(h - pad*2)}`;
+
+            dataPts.forEach((pt, i) => {
+                const x = pad + (i * wUnit);
+                const y = h - pad - ((pt.maxW/maxVal) * (h - pad*2));
+                
+                if(i > 0) {
+                    const prevX = pad + ((i-1)*wUnit);
+                    const prevY = h - pad - ((dataPts[i-1].maxW/maxVal)*(h - pad*2));
+                    const cpx = prevX + (x-prevX)/2;
+                    pathD += ` C ${cpx} ${prevY}, ${cpx} ${y}, ${x} ${y}`;
+                    fillD += ` C ${cpx} ${prevY}, ${cpx} ${y}, ${x} ${y}`;
+                }
+                
+                // Plot dot
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", 4);
+                circle.setAttribute("fill", "var(--accent-cyan)");
+                svg.appendChild(circle);
+
+                // Add Label
+                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttribute("x", x); txt.setAttribute("y", y - 10);
+                txt.setAttribute("fill", "white"); txt.setAttribute("font-size", "10");
+                txt.setAttribute("text-anchor", "middle"); txt.textContent = pt.maxW;
+                svg.appendChild(txt);
             });
 
-            // Add Monthly Coach's Tips (at the end of EVERY week within that month)
-            const monthlyBottom = document.createElement('div');
-            monthlyBottom.className = 'monthly-message bottom';
-            monthlyBottom.innerHTML = `<h3>💡 Month ${currentMonth} Coach's Tips</h3><p>${monthlyMessages[currentMonth].bottom}</p>`;
-            container.appendChild(monthlyBottom);
+            fillD += ` L ${pad + (dataPts.length-1)*wUnit} ${h-pad} Z`;
+
+            // Gradients
+            const grad = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+            grad.setAttribute("id", "chartGrad"); grad.setAttribute("x1", "0"); grad.setAttribute("y1", "0"); grad.setAttribute("x2", "0"); grad.setAttribute("y2", "1");
+            grad.innerHTML = `<stop offset="0%" stop-color="var(--accent-cyan-glow)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>`;
+            svg.appendChild(grad);
+
+            const fillPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            fillPath.setAttribute("d", fillD); fillPath.setAttribute("fill", "url(#chartGrad)"); svg.insertBefore(fillPath, svg.firstChild);
+
+            const linePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            linePath.setAttribute("d", pathD); linePath.setAttribute("fill", "none"); linePath.setAttribute("stroke", "var(--accent-cyan)"); linePath.setAttribute("stroke-width", "2"); svg.insertBefore(linePath, svg.firstChild);
         }
 
-        window.onload = init;
+        function renderDashboard() {
+            let tSets=0; let dSets=0; let wDone=0;
+            for(let w=1; w<=24; w++){
+                Blueprint[w].forEach((day, dIdx) => {
+                    let dS=0; let dD=0;
+                    day.ex.forEach((e, eIdx) => {
+                        let sets = parseInt(e[1].split('x')[0]) || 3; // parse "3x12"
+                        tSets += sets; dS += sets;
+                        for(let s=1; s<=sets; s++){
+                            if(State.logs[`w${w}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${s}`]?.done){ dSets++; dD++; }
+                        }
+                    });
+                    if(dS > 0 && dS === dD) wDone++;
+                });
+            }
+            document.getElementById('stat-workouts').innerText = wDone;
+            document.getElementById('stat-sets').innerText = dSets;
+            renderChart();
+        }
+
+        function renderMatrix() {
+            // Slider
+            const sld = document.getElementById('week-slider'); sld.innerHTML = '';
+            for(let i=1; i<=24; i++){
+                const b = document.createElement('div');
+                b.className = `week-btn ${i===State.week ? 'active':''}`;
+                b.innerText = `Wk ${i}`;
+                b.onclick = () => { State.week = i; localStorage.setItem('h_w', i); syncToCloud(); renderMatrix(); };
+                sld.appendChild(b);
+            }
+            
+            // Goal
+            let gText = Goals[State.week];
+            if(!gText) {
+                if(State.week > 17) gText = Goals[17];
+                else if(State.week > 13) gText = Goals[13];
+                else if(State.week > 9) gText = Goals[9];
+                else gText = Goals[4]; // Fallbacks
+            }
+            document.getElementById('weekly-goal').innerText = `Target: ${gText}`;
+
+            // Days
+            const container = document.getElementById('days-container'); container.innerHTML = '';
+            Blueprint[State.week].forEach((day, dIdx) => {
+                let ts=0; let ds=0;
+                day.ex.forEach(e => {
+                    let st = parseInt(e[1].split('x')[0])||3; ts+=st;
+                    for(let i=1; i<=st; i++){ if(State.logs[`w${State.week}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${i}`]?.done) ds++; }
+                });
+                const pct = ts>0 ? Math.round((ds/ts)*100) : 0;
+
+                const card = document.createElement('div'); card.className = 'day-accordion';
+                card.innerHTML = `<div class="day-header" onclick="this.nextElementSibling.classList.toggle('open')">
+                    <h3>${day.title}</h3><span class="day-prog">${pct}%</span></div><div class="day-body"></div>`;
+                
+                const body = card.querySelector('.day-body');
+                day.ex.forEach((e, eIdx) => {
+                    let sets = parseInt(e[1].split('x')[0])||3;
+                    let targetReps = e[1].split('x')[1] || "10";
+                    let rows = '';
+                    const exKeyClean = e[0].replace(/\s/g,'');
+
+                    for(let s=1; s<=sets; s++){
+                        const k = `w${State.week}_d${dIdx}_${exKeyClean}_s${s}`;
+                        const l = State.logs[k] || {w:'',r:targetReps, done:false};
+                        rows += `<tr class="${l.done ? 'done-row':''}">
+                            <td class="set-idx">${s}</td>
+                            <td><input type="number" class="log-input" value="${l.w}" placeholder="lbs" onchange="window.HOS.save('${k}','w',this.value)"></td>
+                            <td><input type="text" class="log-input" value="${l.r}" onchange="window.HOS.save('${k}','r',this.value)"></td>
+                            <td><div class="check-btn ${l.done?'checked':''}" onclick="window.HOS.check('${k}',this,event)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div></td>
+                        </tr>`;
+                    }
+
+                    body.innerHTML += `
+                        <div class="ex-card">
+                            <div class="ex-title">${e[0]}</div>
+                            <div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div>
+                            <table class="log-table"><tr><th>Set</th><th>Lbs</th><th>Reps</th><th>Log</th></tr>${rows}</table>
+                        </div>`;
+                });
+                container.appendChild(card);
+            });
+            renderDashboard();
+        }
+
+        /* --- APP CONTROLLERS --- */
+        window.HOS = {
+            switchView: (vId, btn) => {
+                document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
+                document.getElementById(vId).classList.add('active');
+                if(btn){ document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); btn.classList.add('active'); }
+                State.view = vId; localStorage.setItem('h_v', vId);
+                if(vId === 'view-dash') renderDashboard();
+            },
+            save: (k, f, v) => {
+                if(!State.logs[k]) State.logs[k] = {w:'',r:'',done:false};
+                State.logs[k][f] = v; localStorage.setItem('h_l', JSON.stringify(State.logs)); syncToCloud();
+            },
+            check: (k, el, ev) => {
+                ev.stopPropagation();
+                if(!State.logs[k]) State.logs[k] = {w:'',r:'',done:false};
+                State.logs[k].done = !State.logs[k].done;
+                localStorage.setItem('h_l', JSON.stringify(State.logs)); syncToCloud(); renderMatrix();
+            },
+            calcRecomp: () => {
+                const bw = parseFloat(document.getElementById('calc-bw').value);
+                if(!bw) return Toast("Enter valid weight.");
+                document.getElementById('res-fat').innerText = (bw*0.005).toFixed(2) + " lbs/wk";
+                document.getElementById('res-cal').innerText = "-" + Math.round((bw*0.005*3500)/7) + " kcal/day";
+                document.getElementById('res-pro').innerText = Math.round(bw*0.7) + "g /day";
+                document.getElementById('calc-results').style.display = 'block';
+            },
+            startTimer: (sec) => {
+                clearInterval(window.tInt); let r = sec;
+                document.getElementById('rest-timer').classList.add('active');
+                window.tInt = setInterval(() => {
+                    r--;
+                    document.getElementById('timer-val').innerText = `${Math.floor(r/60).toString().padStart(2,'0')}:${(r%60).toString().padStart(2,'0')}`;
+                    if(r<=0){ clearInterval(window.tInt); document.getElementById('rest-timer').classList.remove('active'); Toast("Rest complete. Execute."); }
+                }, 1000);
+            },
+            stopTimer: () => { clearInterval(window.tInt); document.getElementById('rest-timer').classList.remove('active'); },
+            logout: async () => { if(useFirebase) await signOut(auth); location.reload(); },
+            renderChart: renderChart
+        };
+
+        /* --- BOOT & AUTH --- */
+        const boot = () => {
+            document.getElementById('auth-gate').style.opacity = '0';
+            setTimeout(() => document.getElementById('auth-gate').style.display = 'none', 400);
+            document.getElementById('app-core').style.display = 'block';
+            document.getElementById('app-nav').style.display = 'flex';
+            buildAnalyticsSelect();
+            window.HOS.switchView(State.view, document.querySelector(`.nav-item[onclick*="${State.view}"]`));
+            renderMatrix();
+        };
+
+        let isLogin = true;
+        document.getElementById('auth-toggle').onclick = () => {
+            isLogin = !isLogin;
+            document.getElementById('auth-btn').innerText = isLogin ? "Initialize Connection" : "Create Profile";
+            document.getElementById('auth-toggle').innerText = isLogin ? "New user? Create profile." : "Existing user? Authenticate.";
+        };
+
+        document.getElementById('auth-form').onsubmit = async (e) => {
+            e.preventDefault();
+            if(!useFirebase) { Toast("Offline Mode Active."); return boot(); }
+            const em = document.getElementById('auth-email').value; const ps = document.getElementById('auth-pass').value;
+            document.getElementById('auth-btn').innerText = "Authenticating...";
+            try {
+                if(isLogin) await signInWithEmailAndPassword(auth, em, ps);
+                else await createUserWithEmailAndPassword(auth, em, ps);
+            } catch(err) { Toast(err.message.split(': ')[1] || err.message); document.getElementById('auth-btn').innerText = "Retry"; }
+        };
+
+        if(useFirebase) {
+            onAuthStateChanged(auth, async (u) => {
+                if(u) {
+                    State.user = u;
+                    try {
+                        const d = await getDoc(doc(db, "users", u.uid));
+                        if(d.exists()) {
+                            State.week = d.data().week || 1; State.logs = d.data().logs || {};
+                            localStorage.setItem('h_w', State.week); localStorage.setItem('h_l', JSON.stringify(State.logs));
+                        }
+                    } catch(e) {}
+                    boot();
+                } else { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('app-core').style.display = 'none'; }
+            });
+        }
     </script>
 </body>
 </html>
