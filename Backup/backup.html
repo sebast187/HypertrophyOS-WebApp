@@ -215,6 +215,19 @@
         .atlas-tab.active { color: var(--accent-purple); background: rgba(179, 136, 255, 0.1); border-color: var(--accent-purple); }
         .atlas-section { display: none; animation: fadeUp 0.3s forwards; }
         .atlas-section.active { display: block; }
+
+        /* SCIENCE ESSAY & INTERACTIVE SIMULATORS */
+        .essay-section { margin-top: 25px; border-left: 2px solid var(--accent-cyan); padding-left: 15px; }
+        .essay-title { font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .essay-p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; text-align: justify; }
+        .essay-highlight { color: white; font-weight: bold; }
+        
+        .interactive-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+        .sim-slider { width: 100%; appearance: none; background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; outline: none; margin: 15px 0; }
+        .sim-slider::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-purple); cursor: pointer; box-shadow: 0 0 10px var(--accent-purple); }
+        .bar-container { display: flex; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; background: #222;}
+        .bar-fat { background: var(--accent-orange); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #000; text-shadow: 0px 1px 2px rgba(255,255,255,0.3); }
+        .bar-muscle { background: var(--accent-purple); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #fff; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -385,33 +398,49 @@
 
             <!-- SCIENCE & PHILOSOPHY SUBTAB -->
             <div id="atlas-science" class="atlas-section">
-                <div class="glass-card" style="border-top: 3px solid var(--accent-cyan);">
-                    <h3 style="color:var(--accent-cyan); margin-bottom: 10px;">The Recomposition Engine</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Building muscle while losing fat is scientifically proven, but the margin of error is slim. You must aim for a strict <strong>0.5% to 1% bodyweight loss per week</strong> (roughly a 300-500 calorie daily deficit). Faster weight loss forces the body to metabolize muscle tissue for energy.</p>
+                
+                <!-- Section 1: Nutrition & Mechanotransduction -->
+                <div class="essay-section">
+                    <h2 class="essay-title">Part I: Mechanotransduction & The Nitrogen Limit</h2>
+                    <p class="essay-p">Muscle hypertrophy is not an accident; it is an evolutionary defense mechanism. When you subject tissue to heavy loads, you trigger <span class="essay-highlight">mechanotransduction</span>—the process by which your body converts severe mechanical tension into chemical signals. The master switch in this process is <span class="essay-highlight">mTORC1</span>, the physiological "construction crew" of muscle protein synthesis.</p>
+                    <p class="essay-p">However, the fitness industry has sold a lucrative lie regarding protein. The science (proven by clinical meta-analysis) shows that the anabolic ceiling for protein is strictly <span class="essay-highlight">0.7g per pound (1.6g per kg)</span> of body weight. Beyond this threshold, your body physically lacks the workers to build more tissue. Pouring more bricks onto a construction site doesn't build a house faster; the excess nitrogen is stripped away, and the remaining calories are converted to expensive energy or stored directly as fat.</p>
+                    
+                    <div class="interactive-box">
+                        <h4 style="color:var(--accent-green); margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">🧪 The Nitrogen Ceiling Engine</h4>
+                        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:15px;">Calculate the exact mathematical cutoff for your muscle synthesis.</p>
+                        <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                            <input type="number" id="sim-bw" placeholder="Bodyweight" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
+                            <input type="number" id="sim-pro" placeholder="Daily Protein (g)" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
+                        </div>
+                        <div id="sim-pro-result" style="font-size:0.85rem; color:var(--text-muted); margin-top:15px; border-left: 2px solid var(--accent-green); padding-left: 10px;">Enter your stats to compute synthesis limits.</div>
+                    </div>
                 </div>
 
-                <div class="glass-card" style="border-top: 3px solid var(--accent-orange);">
-                    <h3 style="color:var(--accent-orange); margin-bottom: 10px;">The Protein Myth</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">The fitness industry over-sells protein. Scientific meta-analysis proves that muscle protein synthesis maxes out at <strong>0.7g per pound (1.6g per kg) of body weight</strong>. Anything consumed above this ceiling does not build more muscle; it simply converts to expensive energy or fat.</p>
-                </div>
+                <!-- Section 2: Sleep & Endocrinology -->
+                <div class="essay-section" style="border-left-color: var(--accent-purple);">
+                    <h2 class="essay-title" style="color:var(--accent-purple);">Part II: The Dark Room (Endocrinology)</h2>
+                    <p class="essay-p">Training is merely the stimulus; actual muscle growth occurs exclusively in the dark. The ultimate factor deciding whether you lose fat or muscle during a recomp phase is <span class="essay-highlight">nutrient partitioning</span>, which is entirely dictated by your sleep architecture.</p>
+                    <p class="essay-p">According to clinical data (Nedeltcheva et al., 2010), dropping your sleep from 8.5 hours to 5.5 hours creates a catastrophic hormonal environment. <span class="essay-highlight">Cortisol spikes violently and testosterone crashes.</span> As a survival mechanism, your body fiercely hoards adipose fat and begins metabolizing your hard-earned muscle tissue for energy. This is the infamous <span class="essay-highlight">18% Sleep Penalty</span>, where sleep deprivation shifts your weight loss from predominantly fat, to up to 75% muscle loss.</p>
 
-                <div class="glass-card" style="border-top: 3px solid var(--accent-purple);">
-                    <h3 style="color:var(--accent-purple); margin-bottom: 10px;">The 18% Sleep Penalty</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Sleep is not a passive state; it is an active hormonal rebuilding process. Cutting your sleep from 8.5 to 5.5 hours forces up to <strong>75% of your weight loss to come from muscle</strong> instead of fat.</p>
-                    <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px;">
-                        <li style="margin-bottom:5px;">Sleep deprivation drops testosterone by 10-15% and spikes cortisol (a muscle-destroying hormone).</li>
-                        <li style="margin-bottom:5px;">Your room must be pitch black. Tape over LEDs. Use an eye mask.</li>
-                        <li>If sleep deprived, a strict 20-minute daytime nap can successfully reverse the athletic and metabolic penalty.</li>
-                    </ul>
-                </div>
-
-                <div class="glass-card" style="border-top: 3px solid var(--accent-green);">
-                    <h3 style="color:var(--accent-green); margin-bottom: 10px;">Volume vs. Intensity</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Muscle growth is triggered by mechanical tension. You have two valid choices for volume:</p>
-                    <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px;">
-                        <li style="margin-bottom:5px;"><strong style="color:white;">High Intensity (5-12 sets/week):</strong> You must take every set to absolute muscular failure. If you could have done one more rep, the set was wasted.</li>
-                        <li><strong style="color:white;">High Volume (12-20 sets/week):</strong> You can stop 2 reps short of failure, but you must accumulate significantly more total sets to force adaptation.</li>
-                    </ul>
+                    <div class="interactive-box" style="border-color:rgba(179, 136, 255, 0.3);">
+                        <h4 style="color:var(--accent-purple); margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">🧪 The Sleep Partitioning Simulator</h4>
+                        <p style="font-size:0.75rem; color:var(--text-muted);">Adjust your nightly sleep to see the physiological breakdown of your weight loss.</p>
+                        
+                        <div style="display:flex; justify-content:space-between; margin-top:20px; font-family:var(--font-data); font-size:0.85rem; color:white;">
+                            <span>4 Hrs</span><span id="sim-sleep-val" style="color:var(--accent-cyan); font-weight:bold; font-size:1.1rem; text-shadow: 0 0 10px var(--accent-cyan-glow);">7.5 Hrs</span><span>9 Hrs</span>
+                        </div>
+                        <input type="range" id="sim-sleep" class="sim-slider" min="4" max="9" step="0.5" value="7.5" oninput="window.HOS.updateSleepSim()">
+                        
+                        <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">
+                            <span style="color:var(--accent-orange);">Fat Burned</span>
+                            <span style="color:var(--accent-purple);">Muscle Lost</span>
+                        </div>
+                        <div class="bar-container">
+                            <div id="bar-fat" class="bar-fat" style="width: 80%;">80%</div>
+                            <div id="bar-muscle" class="bar-muscle" style="width: 20%;">20%</div>
+                        </div>
+                        <p id="sim-sleep-desc" style="font-size:0.8rem; color:var(--text-muted); margin-top:15px; text-align:center; font-style: italic;">"Optimal hormonal environment. Fat is prioritized for fuel."</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -866,6 +895,48 @@
             }
             localStorage.setItem('h_l', JSON.stringify(State.logs));
             syncToCloud(); renderMatrix(); Toast(`Month ${State.month} Checkboxes Reset!`);
+        },
+        updateProteinSim: () => {
+            const bwInput = parseFloat(document.getElementById('sim-bw').value);
+            const proInput = parseFloat(document.getElementById('sim-pro').value);
+            const resEl = document.getElementById('sim-pro-result');
+            
+            if(!bwInput || !proInput) { resEl.innerHTML = "Enter your stats to compute synthesis limits."; return; }
+
+            // Convert to LBS for the 0.7g/lb calculation
+            const bwLbs = State.unit === 'kg' ? bwInput * 2.20462 : bwInput;
+            const targetPro = Math.round(bwLbs * 0.7);
+
+            if(proInput <= targetPro) {
+                resEl.innerHTML = `<span style="color:var(--accent-green); font-weight:bold;">100% Utilized.</span> Every gram is actively fueling Muscle Protein Synthesis (mTORC1). You have room to increase up to ${targetPro}g.`;
+            } else {
+                const waste = Math.round(proInput - targetPro);
+                resEl.innerHTML = `<span style="color:var(--accent-orange); font-weight:bold;">Anabolic Ceiling Reached at ${targetPro}g.</span><br><br>The remaining <strong><span style="color:white;">${waste}g</span></strong> of protein provides 0% additional muscle growth. It is being stripped of nitrogen and oxidized for energy or stored as fat.`;
+            }
+        },
+        updateSleepSim: () => {
+            const val = parseFloat(document.getElementById('sim-sleep').value);
+            document.getElementById('sim-sleep-val').innerText = val + " Hrs";
+            
+            let fPct = 80; let mPct = 20; let msg = ""; let color = "var(--accent-cyan)";
+
+            if(val >= 8) { fPct = 85; mPct = 15; msg = "Peak Anabolism. Maximum fat oxidation active."; color = "var(--accent-green)"; }
+            else if(val === 7.5) { fPct = 80; mPct = 20; msg = "Optimal hormonal baseline. Fat prioritized for fuel."; color = "var(--accent-cyan)"; }
+            else if(val >= 6.5) { fPct = 65; mPct = 35; msg = "Slight cortisol elevation. Mild partition penalty."; color = "white"; }
+            else if(val === 6) { fPct = 50; mPct = 50; msg = "Testosterone suppression begins. Significant muscle wasting."; color = "var(--accent-orange)"; }
+            else if(val === 5.5) { fPct = 40; mPct = 60; msg = "Clinical Danger Zone: Body actively defends fat stores and metabolizes muscle."; color = "var(--accent-orange)"; }
+            else { fPct = 25; mPct = 75; msg = "Catabolic Crisis: Extreme cortisol spike. Muscle tissue heavily cannibalized for survival."; color = "red"; }
+
+            document.getElementById('bar-fat').style.width = fPct + "%";
+            document.getElementById('bar-fat').innerText = fPct + "%";
+            document.getElementById('bar-muscle').style.width = mPct + "%";
+            document.getElementById('bar-muscle').innerText = mPct + "%";
+            
+            const desc = document.getElementById('sim-sleep-desc');
+            desc.innerText = `"${msg}"`;
+            desc.style.color = color;
+            document.getElementById('sim-sleep-val').style.color = color;
+            document.getElementById('sim-sleep-val').style.textShadow = `0 0 10px ${color}`;
         },
         toggleUnit: () => {
             State.unit = State.unit === 'kg' ? 'lbs' : 'kg';
