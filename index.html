@@ -312,6 +312,11 @@
             <div class="intel-box" id="month-intel-combined" style="margin-top: 20px; margin-bottom: 20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">
                 Loading...
             </div>
+
+            <!-- Subtle Reset Button -->
+            <button id="reset-month-btn" onclick="window.HOS.resetMonth()" style="display: block; margin: 0 auto 20px auto; padding: 8px 18px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.65rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; transition: var(--transition);">
+                Reset Checkmarks
+            </button>
         </main>
 
         <!-- VIEW: THE LAB -->
@@ -820,7 +825,9 @@
             container.appendChild(card);
         });
 
-        container.innerHTML += `<button class="btn-primary" onclick="window.HOS.resetMonth()" style="background:var(--accent-orange); color:white; margin-top:20px; box-shadow:0 4px 15px rgba(255,61,0,0.3);">⚠️ RESET MONTH ${State.month} CHECKBOXES</button>`;
+        // Update the subtle reset button text dynamically
+        const resetBtn = document.getElementById('reset-month-btn');
+        if(resetBtn) resetBtn.innerText = `Reset Month ${State.month} Checkmarks`;
         
         renderDashboard();
     }
