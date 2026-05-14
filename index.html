@@ -293,12 +293,15 @@
             <div class="month-slider" id="month-slider"></div>
             <div class="week-slider" id="week-slider"></div>
             
-            <div class="intel-box" id="month-top-msg">Loading...</div>
-            <div class="goal-box" id="weekly-goal">Loading...</div>
+            <!-- Weekly Goal stays at the top -->
+            <div class="goal-box" id="weekly-goal" style="margin-bottom: 20px;">Loading...</div>
             
+            <!-- Workout Days Container -->
             <div id="days-container"></div>
             
-            <div class="intel-box" id="month-bot-msg" style="margin-top:20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">Loading...</div>
+            <!-- Month Overview & Protocol moved to the bottom -->
+            <div class="intel-box" id="month-top-msg" style="margin-top: 20px; margin-bottom: 10px;">Loading...</div>
+            <div class="intel-box" id="month-bot-msg" style="border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05); margin-bottom: 20px;">Loading...</div>
         </main>
 
         <!-- VIEW: THE LAB -->
