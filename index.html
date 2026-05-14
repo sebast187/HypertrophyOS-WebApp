@@ -299,9 +299,10 @@
             <!-- Workout Days Container -->
             <div id="days-container"></div>
             
-            <!-- Month Overview & Protocol moved to the bottom -->
-            <div class="intel-box" id="month-top-msg" style="margin-top: 20px; margin-bottom: 10px;">Loading...</div>
-            <div class="intel-box" id="month-bot-msg" style="border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05); margin-bottom: 20px;">Loading...</div>
+            <!-- Combined Month Overview & Protocol -->
+            <div class="intel-box" id="month-intel-combined" style="margin-top: 20px; margin-bottom: 20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">
+                Loading...
+            </div>
         </main>
 
         <!-- VIEW: THE LAB -->
@@ -700,8 +701,12 @@
             b.onclick = () => { State.week = i; localStorage.setItem('h_w', i); syncToCloud(); renderMatrix(); }; sld.appendChild(b);
         }
         
-        document.getElementById('month-top-msg').innerHTML = `<h4>📘 Month ${State.month} Overview</h4><p>${MonthlyIntel[State.month].top}</p>`;
-        document.getElementById('month-bot-msg').innerHTML = `<h4>💡 Month ${State.month} Protocol</h4><p>${MonthlyIntel[State.month].bot}</p>`;
+        document.getElementById('month-intel-combined').innerHTML = `
+            <h4>📘 Month ${State.month} Overview</h4>
+            <p>${MonthlyIntel[State.month].top}</p>
+            <h4 style="color: white; margin-top: 15px;">Month ${State.month} Protocol</h4>
+            <p>${MonthlyIntel[State.month].bot}</p>
+        `;
         document.getElementById('weekly-goal').innerHTML = `<strong>🎯 Week ${State.week} Goal:</strong> ${WeeklyGoals[State.week] || "Progressive Overload"}`;
 
         const container = document.getElementById('days-container'); container.innerHTML = '';
