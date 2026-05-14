@@ -442,15 +442,27 @@
                         <p id="sim-sleep-desc" style="font-size:0.8rem; color:var(--text-muted); margin-top:15px; text-align:center; font-style: italic;">"Optimal hormonal environment. Fat is prioritized for fuel."</p>
                     </div>
                 </div>
+                
+                <!-- Section 3: Supplements & Water Weight -->
+                <div class="essay-section" style="border-left-color: var(--accent-green);">
+                    <h2 class="essay-title" style="color:var(--accent-green);">Part III: The Creatine Illusion</h2>
+                    <p class="essay-p">When executing a body recomposition, the scale is a notorious liar. Dr. Eric Trexler's research reveals that <strong>Creatine Monohydrate</strong> (the only universally proven muscle supplement) pulls water directly into the muscle cell (intracellular hydration) to facilitate ATP production.</p>
+                    <p class="essay-p">This causes a rapid gain of <span class="essay-highlight">2 to 3 lbs (1 to 1.5 kg) of lean mass</span> in the first 2-4 weeks of training. If your Recomp Engine targets a loss of 0.5 lbs of fat per week, the creatine water-weight will mask your fat loss on the scale for an entire month. <strong style="color:var(--accent-orange);">Do not panic and drop your calories.</strong> Trust the mirror, trust your strength progression in the Command tab, and ignore the scale for the first 30 days.</p>
+                </div>
             </div>
         </main>
     </div>
 </div>
 
+<!-- FLOATING SMART REST TIMER -->
 <div class="rest-timer" id="rest-timer">
-    <span class="timer-txt" id="timer-val">01:30</span>
-    <button class="timer-btn" onclick="window.HOS.startTimer(90)">▶</button>
-    <button class="timer-btn" onclick="window.HOS.stopTimer()" style="font-size:0.8rem;">⏹</button>
+    <span class="timer-txt" id="timer-val" style="width: 50px; text-align: center;">00:00</span>
+    <div style="display:flex; gap:5px; border-left: 1px solid var(--border-light); padding-left: 10px;">
+        <button class="timer-btn" onclick="window.HOS.startTimer(60)" title="Pump (60s)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-cyan); border-color:var(--accent-cyan);">60s</button>
+        <button class="timer-btn" onclick="window.HOS.startTimer(90)" title="Hypertrophy (90s)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-green); border-color:var(--accent-green);">90s</button>
+        <button class="timer-btn" onclick="window.HOS.startTimer(180)" title="Heavy CNS (3m)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-orange); border-color:var(--accent-orange);">3m</button>
+        <button class="timer-btn" onclick="window.HOS.stopTimer()" style="font-size:0.8rem; border-color:var(--text-muted); color:var(--text-muted);">⏹</button>
+    </div>
 </div>
 
 <nav class="bottom-nav" id="app-nav" style="display: none;">
@@ -832,24 +844,32 @@
 
                 for(let s=1; s<=sets; s++){
                     const k = `w${State.week}_d${dIdx}_${exKeyClean}_s${s}`;
-                    const l = State.logs[k] || {w:'',r:'', done:false};
+                    const l = State.logs[k] || {w:'',r:'', rir:'', done:false};
                     
                     let rVal = l.r !== '' ? parseInt(l.r) : parseInt(targetReps);
                     if(isNaN(rVal)) rVal = 10;
+                    let rirVal = l.rir !== '' ? parseInt(l.rir) : 1; // Default to 1 RIR (close to failure)
                     
-                    let rSelect = `<select class="log-input" onchange="window.HOS.save('${k}','r',this.value)">`;
+                    let rSelect = `<select class="log-input" style="width:45px; padding:4px;" onchange="window.HOS.save('${k}','r',this.value)">`;
                     for(let r=0; r<=50; r++){ rSelect += `<option value="${r}" ${r === rVal ? 'selected' : ''}>${r}</option>`; }
                     rSelect += `</select>`;
+
+                    // New RIR Select Dropdown
+                    let rirSelect = `<select class="log-input" style="width:45px; padding:4px; color:var(--accent-orange); border-color:rgba(255,61,0,0.3);" onchange="window.HOS.save('${k}','rir',this.value)">`;
+                    for(let rir=0; rir<=5; rir++){ rirSelect += `<option value="${rir}" ${rir === rirVal ? 'selected' : ''}>${rir}</option>`; }
+                    rirSelect += `</select>`;
 
                     rows += `<tr class="${l.done ? 'done-row':''}">
                         <td class="set-idx">${s}</td>
                         <td><input type="number" step="0.5" class="log-input" value="${l.w}" placeholder="${unitLabel}" onchange="window.HOS.save('${k}','w',this.value)"></td>
                         <td>${rSelect}</td>
+                        <td>${rirSelect}</td>
                         <td><div class="check-btn ${l.done?'checked':''}" onclick="window.HOS.check('${k}',this,event)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div></td>
                     </tr>`;
                 }
 
-                body.innerHTML += `<div class="ex-card"><div class="ex-title">${swapDropdown}</div><div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div><table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>Log</th></tr>${rows}</table></div>`;
+                // Added <th>RIR</th> to the table header
+                body.innerHTML += `<div class="ex-card"><div class="ex-title">${swapDropdown}</div><div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div><table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>RIR</th><th>Log</th></tr>${rows}</table></div>`;
             });
             container.appendChild(card);
         });
