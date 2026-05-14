@@ -609,9 +609,19 @@
             try { await setDoc(doc(db, "users", State.user.uid), { 
                 week: State.week, month: State.month, unit: State.unit, labBw: State.labBw,
                 dashMusc: State.dashMusc, dashMod: State.dashMod, dashEx: State.dashEx, logs: State.logs, swaps: State.swaps 
-            }); } catch(e) { console.error("Cloud Sync Error", e); }
+            }, { merge: true }); } catch(e) { console.error("Cloud Sync Error", e); }
         }, 2000);
     };
+
+    // Force sync if the user closes the app or refreshes
+    window.addEventListener('beforeunload', () => {
+        if(useFirebase && State.user && syncTimer) {
+            clearTimeout(syncTimer);
+            // Synchronous local save just in case
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+        }
+    });
 
     let exListCache =[];
     function buildFilters() {
