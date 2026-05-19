@@ -764,13 +764,19 @@
                         const exKey = parts[2];
                         const exObj = exListCache.find(e => e.name.replace(/\s/g,'') === exKey);
                         if(exObj && (musc === 'All' || exObj.muscle === musc) && (mod === 'All' || exObj.modality === mod)) {
-                            let w = parseFloat(l.w) || 0;
-                            let r = parseInt(l.r) || 0;
-                            if(w > 0 && r > 0) {
-                                tSets++; tReps += r;
-                                let vol = w * r; tVol += vol;
-                                exVols[exObj.name] = (exVols[exObj.name] || 0) + vol;
-                            }
+                            
+                            // Si ingresaste explícitamente "0" lo saltamos (coincide con el contador de arriba)
+                            if(l.r === '0' || l.w === '0') return;
+
+                            // Si dejaste el espacio en blanco, tratamos el peso como 0kg (Bodyweight) y las reps como 10 (default)
+                            let w = parseFloat(l.w); if(isNaN(w)) w = 0;
+                            let r = parseInt(l.r); if(isNaN(r)) r = 10;
+
+                            tSets++; 
+                            tReps += r;
+                            let vol = w * r; 
+                            tVol += vol;
+                            exVols[exObj.name] = (exVols[exObj.name] || 0) + vol;
                         }
                     }
                 }
