@@ -745,34 +745,117 @@
 
     function renderChart() {
         const exName = document.getElementById('analytics-ex').value;
-        const svg = document.getElementById('progression-chart'); svg.innerHTML = '';
-        if(!exName) return;
-
-        let dataPts =[];
-        for(let w=1; w<=24; w++){
-            let maxW = 0;
+        const container = document.querySelector('.chart-container');
+        
+        // --- 1. MODO ANALÍTICA GLOBAL (Si no hay ejercicio específico seleccionado) ---
+        if(!exName) {
+            const musc = State.dashMusc;
+            const mod = State.dashMod;
+            
+            let tSets = 0; let tVol = 0; let tReps = 0;
+            let exVols = {};
+            
+            // Procesamos toda la base de datos de logs para calcular las analíticas
             Object.keys(State.logs).forEach(k => {
-                if(k.startsWith(`w${w}_`) && k.includes(exName.replace(/\s/g,''))) {
-                    let wVal = parseFloat(State.logs[k].w); let rVal = parseInt(State.logs[k].r);
-                    if (rVal === 0 || wVal === 0) return; 
-                    if(wVal > maxW) maxW = wVal;
+                const l = State.logs[k];
+                if(l.done) {
+                    const parts = k.split('_');
+                    if(parts.length >= 3) {
+                        const exKey = parts[2];
+                        const exObj = exListCache.find(e => e.name.replace(/\s/g,'') === exKey);
+                        if(exObj && (musc === 'All' || exObj.muscle === musc) && (mod === 'All' || exObj.modality === mod)) {
+                            
+                            // Si ingresaste explícitamente "0" lo saltamos (coincide con el contador de arriba)
+                            if(l.r === '0' || l.w === '0') return;
+
+                            // Si dejaste el espacio en blanco, tratamos el peso como 0kg (Bodyweight) y las reps como 10 (default)
+                            let w = parseFloat(l.w); if(isNaN(w)) w = 0;
+                            let r = parseInt(l.r); if(isNaN(r)) r = 10;
+
+                            tSets++; 
+                            tReps += r;
+                            let vol = w * r; 
+                            tVol += vol;
+                            exVols[exObj.name] = (exVols[exObj.name] || 0) + vol;
+                        }
+                    }
                 }
             });
-            if(maxW > 0) dataPts.push({w, maxW});
+            
+            let topEx = "NO DATA"; let maxVol = 0;
+            Object.keys(exVols).forEach(e => { if(exVols[e] > maxVol) { maxVol = exVols[e]; topEx = e; } });
+            
+            let avgReps = tSets > 0 ? Math.round(tReps / tSets) : 0;
+            let volDisplay = tVol > 1000 ? (tVol/1000).toFixed(1) + 'k' : tVol;
+            
+            // Inyectamos el diseño Neo-UI del Dashboard Analítico
+            container.innerHTML = `
+                <div style="animation: fadeUp 0.4s forwards; display:grid; grid-template-columns:1fr 1fr; gap:10px; height:100%;">
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(179, 136, 255, 0.3); border-radius:12px; padding:15px; box-shadow: inset 0 0 20px rgba(179, 136, 255, 0.05); display:flex; flex-direction:column; justify-content:center;">
+                        <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Sets Executed</div>
+                        <div style="font-size:1.8rem; font-family:var(--font-data); color:var(--accent-purple); font-weight:900;">${tSets}</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(0, 230, 118, 0.3); border-radius:12px; padding:15px; box-shadow: inset 0 0 20px rgba(0, 230, 118, 0.05); display:flex; flex-direction:column; justify-content:center;">
+                        <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Total Tonnage</div>
+                        <div style="font-size:1.8rem; font-family:var(--font-data); color:var(--accent-green); font-weight:900;">${volDisplay}</div>
+                    </div>
+                    <div style="grid-column: span 2; background:linear-gradient(90deg, rgba(0,229,255,0.1), transparent); border-left:3px solid var(--accent-cyan); border-radius:8px; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-size:0.65rem; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Primary Driver (By Volume)</div>
+                            <div style="font-size:0.95rem; font-weight:900; color:white; margin-top:3px;">${topEx}</div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Avg <strong style="color:white;">${avgReps} reps</strong> per set</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="35" height="35" stroke="var(--accent-cyan)" stroke-width="1.5" fill="none" opacity="0.8"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // --- 2. MODO GRÁFICO (Si hay un ejercicio específico seleccionado) ---
+        container.innerHTML = '<svg class="chart-svg" id="progression-chart"></svg>';
+        const svg = document.getElementById('progression-chart');
+        
+        let dataPts = [];
+        
+        // Extraemos cada sesión individualmente (Por Semana Y por Día)
+        for(let w=1; w<=24; w++){
+            for(let d=0; d<5; d++){
+                let dayMaxW = -1;
+                let hasLog = false;
+                
+                Object.keys(State.logs).forEach(k => {
+                    // Validamos que sea de esta semana, este día y del ejercicio seleccionado
+                    if(k.startsWith(`w${w}_d${d}_`) && k.includes(exName.replace(/\s/g,''))) {
+                        let l = State.logs[k];
+                        if (l.done) { // Sólo cuenta los que tienen palomita verde
+                            hasLog = true;
+                            let wVal = parseFloat(l.w);
+                            if(isNaN(wVal)) wVal = 0; // Permite graficar peso corporal (0kg) si se deja en blanco
+                            if(wVal > dayMaxW) dayMaxW = wVal;
+                        }
+                    }
+                });
+                
+                // Si encontramos datos en este día en específico, agregamos UN PUNTO a la gráfica
+                if(hasLog) {
+                    dataPts.push({ maxW: dayMaxW === -1 ? 0 : dayMaxW });
+                }
+            }
         }
 
         if(dataPts.length === 0) {
             svg.innerHTML = `<text x="50%" y="50%" fill="#888" font-size="12" text-anchor="middle">No data logged yet.</text>`; return;
         }
 
-        const w = svg.clientWidth || 300; const h = 200; const pad = 20;
-        const maxVal = Math.max(...dataPts.map(d=>d.maxW)) * 1.2; 
-        const wUnit = (w - pad*2) / Math.max(1, dataPts.length - 1);
+        const wSvg = svg.clientWidth || 300; const h = 200; const pad = 20;
+        const maxVal = Math.max(1, Math.max(...dataPts.map(d=>d.maxW)) * 1.2); 
+        const wUnit = (wSvg - pad*2) / Math.max(1, dataPts.length - 1);
 
         for(let i=0; i<=4; i++){
             const gridY = pad + (i * (h - pad*2) / 4);
             const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", pad); line.setAttribute("y1", gridY); line.setAttribute("x2", w - pad); line.setAttribute("y2", gridY);
+            line.setAttribute("x1", pad); line.setAttribute("y1", gridY); line.setAttribute("x2", wSvg - pad); line.setAttribute("y2", gridY);
             line.setAttribute("stroke", "rgba(255,255,255,0.05)"); svg.appendChild(line);
         }
 
