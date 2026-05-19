@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HypertrophyOS - 5-Day Pro Gym Protocol</title>
-    <!-- Link to our new CSS file -->
+    <title>HypertrophyOS - Protocol Matrix</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -15,7 +14,7 @@
 <div id="auth-gate">
     <div class="auth-box">
         <h1 style="font-size: 2.5rem; margin-bottom: 5px;">HYPERTROPHY<span style="color:var(--accent-cyan)">OS</span></h1>
-        <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">5-Day Gym Protocol</p>
+        <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">Training Matrix</p>
         <form id="auth-form">
             <input type="email" id="auth-email" placeholder="Email Address" required>
             <input type="password" id="auth-pass" placeholder="Password (Min 6)" required>
@@ -28,6 +27,7 @@
 
 <!-- MAIN APP -->
 <div id="app-core" style="display: none;">
+    
     <header>
         <div class="logo">
             <p>World Gym Edition</p>
@@ -43,8 +43,21 @@
     </header>
 
     <div class="container">
-        <!-- VIEW: DASHBOARD -->
+        
+        <!-- VIEW: DASHBOARD & HUB -->
         <main id="view-dash" class="view-section active">
+            
+            <!-- PROGRAM SELECTOR HUB -->
+            <div class="glass-card" style="border-top: 3px solid var(--accent-purple);">
+                <h3 style="color:var(--accent-purple); margin-bottom:10px;">Program Hub</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Switching programs adapts your Matrix structure. Your past logged weights are safely preserved.</p>
+                <select id="program-selector" class="analytics-select" style="border-color: var(--accent-purple);" onchange="window.HOS.changeProgram(this.value)">
+                    <option value="5-Day OS">The 5-Day OS (Hypertrophy)</option>
+                    <option value="Titan 4-Day">Titan Powerbuilder (4-Day SBD)</option>
+                    <option value="Foundation 3-Day">The Foundation (3-Day Full Body)</option>
+                </select>
+            </div>
+
             <div class="glass-card">
                 <h2 style="margin-bottom: 15px;">Macrocycle Overview</h2>
                 <div class="stat-grid">
@@ -78,11 +91,6 @@
                     <svg class="chart-svg" id="progression-chart"></svg>
                 </div>
             </div>
-
-            <div class="glass-card" style="border-left: 3px solid var(--accent-orange);">
-                <h3 style="color:var(--accent-orange); margin-bottom:8px;">The Tension Directive</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted);">Muscles do not grow because they hurt; they grow because they deform under load. <strong>Execute a strict 3-second eccentric (lowering) on EVERY repetition.</strong> Dropping the weight wastes the mTORC1 signal.</p>
-            </div>
         </main>
 
         <!-- VIEW: WORKOUT MATRIX -->
@@ -93,7 +101,9 @@
             <div class="goal-box" id="weekly-goal" style="margin-bottom: 20px;">Loading...</div>
             <div id="days-container"></div>
             
-            <div class="intel-box" id="month-intel-combined" style="margin-top: 20px; margin-bottom: 20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">Loading...</div>
+            <div class="intel-box" id="month-intel-combined" style="margin-top: 20px; margin-bottom: 20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">
+                Loading...
+            </div>
 
             <!-- Subtle Reset Button -->
             <button id="reset-month-btn" onclick="window.HOS.resetMonth()" style="display: block; margin: 0 auto 20px auto; padding: 8px 18px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.65rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; transition: var(--transition);">
@@ -134,26 +144,20 @@
                 </div>
             </div>
             
+            <!-- VISUAL ATLAS SUBTAB -->
             <div id="atlas-visual" class="atlas-section active">
                 <div class="atlas-grid">
+                    <!-- SVG Library Restored Cleanly -->
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowLegs"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 20 C 130 20, 140 70, 120 110 C 110 130, 100 180, 100 180" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 100 110 L 80 110 L 70 180" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M 98 30 C 120 25, 140 60, 115 105 C 100 80, 95 60, 98 30 Z" fill="var(--accent-orange)" filter="url(#glowLegs)"/><line x1="40" y1="20" x2="80" y2="140" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="140" x2="160" y2="160" stroke="var(--accent-cyan)" stroke-width="8" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Hack Squat (Machine)</h4><p>Bypasses lower-back fatigue by stabilizing the spine. Yields superior <strong>Quad</strong> isolation over barbell squats.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowChest"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 60 40 L 60 160" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 60 70 C 80 70, 120 70, 140 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="75" cy="70" rx="15" ry="25" fill="var(--accent-green)" filter="url(#glowChest)"/><path d="M 40 40 L 40 160" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="140" y1="70" x2="180" y2="70" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Converging Machine Press</h4><p>Arms move inward as they push out, matching the natural fiber alignment of the <strong>Pectoralis Major</strong>.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowBack"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 100 90 L 80 30" stroke="#333" stroke-width="10" stroke-linecap="round"/><path d="M 100 90 Q 80 120 100 160" fill="none" stroke="var(--accent-purple)" stroke-width="14" filter="url(#glowBack)"/><line x1="40" y1="30" x2="160" y2="30" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/><line x1="100" y1="0" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Wide Lat Pulldown</h4><p>Driving elbows down into your pockets maximizes tension across the wide fan-shaped <strong>Latissimus Dorsi</strong>.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowMidBack"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 80 40 L 80 160" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 80 80 L 140 80" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="65" cy="80" rx="10" ry="25" fill="var(--accent-purple)" filter="url(#glowMidBack)"/><line x1="140" y1="80" x2="190" y2="80" stroke="#fff" stroke-dasharray="4 4" stroke-width="3"/><rect x="40" y="140" width="40" height="40" fill="var(--accent-cyan)" rx="5"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Cable Row</h4><p>Allow shoulders to stretch forward, then retract hard. Squeezes the <strong>Rhomboids</strong> and <strong>Mid-Traps</strong>.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowDelt"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 100 80 L 100 30" stroke="#333" stroke-width="12" stroke-linecap="round"/><circle cx="90" cy="80" r="14" fill="var(--accent-orange)" filter="url(#glowDelt)"/><line x1="80" y1="30" x2="120" y2="30" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="60" x2="60" y2="180" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Shoulder Press</h4><p>Fixed path removes instability, allowing maximum force output from the <strong>Anterior Deltoid</strong>.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowTri"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 70 40 L 70 160" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 70 60 L 100 100 L 100 150" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M 72 65 Q 90 85 95 100" fill="none" stroke="var(--accent-cyan)" stroke-width="8" filter="url(#glowTri)"/><line x1="100" y1="0" x2="100" y2="100" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/><line x1="100" y1="100" x2="100" y2="150" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Rope Tricep Pushdown</h4><p>Pinning elbows to your ribs ensures the <strong>Triceps Brachii</strong> does 100% of the work. Flare rope at bottom.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowQuad2"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 140 L 120 140" stroke="#333" stroke-width="20" stroke-linecap="round"/><path d="M 120 140 L 180 140" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 60 132 Q 90 120 115 132" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowQuad2)"/><rect x="20" y="150" width="100" height="50" fill="var(--accent-cyan)" rx="5"/><circle cx="170" cy="140" r="10" fill="var(--accent-cyan)"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Leg Extensions</h4><p>Isolates the <strong>Rectus Femoris</strong> (Quads). Hold the squeeze at full extension for 2 seconds to maximize burn.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowHam"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 30 100 L 120 100" stroke="#333" stroke-width="18" stroke-linecap="round"/><path d="M 120 100 L 120 40" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 80 100 Q 100 115 120 100" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowHam)"/><rect x="20" y="110" width="100" height="15" fill="var(--accent-cyan)" rx="3"/><circle cx="120" cy="40" r="10" fill="var(--accent-cyan)"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Lying Leg Curls</h4><p>Drives blood directly into the <strong>Hamstrings</strong>. Keep your hips pinned down into the pad to prevent cheating.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowBicep"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 140 L 90 80 L 140 50" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M 80 90 Q 95 65 110 65" fill="none" stroke="var(--accent-green)" stroke-width="12" filter="url(#glowBicep)"/><polygon points="40,160 100,80 120,95 60,175" fill="var(--accent-cyan)" opacity="0.3"/><circle cx="140" cy="50" r="12" fill="#fff"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Preacher Curls</h4><p>Locks the shoulder in place, removing momentum and forcing the <strong>Biceps Brachii</strong> to pull the entire load.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><path d="M 100 40 L 100 160 M 70 60 L 130 60" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 70 60 C 40 80, 30 120, 40 160" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><circle cx="65" cy="70" r="18" fill="var(--accent-cyan)" filter="url(#glow)"/><line x1="40" y1="160" x2="180" y2="150" stroke="#fff" stroke-width="3" stroke-dasharray="6 6"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Cross-Body Cable Lateral</h4><p>Maintains tension curve perfectly on the <strong>Lateral Deltoid</strong> from bottom to top, unlike free weights.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><path d="M 40 30 L 50 80 L 120 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M 42 40 C 60 35, 70 60, 55 75 C 45 65, 40 50, 42 40 Z" fill="var(--accent-green)" filter="url(#glow)"/><line x1="120" y1="70" x2="160" y2="180" stroke="var(--accent-cyan)" stroke-width="3"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Bayesian Cable Curls</h4><p>Working from a stretched position yields the highest hypertrophy rates for the <strong>Biceps Brachii</strong>.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowCalf"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 60 140 L 100 140 L 100 80 L 140 80" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 100 120 Q 120 100 100 80" fill="none" stroke="var(--accent-purple)" stroke-width="12" filter="url(#glowCalf)"/><rect x="20" y="140" width="60" height="20" fill="var(--accent-cyan)" rx="5"/><circle cx="100" cy="140" r="10" fill="#fff"/><line x1="130" y1="70" x2="160" y2="70" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Calf Raise</h4><p>Bending the knee isolates the <strong>Soleus</strong>. Pause for 2 seconds at the bottom to kill the achilles stretch reflex.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowAbs"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 160 L 100 160 L 100 100 C 100 70, 70 70, 70 100" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round"/><path d="M 90 100 Q 110 130 90 150" fill="none" stroke="var(--accent-orange)" stroke-width="12" filter="url(#glowAbs)"/><line x1="70" y1="100" x2="140" y2="40" stroke="#fff" stroke-width="3" stroke-dasharray="4 4"/><line x1="40" y1="160" x2="120" y2="160" stroke="var(--accent-cyan)" stroke-width="6"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Cable Crunch</h4><p>Allows for actual progressive overload of the <strong>Rectus Abdominis</strong>. Flex the spine, do not just hinge at the hips.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowMid"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><line x1="40" y1="140" x2="160" y2="60" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/><path d="M 120 85 L 70 120" stroke="#333" stroke-width="18" stroke-linecap="round"/><path d="M 100 100 L 100 160" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="90" cy="100" rx="15" ry="8" fill="var(--accent-purple)" transform="rotate(-35 90 100)" filter="url(#glowMid)"/><circle cx="100" cy="160" r="10" fill="#fff"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Chest-Supported Row</h4><p>Removes the lower back from the equation entirely, forcing the <strong>Lats and Rhomboids</strong> to do 100% of the pulling.</p></div></div>
-                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowGlute"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 40 100 L 100 100 L 140 160" fill="none" stroke="#333" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="95" cy="100" r="14" fill="var(--accent-orange)" filter="url(#glowGlute)"/><rect x="20" y="90" width="40" height="20" fill="var(--accent-cyan)" rx="5"/><line x1="100" y1="100" x2="100" y2="70" stroke="#fff" stroke-width="12" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Glute Drive</h4><p>Provides extreme tension on the <strong>Gluteus Maximus</strong> in the fully shortened position. Squeeze hard at the top.</p></div></div>
                 </div>
             </div>
 
+            <!-- SCIENCE & PHILOSOPHY SUBTAB -->
             <div id="atlas-science" class="atlas-section">
                 <!-- Section 1: Nutrition -->
                 <div class="essay-section">
@@ -228,7 +232,7 @@
     <div class="nav-item" onclick="window.HOS.switchView('view-atlas', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg> Atlas</div>
 </nav>
 
-<!-- Scripts -->
+<!-- Engine Logic -->
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
