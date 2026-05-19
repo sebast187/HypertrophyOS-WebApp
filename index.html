@@ -816,31 +816,46 @@
         container.innerHTML = '<svg class="chart-svg" id="progression-chart"></svg>';
         const svg = document.getElementById('progression-chart');
         
-        let dataPts =[];
+        let dataPts = [];
+        
+        // Extraemos cada sesión individualmente (Por Semana Y por Día)
         for(let w=1; w<=24; w++){
-            let maxW = 0;
-            Object.keys(State.logs).forEach(k => {
-                if(k.startsWith(`w${w}_`) && k.includes(exName.replace(/\s/g,''))) {
-                    let wVal = parseFloat(State.logs[k].w); let rVal = parseInt(State.logs[k].r);
-                    if (rVal === 0 || wVal === 0) return; 
-                    if(wVal > maxW) maxW = wVal;
+            for(let d=0; d<5; d++){
+                let dayMaxW = -1;
+                let hasLog = false;
+                
+                Object.keys(State.logs).forEach(k => {
+                    // Validamos que sea de esta semana, este día y del ejercicio seleccionado
+                    if(k.startsWith(`w${w}_d${d}_`) && k.includes(exName.replace(/\s/g,''))) {
+                        let l = State.logs[k];
+                        if (l.done) { // Sólo cuenta los que tienen palomita verde
+                            hasLog = true;
+                            let wVal = parseFloat(l.w);
+                            if(isNaN(wVal)) wVal = 0; // Permite graficar peso corporal (0kg) si se deja en blanco
+                            if(wVal > dayMaxW) dayMaxW = wVal;
+                        }
+                    }
+                });
+                
+                // Si encontramos datos en este día en específico, agregamos UN PUNTO a la gráfica
+                if(hasLog) {
+                    dataPts.push({ maxW: dayMaxW === -1 ? 0 : dayMaxW });
                 }
-            });
-            if(maxW > 0) dataPts.push({w, maxW});
+            }
         }
 
         if(dataPts.length === 0) {
             svg.innerHTML = `<text x="50%" y="50%" fill="#888" font-size="12" text-anchor="middle">No data logged yet.</text>`; return;
         }
 
-        const w = svg.clientWidth || 300; const h = 200; const pad = 20;
-        const maxVal = Math.max(...dataPts.map(d=>d.maxW)) * 1.2; 
-        const wUnit = (w - pad*2) / Math.max(1, dataPts.length - 1);
+        const wSvg = svg.clientWidth || 300; const h = 200; const pad = 20;
+        const maxVal = Math.max(1, Math.max(...dataPts.map(d=>d.maxW)) * 1.2); 
+        const wUnit = (wSvg - pad*2) / Math.max(1, dataPts.length - 1);
 
         for(let i=0; i<=4; i++){
             const gridY = pad + (i * (h - pad*2) / 4);
             const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", pad); line.setAttribute("y1", gridY); line.setAttribute("x2", w - pad); line.setAttribute("y2", gridY);
+            line.setAttribute("x1", pad); line.setAttribute("y1", gridY); line.setAttribute("x2", wSvg - pad); line.setAttribute("y2", gridY);
             line.setAttribute("stroke", "rgba(255,255,255,0.05)"); svg.appendChild(line);
         }
 
