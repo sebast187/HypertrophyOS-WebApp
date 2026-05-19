@@ -237,6 +237,9 @@
         .bar-container { display: flex; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; background: #222;}
         .bar-fat { background: var(--accent-orange); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #000; text-shadow: 0px 1px 2px rgba(255,255,255,0.3); }
         .bar-muscle { background: var(--accent-purple); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #fff; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); }
+
+        .svg-musc { transition: fill 0.4s ease, filter 0.4s ease; } /* Makes the human body glow */
+    
     </style>
 </head>
 <body>
@@ -351,7 +354,48 @@
                     </select>
                 </div>
                 <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Live tracked volume per target muscle. Compound exercises uniquely distribute tension across multiple groups.</p>
-                <div id="muscle-graph" style="display:flex; flex-direction:column; gap:10px;"></div>
+                <!-- HUMAN SVGs (Front and Back) Heatmap -->
+                <div style="display:flex; justify-content:center; gap:25px; margin-bottom:20px; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--border-light);">
+                    <!-- Anterior Model -->
+                    <div style="text-align:center;">
+                        <p style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold; letter-spacing:2px; margin-bottom:10px;">Anterior</p>
+                        <svg viewBox="0 0 100 200" width="100" height="200" style="background:transparent; overflow:visible;">
+                            <circle cx="50" cy="15" r="10" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Chest" d="M 38 30 H 62 L 60 48 L 50 53 L 40 48 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Core" d="M 40 50 L 50 55 L 60 50 L 56 75 H 44 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 36 30 L 24 38 L 28 50 L 38 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 64 30 L 76 38 L 72 50 L 62 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Biceps" d="M 28 52 L 20 68 L 26 72 L 32 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Biceps" d="M 72 52 L 80 68 L 74 72 L 68 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M 26 74 L 16 95 L 22 98 L 30 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path d="M 74 74 L 84 95 L 78 98 L 70 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path class="svg-musc svg-musc-Quads" d="M 42 80 H 58 L 62 120 H 52 L 50 100 L 48 120 H 38 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 40 125 H 48 L 46 160 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 52 125 H 60 L 58 160 H 54 Z" fill="rgba(255,255,255,0.05)"/>
+                        </svg>
+                    </div>
+                    <!-- Posterior Model -->
+                    <div style="text-align:center;">
+                        <p style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold; letter-spacing:2px; margin-bottom:10px;">Posterior</p>
+                        <svg viewBox="0 0 100 200" width="100" height="200" style="background:transparent; overflow:visible;">
+                            <circle cx="50" cy="15" r="10" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Back" d="M 38 30 H 62 L 58 65 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 36 30 L 24 38 L 28 50 L 38 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 64 30 L 76 38 L 72 50 L 62 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Triceps" d="M 28 52 L 20 68 L 26 72 L 32 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Triceps" d="M 72 52 L 80 68 L 74 72 L 68 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M 26 74 L 16 95 L 22 98 L 30 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path d="M 74 74 L 84 95 L 78 98 L 70 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path class="svg-musc svg-musc-Glutes" d="M 40 68 H 60 L 62 82 L 50 86 L 38 82 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Hamstrings" d="M 40 85 H 60 L 58 120 H 52 L 50 105 L 48 120 H 38 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 40 125 H 48 L 46 160 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 52 125 H 60 L 58 160 H 54 Z" fill="rgba(255,255,255,0.05)"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Horizontal Bar Grid -->
+                <div id="muscle-graph" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;"></div>
             </div>
 
             <div class="glass-card">
@@ -592,18 +636,23 @@
         if(n.includes("cable") || n.includes("pulldown") || n.includes("pushdown") || n.includes("face pull") || n.includes("rope") || n.includes("crunch")) mod = "Cable";
         if(n.includes("db ") || n.includes("dumbbell") || n.includes("arnold") || n.includes("free")) mod = "Free Weight";
         
-        if(n.includes("press") || n.includes("fly") || n.includes("pec") || n.includes("dip")) { mus = "Chest"; targets = ["Chest", "Shoulders", "Arms"]; }
-        if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold") || n.includes("face pull")) { mus = "Shoulders"; targets = ["Shoulders", "Arms"]; }
-        if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back") || n.includes("deadlift")) { mus = "Back"; targets = ["Back", "Arms", "Core"]; }
-        if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) { mus = "Arms"; targets = ["Arms"]; }
-        if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) { mus = "Legs"; targets = ["Legs", "Core"]; }
+        // Granular targeting logic
+        if(n.includes("press") || n.includes("fly") || n.includes("pec")) { mus = "Chest"; targets = ["Chest"]; }
+        if(n.includes("dip")) { mus = "Chest"; targets = ["Chest", "Triceps", "Shoulders"]; }
+        if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold")) { mus = "Shoulders"; targets = ["Shoulders"]; }
+        if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back")) { mus = "Back"; targets = ["Back"]; }
+        if(n.includes("curl") && !n.includes("leg")) { mus = "Arms"; targets = ["Biceps"]; }
+        if(n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) { mus = "Arms"; targets = ["Triceps"]; }
+        if(n.includes("squat") || n.includes("leg press") || n.includes("extension") || n.includes("hack")) { mus = "Legs"; targets = ["Quads"]; }
+        if(n.includes("leg curl") || n.includes("hamstring")) { mus = "Legs"; targets = ["Hamstrings"]; }
+        if(n.includes("calf") || n.includes("calves")) { mus = "Legs"; targets = ["Calves"]; }
+        if(n.includes("glute")) { mus = "Legs"; targets = ["Glutes"]; }
         
-        // overrides
-        if(n.includes("leg press")) { mus = "Legs"; targets = ["Legs"]; }
-        if(n.includes("shoulder press")) { mus = "Shoulders"; targets = ["Shoulders", "Arms"]; }
-        if(n.includes("leg curl") || n.includes("calf") || n.includes("glute")) { mus = "Legs"; targets = ["Legs"]; }
+        // Tricky Overrides
+        if(n.includes("shoulder press")) { mus = "Shoulders"; targets = ["Shoulders", "Triceps"]; }
         if(n.includes("face pull")) { mus = "Shoulders"; targets = ["Shoulders", "Back"]; }
         if(n.includes("crunch") || n.includes("core")) { mus = "Core"; targets = ["Core"]; }
+        if(n.includes("deadlift")) { mus = "Back"; targets = ["Back", "Hamstrings", "Glutes"]; }
         
         return { muscle: mus, modality: mod, targets: targets };
     }
@@ -760,8 +809,10 @@
     window.renderMuscleGraph = function() {
         const mg = document.getElementById('muscle-graph');
         if(!mg) return;
-        const weekFilter = document.getElementById('lab-week-filter').value;
-        const counts = { Chest:0, Back:0, Shoulders:0, Arms:0, Legs:0, Core:0 };
+        const weekFilter = document.getElementById('lab-week-filter') ? document.getElementById('lab-week-filter').value : "All";
+        
+        // Detailed list
+        const counts = { Chest:0, Back:0, Shoulders:0, Biceps:0, Triceps:0, Quads:0, Hamstrings:0, Calves:0, Glutes:0, Core:0 };
         let maxC = 1;
         
         Object.keys(State.logs).forEach(k => {
@@ -789,18 +840,36 @@
             }
         });
 
+        // 1. Render the Horizontal Bars
         mg.innerHTML = '';
         Object.keys(counts).forEach(m => {
             const pct = (counts[m] / maxC) * 100;
             mg.innerHTML += `
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:70px; font-size:0.75rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">${m}</div>
-                    <div style="flex:1; background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden;">
+                    <div style="width:70px; font-size:0.65rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">${m}</div>
+                    <div style="flex:1; background:rgba(255,255,255,0.05); height:8px; border-radius:4px; overflow:hidden;">
                         <div style="width:${pct}%; height:100%; background:var(--accent-cyan); box-shadow:0 0 10px var(--accent-cyan-glow); transition:width 0.5s;"></div>
                     </div>
-                    <div style="width:25px; font-size:0.8rem; color:white; font-family:var(--font-data); text-align:right;">${counts[m]}</div>
+                    <div style="width:20px; font-size:0.75rem; color:white; font-family:var(--font-data); text-align:right;">${counts[m]}</div>
                 </div>
             `;
+        });
+
+        // 2. Light up the Human SVG Heat Map
+        Object.keys(counts).forEach(m => {
+            const svgs = document.querySelectorAll(`.svg-musc-${m}`);
+            const intensity = counts[m] / maxC; // 0.0 to 1.0
+            
+            svgs.forEach(path => {
+                if (intensity === 0) {
+                    path.style.fill = "rgba(255,255,255,0.05)";
+                    path.style.filter = "none";
+                } else {
+                    const alpha = 0.2 + (0.8 * intensity); // Glow calculation
+                    path.style.fill = `rgba(0, 229, 255, ${alpha})`;
+                    path.style.filter = `drop-shadow(0 0 ${5 + (15 * intensity)}px rgba(0, 229, 255, ${0.3 + (0.5 * intensity)}))`;
+                }
+            });
         });
     }
 
