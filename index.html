@@ -3,8 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HypertrophyOS - Pro Engine</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>HypertrophyOS - 5-Day Pro Gym Protocol</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
+
+        :root {
+            --bg-base: #050505;
+            --bg-panel: rgba(20, 20, 22, 0.65);
+            --bg-panel-solid: #141416;
+            --accent-cyan: #00e5ff;
+            --accent-cyan-glow: rgba(0, 229, 255, 0.25);
+            --accent-purple: #b388ff;
+            --accent-green: #00e676;
+            --accent-orange: #ff3d00;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-light: rgba(255, 255, 255, 0.12);
+            --nav-height: 80px;
+            --font-ui: 'Inter', sans-serif;
+            --font-data: 'JetBrains Mono', monospace;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-ui); background-color: var(--bg-base); color: var(--text-main);
+            overflow-x: hidden; padding-bottom: calc(var(--nav-height) + 20px);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(179, 136, 255, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4 { font-weight: 900; letter-spacing: -0.5px; }
+        input, select, button { font-family: var(--font-ui); outline: none; border: none; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
+
+        /* ==========================================================================
+           UI COMPONENTS & GLASSMORPHISM
+           ========================================================================== */
+        header {
+            padding: 30px 15px 15px; position: sticky; top: 0; z-index: 50;
+            background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo h1 { font-size: 1.8rem; text-transform: uppercase; }
+        .logo h1 span { color: var(--accent-cyan); }
+        .logo p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        .unit-toggle {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 4px; display: flex; align-items: center; gap: 5px; cursor: pointer;
+        }
+        .unit-btn { padding: 4px 10px; font-size: 0.7rem; font-weight: 800; border-radius: 15px; color: var(--text-muted); transition: var(--transition); }
+        .unit-btn.active { background: var(--accent-cyan); color: #000; }
+
+        .glass-card {
+            background: var(--bg-panel); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
+        }
+
+        .view-section { display: none; opacity: 0; transform: translateY(10px); transition: var(--transition); }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); animation: fadeUp 0.4s forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        .btn-primary {
+            width: 100%; background: var(--accent-cyan); color: #000; padding: 15px;
+            border-radius: 12px; font-weight: 900; font-size: 1rem; text-transform: uppercase;
+            cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px var(--accent-cyan-glow);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* ==========================================================================
+           AUTHENTICATION GATE
+           ========================================================================== */
+        #auth-gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base); z-index: 9999; display: flex;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .auth-box { width: 100%; max-width: 380px; text-align: center; }
+        .auth-box input {
+            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
+            color: white; font-size: 1rem;
+        }
+        .auth-box input:focus { border-color: var(--accent-cyan); }
+        .auth-toggle { background: transparent; color: var(--text-muted); margin-top: 20px; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+
+        /* ==========================================================================
+           DASHBOARD & ANALYTICS
+           ========================================================================== */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 1px solid var(--border-light); }
+        .stat-val { font-family: var(--font-data); font-size: 2rem; color: var(--accent-cyan); font-weight: 800; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .filter-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-group select { 
+            flex: 1; min-width: 30%; padding: 10px; background: rgba(0,0,0,0.5); 
+            color: white; border: 1px solid var(--border-light); border-radius: 8px; 
+            font-size: 0.8rem; font-weight: bold; appearance: none;
+        }
+        .filter-group select:focus { border-color: var(--accent-cyan); }
+        .analytics-select { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-cyan); border-radius: 8px; margin-bottom: 10px; font-family: var(--font-ui); font-weight: bold;}
+
+        .chart-container { width: 100%; height: 200px; position: relative; margin-top:10px;}
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+
+        /* ==========================================================================
+           WORKOUT MATRIX (LOGGER)
+           ========================================================================== */
+        .month-slider, .week-slider { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+        .month-slider { padding-bottom: 15px; margin-bottom: 10px; border-bottom: 1px solid var(--border-light); }
+        .month-slider::-webkit-scrollbar, .week-slider::-webkit-scrollbar { display: none; }
+        .month-btn { flex: 0 0 auto; padding: 6px 15px; background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .month-btn.active { background: var(--accent-cyan-glow); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .week-slider { padding-bottom: 10px; margin-bottom: 15px; }
+        .week-btn { flex: 0 0 auto; padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light); border-radius: 30px; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition); }
+        .week-btn.active { background: white; color: #000; border-color: white; }
+        
+        .intel-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .intel-box h4 { font-size: 1rem; color: var(--accent-cyan); margin-bottom: 5px; }
+        .intel-box p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        .goal-box { border-left: 3px solid var(--accent-purple); background: linear-gradient(90deg, rgba(179, 136, 255, 0.1), transparent); padding: 12px; border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted); }
+
+        .day-accordion { background: var(--bg-panel-solid); border: 1px solid var(--border-light); border-radius: 16px; margin-bottom: 15px; overflow: hidden; }
+        .day-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .day-header h3 { font-size: 1rem; color: var(--text-main); }
+        .day-prog { font-family: var(--font-data); font-size: 0.8rem; color: var(--accent-green); font-weight: bold; background: rgba(0, 230, 118, 0.1); padding: 4px 10px; border-radius: 12px; }
+        
+        .day-body { display: none; padding: 0 15px 15px; border-top: 1px solid var(--border-light); }
+        .day-body.open { display: block; animation: fadeUp 0.3s forwards; }
+
+        .ex-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-top: 15px; padding: 15px; }
+        .ex-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 5px; color: var(--accent-cyan); }
+        .ex-meta { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; font-family: var(--font-data); font-weight: 700; background: rgba(255,255,255,0.1); }
+
+        .log-table { width: 100%; border-collapse: collapse; }
+        .log-table th { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); text-align: center; }
+        .log-table td { padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.02); text-align: center; }
+        .log-table tr.done-row { opacity: 0.5; }
+        
+        .set-idx { font-family: var(--font-data); font-weight: bold; color: var(--text-muted); }
+        .log-input { width: 60px; padding: 8px; text-align: center; text-align-last: center; font-family: var(--font-data); font-weight: 700; background: rgba(0,0,0,0.5); border: 1px solid var(--border-light); color: white; border-radius: 6px; }
+        .log-input:focus { border-color: var(--accent-cyan); }
+        select.log-input option { background: var(--bg-panel-solid); color: white; }
+        
+        .check-btn { width: 32px; height: 32px; margin: 0 auto; border-radius: 8px; border: 2px solid var(--border-light); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: var(--transition); background: transparent; }
+        .check-btn.checked { background: var(--accent-green); border-color: var(--accent-green); }
+        .check-btn svg { width: 16px; height: 16px; stroke: var(--bg-base); stroke-width: 4; fill: none; opacity: 0; }
+        .check-btn.checked svg { opacity: 1; }
+
+        /* ==========================================================================
+           THE LAB & ATLAS
+           ========================================================================== */
+        .calc-group { margin-bottom: 15px; }
+        .calc-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
+        .calc-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 8px; color: white; font-family: var(--font-data); }
+        .calc-result { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-light); font-size: 0.9rem; }
+        .calc-result span:last-child { font-family: var(--font-data); color: var(--accent-cyan); font-weight: bold; }
+
+        .atlas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .svg-card { text-align: center; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: var(--transition); }
+        .svg-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); box-shadow: 0 8px 25px rgba(0,229,255,0.15); }
+        .svg-canvas { width: 100%; max-width: 250px; height: 200px; background: #0a0a0c; border-radius: 12px; border: 1px solid var(--border-light); padding: 15px; margin-bottom: 15px; }
+        .svg-desc { text-align: left; font-size: 0.85rem; color: var(--text-muted); }
+        .svg-desc strong { color: white; }
+
+        /* ==========================================================================
+           REST TIMER & BOTTOM NAV
+           ========================================================================== */
+        .rest-timer {
+            position: fixed; bottom: calc(var(--nav-height) + 15px); right: 15px;
+            background: rgba(20, 20, 22, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-orange); border-radius: 30px;
+            padding: 8px 15px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 5px 20px rgba(255, 61, 0, 0.3); z-index: 100;
+            transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .rest-timer.active { transform: translateX(0); }
+        .timer-txt { font-family: var(--font-data); font-size: 1.2rem; font-weight: 800; color: white; }
+        .timer-btn { background: transparent; color: var(--accent-orange); font-size: 1.2rem; cursor: pointer; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 1px solid var(--accent-orange); }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item {
+            background: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; cursor: pointer; width: 25%; transition: var(--transition);
+        }
+        .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; transition: var(--transition); }
+        .nav-item.active { color: var(--accent-cyan); }
+        .nav-item.active svg { transform: translateY(-3px); stroke: var(--accent-cyan); filter: drop-shadow(0 2px 5px var(--accent-cyan-glow)); }
+
+        #toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -150%); background: white; color: black; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; z-index: 10000; transition: transform 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #toast.show { transform: translate(-50%, 0); }
+        
+        /* EXERCISE SWAP & ATLAS TABS CSS */
+        .ex-swap-select { appearance: none; background: transparent; color: var(--accent-cyan); font-size: 1.05rem; font-weight: 800; border: none; outline: none; cursor: pointer; width: 100%; text-overflow: ellipsis; }
+        .ex-swap-select option { background: var(--bg-panel-solid); color: white; font-size: 0.9rem; }
+        .atlas-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
+        .atlas-tab { padding: 8px 15px; color: var(--text-muted); font-weight: bold; font-size: 0.85rem; border-radius: 20px; cursor: pointer; border: 1px solid transparent; transition: var(--transition); }
+        .atlas-tab.active { color: var(--accent-purple); background: rgba(179, 136, 255, 0.1); border-color: var(--accent-purple); }
+        .atlas-section { display: none; animation: fadeUp 0.3s forwards; }
+        .atlas-section.active { display: block; }
+
+        /* SCIENCE ESSAY & INTERACTIVE SIMULATORS */
+        .essay-section { margin-top: 25px; border-left: 2px solid var(--accent-cyan); padding-left: 15px; }
+        .essay-title { font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .essay-p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; text-align: justify; }
+        .essay-highlight { color: white; font-weight: bold; }
+        
+        .interactive-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+        .sim-slider { width: 100%; appearance: none; background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; outline: none; margin: 15px 0; }
+        .sim-slider::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-purple); cursor: pointer; box-shadow: 0 0 10px var(--accent-purple); }
+        .bar-container { display: flex; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; background: #222;}
+        .bar-fat { background: var(--accent-orange); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #000; text-shadow: 0px 1px 2px rgba(255,255,255,0.3); }
+        .bar-muscle { background: var(--accent-purple); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #fff; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); }
+    </style>
 </head>
 <body>
 
@@ -13,53 +237,24 @@
 <!-- AUTH GATE -->
 <div id="auth-gate">
     <div class="auth-box">
-        <h1>HYPERTROPHY<span style="color:var(--accent-cyan)">OS</span></h1>
-        <p class="subtitle">Dynamic Training Engine</p>
+        <h1 style="font-size: 2.5rem; margin-bottom: 5px;">HYPERTROPHY<span style="color:var(--accent-cyan)">OS</span></h1>
+        <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">5-Day Gym Protocol</p>
         <form id="auth-form">
             <input type="email" id="auth-email" placeholder="Email Address" required>
             <input type="password" id="auth-pass" placeholder="Password (Min 6)" required>
             <button type="submit" class="btn-primary" id="auth-btn">Initialize Connection</button>
         </form>
         <button type="button" class="auth-toggle" id="auth-toggle">New user? Create profile.</button>
-        <p class="firebase-note">*Initializing with Firebase Cloud Sync.*</p>
-    </div>
-</div>
-
-<!-- ONBOARDING WIZARD -->
-<div id="onboarding-wizard" style="display: none;">
-    <div class="wizard-box glass-card">
-        <h2 style="color:var(--accent-cyan); margin-bottom:15px;">Welcome to HypertrophyOS</h2>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Let's calibrate the engine to your physiology.</p>
-        
-        <div class="calc-group">
-            <label>Primary Goal</label>
-            <select id="wizard-goal" class="log-input" style="width:100%; text-align:left;">
-                <option value="hypertrophy">Maximum Size (Hypertrophy)</option>
-                <option value="strength">Strength & Powerbuilding</option>
-                <option value="recomp">Fat Loss / Recomp</option>
-            </select>
-        </div>
-        <div class="calc-group">
-            <label>Training Frequency</label>
-            <select id="wizard-days" class="log-input" style="width:100%; text-align:left;">
-                <option value="3">3 Days (Foundation Block)</option>
-                <option value="4">4 Days (Titan Block)</option>
-                <option value="5">5 Days (Original OS)</option>
-            </select>
-        </div>
-        <div class="calc-group">
-            <label>Current Bodyweight</label>
-            <input type="number" id="wizard-bw" placeholder="Enter Weight" class="log-input" style="width:100%; text-align:left;">
-        </div>
-        <button class="btn-primary" onclick="window.HOS.finishOnboarding()">Generate Blueprint</button>
+        <p style="margin-top: 20px; font-size: 0.7rem; color: #555;">*Initializing with Firebase Cloud Sync.*</p>
     </div>
 </div>
 
 <!-- MAIN APP -->
 <div id="app-core" style="display: none;">
+    
     <header>
         <div class="logo">
-            <p>Pro Edition</p>
+            <p>World Gym Edition</p>
             <h1>Hypertrophy<span>OS</span></h1>
         </div>
         <div style="display:flex; align-items:center; gap:15px;">
@@ -67,7 +262,7 @@
                 <div class="unit-btn active" id="unit-kg">KG</div>
                 <div class="unit-btn" id="unit-lbs">LBS</div>
             </div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" onclick="window.HOS.logout()" style="cursor:pointer;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.HOS.logout()" style="cursor:pointer;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </div>
     </header>
 
@@ -75,29 +270,14 @@
         
         <!-- VIEW: DASHBOARD -->
         <main id="view-dash" class="view-section active">
-            <!-- Nutrition & Auto-Regulation Widget -->
-            <div class="glass-card" style="border-left: 3px solid var(--accent-purple);">
-                <h3 style="color:var(--accent-purple); margin-bottom:10px;">Metabolic Delta Scanner</h3>
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <input type="number" step="0.1" id="dash-weight-input" class="log-input" style="flex:1; text-align:left;" placeholder="Log today's weight...">
-                    <button class="btn-primary" style="width:auto; padding:8px 15px;" onclick="window.HOS.logDailyWeight()">Log</button>
-                </div>
-                <div id="weight-delta-alert" style="font-size:0.8rem; color:var(--accent-orange); font-weight:bold; display:none;"></div>
-            </div>
-
-            <!-- Systemic Fatigue Meter -->
             <div class="glass-card">
-                <h3 style="color:var(--accent-cyan); margin-bottom:10px;">Systemic Fatigue Meter (MRV)</h3>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:15px;">Live tracking of Central Nervous System load based on active week execution.</p>
-                <div id="fatigue-meter-container" style="display:flex; flex-direction:column; gap:12px;"></div>
-                <div id="deload-warning" style="display:none; margin-top:15px; padding:10px; background:rgba(255,61,0,0.1); border-left:3px solid var(--accent-orange); font-size:0.8rem; color:white; font-weight:bold;">
-                    ⚠️ CNS Overload Detected. Auto-Regulation advises scaling down your sets by 20% next week.
+                <h2 style="margin-bottom: 15px;">Macrocycle Overview</h2>
+                <div class="stat-grid">
+                    <div class="stat-box"><div class="stat-val" id="stat-workouts">0</div><div class="stat-label">Workouts Cleared</div></div>
+                    <div class="stat-box"><div class="stat-val" id="stat-sets">0</div><div class="stat-label">Sets Executed</div></div>
                 </div>
-            </div>
-
-            <!-- Progression Chart -->
-            <div class="glass-card">
-                <h3 style="margin-bottom: 10px;">Strength Progression</h3>
+                
+                <h3 style="margin-top: 20px; font-size: 1rem; color:var(--accent-cyan); margin-bottom: 10px;">Progressive Overload Tracker</h3>
                 <div class="filter-group">
                     <select id="filter-muscle" onchange="window.HOS.updateModality()">
                         <option value="All">All Muscles</option>
@@ -110,33 +290,23 @@
                     </select>
                     <select id="filter-modality" onchange="window.HOS.updateExerciseDrop()">
                         <option value="All">All Modalities</option>
+                        <option value="Machine">Machines</option>
+                        <option value="Cable">Cables</option>
+                        <option value="Free Weight">Free Weights</option>
                     </select>
                 </div>
                 <select class="analytics-select" id="analytics-ex" onchange="window.HOS.saveChartEx()">
                     <option value="">Select an exercise...</option>
                 </select>
-                <div class="chart-container"><svg class="chart-svg" id="progression-chart"></svg></div>
-            </div>
-        </main>
-
-        <!-- VIEW: PROGRAMS (NEW) -->
-        <main id="view-programs" class="view-section">
-            <div class="glass-card">
-                <h2 style="margin-bottom: 15px; color:var(--accent-cyan);">Program Hub</h2>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Switching architectures safely archives your data and dynamically reconstructs the Matrix.</p>
                 
-                <div class="program-card" onclick="window.HOS.switchProgram('foundation')">
-                    <h3 style="color:var(--accent-green);">The Foundation Block</h3>
-                    <p>3-Day Full Body. Optimized for systemic MRV and maximum frequency for beginners or busy schedules.</p>
+                <div class="chart-container">
+                    <svg class="chart-svg" id="progression-chart"></svg>
                 </div>
-                <div class="program-card" onclick="window.HOS.switchProgram('titan')">
-                    <h3 style="color:var(--accent-orange);">The Titan Block</h3>
-                    <p>4-Day Upper/Lower. Powerbuilding focused. Heavy singles and RPE tracking for SBD progression.</p>
-                </div>
-                <div class="program-card" onclick="window.HOS.switchProgram('os')">
-                    <h3 style="color:var(--accent-purple);">Original OS</h3>
-                    <p>5-Day Bodybuilding. The classic tension-focused hyper-split for maximum tissue deformation.</p>
-                </div>
+            </div>
+
+            <div class="glass-card" style="border-left: 3px solid var(--accent-orange);">
+                <h3 style="color:var(--accent-orange); margin-bottom:8px;">The Tension Directive</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted);">Muscles do not grow because they hurt; they grow because they deform under load. <strong>Execute a strict 3-second eccentric (lowering) on EVERY repetition.</strong> Dropping the weight wastes the mTORC1 signal.</p>
             </div>
         </main>
 
@@ -144,17 +314,38 @@
         <main id="view-matrix" class="view-section">
             <div class="month-slider" id="month-slider"></div>
             <div class="week-slider" id="week-slider"></div>
+            
+            <!-- Weekly Goal stays at the top -->
             <div class="goal-box" id="weekly-goal" style="margin-bottom: 20px;">Loading...</div>
+            
+            <!-- Workout Days Container -->
             <div id="days-container"></div>
+            
+            <!-- Combined Month Overview & Protocol -->
+            <div class="intel-box" id="month-intel-combined" style="margin-top: 20px; margin-bottom: 20px; border-left:4px solid var(--accent-green); background:rgba(0,230,118,0.05);">
+                Loading...
+            </div>
+
+            <!-- Subtle Reset Button -->
+            <button id="reset-month-btn" onclick="window.HOS.resetMonth()" style="display: block; margin: 0 auto 20px auto; padding: 8px 18px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.65rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; transition: var(--transition);">
+                Reset Checkmarks
+            </button>
         </main>
 
         <!-- VIEW: THE LAB -->
         <main id="view-lab" class="view-section">
-             <!-- Recomp Engine -->
-             <div class="glass-card">
+            <div class="glass-card">
+                <h3 style="color:var(--accent-cyan); margin-bottom:10px;">Muscle Distribution Graph</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Live tracked volume per muscle group (Active log sets executed).</p>
+                <div id="muscle-graph" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+
+            <div class="glass-card">
                 <h2 style="color:var(--accent-cyan); margin-bottom:15px;">Dr. Helms Recomp Engine</h2>
                 <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Calculates the exact math required to metabolize fat while fueling muscle protein synthesis (Max 0.5% BW deficit/week).</p>
-                <input type="number" id="calc-bw" placeholder="Enter Bodyweight" onchange="window.HOS.saveBW(this.value)" class="log-input" style="width:100%; text-align:left; margin-bottom:15px;">
+                <div style="margin-bottom: 15px;">
+                    <input type="number" id="calc-bw" placeholder="Enter Bodyweight" inputmode="numeric" onchange="window.HOS.saveBW(this.value)" style="width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border-light); border-radius:8px; color:white; font-family:var(--font-data);">
+                </div>
                 <button class="btn-primary" onclick="window.HOS.calcRecomp()" style="margin-bottom:15px;">Compute Protocol</button>
                 <div id="calc-results" style="display:none; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid var(--border-light);">
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-size:0.85rem; color:var(--text-muted);">Max Fat Loss</span><span id="res-fat" style="font-family:var(--font-data); color:var(--accent-cyan); font-weight:bold;"></span></div>
@@ -162,37 +353,19 @@
                     <div style="display:flex; justify-content:space-between;"><span style="font-size:0.85rem; color:var(--text-muted);">Minimum Protein</span><span id="res-pro" style="font-family:var(--font-data); color:var(--accent-cyan); font-weight:bold;"></span></div>
                 </div>
             </div>
-            
-            <!-- Nitrogen Limits & Sleep Mechanics Restored! -->
-            <div class="glass-card">
-                <h2 style="color:var(--accent-green); margin-bottom:15px;">The Nitrogen Engine</h2>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Calculate the biological cutoff for protein synthesis. Excess nitrogen beyond this is oxidized or stored as fat.</p>
-                <div style="display:flex; gap:10px; margin-bottom: 10px;">
-                    <input type="number" id="sim-bw" placeholder="Bodyweight" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
-                    <input type="number" id="sim-pro" placeholder="Daily Protein (g)" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
-                </div>
-                <div id="sim-pro-result" style="font-size:0.85rem; color:var(--text-muted); padding-left: 10px; border-left: 2px solid var(--accent-green);">Enter your stats to compute limits.</div>
-            </div>
 
-            <div class="glass-card" style="border-color:rgba(179, 136, 255, 0.3);">
-                <h2 style="color:var(--accent-purple); margin-bottom: 10px;">Sleep Partitioning Simulator</h2>
-                <p style="font-size:0.85rem; color:var(--text-muted);">Adjust your sleep to see the physiological breakdown of your weight loss (The 18% Sleep Penalty).</p>
-                <div style="display:flex; justify-content:space-between; margin-top:20px; font-family:var(--font-data); font-size:0.85rem; color:white;">
-                    <span>4 Hrs</span><span id="sim-sleep-val" style="color:var(--accent-cyan); font-weight:bold; font-size:1.1rem;">7.5 Hrs</span><span>9 Hrs</span>
-                </div>
-                <input type="range" id="sim-sleep" class="sim-slider" min="4" max="9" step="0.5" value="7.5" oninput="window.HOS.updateSleepSim()">
-                <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">
-                    <span style="color:var(--accent-orange);">Fat Burned</span><span style="color:var(--accent-purple);">Muscle Lost</span>
-                </div>
-                <div class="bar-container">
-                    <div id="bar-fat" class="bar-fat" style="width: 80%;">80%</div>
-                    <div id="bar-muscle" class="bar-muscle" style="width: 20%;">20%</div>
-                </div>
-                <p id="sim-sleep-desc" style="font-size:0.8rem; color:var(--text-muted); margin-top:15px; text-align:center; font-style: italic;">"Optimal hormonal environment. Fat is prioritized for fuel."</p>
+            <div class="glass-card">
+                <h3 style="color:var(--accent-purple); margin-bottom:10px;">The 18% Sleep Penalty</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Muscle Protein Synthesis finishes its construction crew around hour 48. One bad night of sleep reduces synthesis by 18%.</p>
+                <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:15px; margin-bottom:15px;">
+                    <li style="margin-bottom:5px;"><strong style="color:white;">Absolute Darkness:</strong> Tape over all LED lights (chargers/smoke detectors). Use an eye mask.</li>
+                    <li style="margin-bottom:5px;"><strong style="color:white;">Thermoregulation:</strong> AC must drop the temperature by 2 AM to sustain deep REM sleep.</li>
+                    <li><strong style="color:white;">Napping:</strong> A strict 20-minute nap reverses sleep-deprived athletic decline by up to 3%.</li>
+                </ul>
             </div>
         </main>
 
-        <!-- VIEW: ATLAS (RESTORED) -->
+        <!-- VIEW: ATLAS & SCIENCE -->
         <main id="view-atlas" class="view-section">
             <div class="glass-card">
                 <h2>The Library</h2>
@@ -208,50 +381,733 @@
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowLegs"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 20 C 130 20, 140 70, 120 110 C 110 130, 100 180, 100 180" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 100 110 L 80 110 L 70 180" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M 98 30 C 120 25, 140 60, 115 105 C 100 80, 95 60, 98 30 Z" fill="var(--accent-orange)" filter="url(#glowLegs)"/><line x1="40" y1="20" x2="80" y2="140" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="140" x2="160" y2="160" stroke="var(--accent-cyan)" stroke-width="8" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Hack Squat (Machine)</h4><p>Bypasses lower-back fatigue by stabilizing the spine. Yields superior <strong>Quad</strong> isolation over barbell squats.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowChest"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 60 40 L 60 160" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 60 70 C 80 70, 120 70, 140 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="75" cy="70" rx="15" ry="25" fill="var(--accent-green)" filter="url(#glowChest)"/><path d="M 40 40 L 40 160" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="140" y1="70" x2="180" y2="70" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Converging Machine Press</h4><p>Arms move inward as they push out, matching the natural fiber alignment of the <strong>Pectoralis Major</strong>.</p></div></div>
                     <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowBack"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 100 90 L 80 30" stroke="#333" stroke-width="10" stroke-linecap="round"/><path d="M 100 90 Q 80 120 100 160" fill="none" stroke="var(--accent-purple)" stroke-width="14" filter="url(#glowBack)"/><line x1="40" y1="30" x2="160" y2="30" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/><line x1="100" y1="0" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Wide Lat Pulldown</h4><p>Driving elbows down into your pockets maximizes tension across the wide fan-shaped <strong>Latissimus Dorsi</strong>.</p></div></div>
-                    <!-- Added a few representing the rest of the original SVGs -->
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowMidBack"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 80 40 L 80 160" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 80 80 L 140 80" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="65" cy="80" rx="10" ry="25" fill="var(--accent-purple)" filter="url(#glowMidBack)"/><line x1="140" y1="80" x2="190" y2="80" stroke="#fff" stroke-dasharray="4 4" stroke-width="3"/><rect x="40" y="140" width="40" height="40" fill="var(--accent-cyan)" rx="5"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Cable Row</h4><p>Allow shoulders to stretch forward, then retract hard. Squeezes the <strong>Rhomboids</strong> and <strong>Mid-Traps</strong>.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowDelt"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 100 80 L 100 180" stroke="#333" stroke-width="16" stroke-linecap="round"/><path d="M 100 80 L 100 30" stroke="#333" stroke-width="12" stroke-linecap="round"/><circle cx="90" cy="80" r="14" fill="var(--accent-orange)" filter="url(#glowDelt)"/><line x1="80" y1="30" x2="120" y2="30" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="60" x2="60" y2="180" stroke="var(--accent-cyan)" stroke-width="6" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Shoulder Press</h4><p>Fixed path removes instability, allowing maximum force output from the <strong>Anterior Deltoid</strong>.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowTri"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 70 40 L 70 160" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 70 60 L 100 100 L 100 150" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M 72 65 Q 90 85 95 100" fill="none" stroke="var(--accent-cyan)" stroke-width="8" filter="url(#glowTri)"/><line x1="100" y1="0" x2="100" y2="100" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/><line x1="100" y1="100" x2="100" y2="150" stroke="var(--accent-cyan)" stroke-width="5" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Rope Tricep Pushdown</h4><p>Pinning elbows to your ribs ensures the <strong>Triceps Brachii</strong> does 100% of the work. Flare rope at bottom.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowQuad2"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 140 L 120 140" stroke="#333" stroke-width="20" stroke-linecap="round"/><path d="M 120 140 L 180 140" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 60 132 Q 90 120 115 132" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowQuad2)"/><rect x="20" y="150" width="100" height="50" fill="var(--accent-cyan)" rx="5"/><circle cx="170" cy="140" r="10" fill="var(--accent-cyan)"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Leg Extensions</h4><p>Isolates the <strong>Rectus Femoris</strong> (Quads). Hold the squeeze at full extension for 2 seconds to maximize burn.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowHam"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 30 100 L 120 100" stroke="#333" stroke-width="18" stroke-linecap="round"/><path d="M 120 100 L 120 40" stroke="#333" stroke-width="12" stroke-linecap="round"/><path d="M 80 100 Q 100 115 120 100" fill="none" stroke="var(--accent-orange)" stroke-width="10" filter="url(#glowHam)"/><rect x="20" y="110" width="100" height="15" fill="var(--accent-cyan)" rx="3"/><circle cx="120" cy="40" r="10" fill="var(--accent-cyan)"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Lying Leg Curls</h4><p>Drives blood directly into the <strong>Hamstrings</strong>. Keep your hips pinned down into the pad to prevent cheating.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowBicep"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 140 L 90 80 L 140 50" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M 80 90 Q 95 65 110 65" fill="none" stroke="var(--accent-green)" stroke-width="12" filter="url(#glowBicep)"/><polygon points="40,160 100,80 120,95 60,175" fill="var(--accent-cyan)" opacity="0.3"/><circle cx="140" cy="50" r="12" fill="#fff"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Preacher Curls</h4><p>Locks the shoulder in place, removing momentum and forcing the <strong>Biceps Brachii</strong> to pull the entire load.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><path d="M 100 40 L 100 160 M 70 60 L 130 60" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 70 60 C 40 80, 30 120, 40 160" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round"/><circle cx="65" cy="70" r="18" fill="var(--accent-cyan)" filter="url(#glow)"/><line x1="40" y1="160" x2="180" y2="150" stroke="#fff" stroke-width="3" stroke-dasharray="6 6"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Cross-Body Cable Lateral</h4><p>Maintains tension curve perfectly on the <strong>Lateral Deltoid</strong> from bottom to top, unlike free weights.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><path d="M 40 30 L 50 80 L 120 70" fill="none" stroke="#333" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M 42 40 C 60 35, 70 60, 55 75 C 45 65, 40 50, 42 40 Z" fill="var(--accent-green)" filter="url(#glow)"/><line x1="120" y1="70" x2="160" y2="180" stroke="var(--accent-cyan)" stroke-width="3"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Bayesian Cable Curls</h4><p>Working from a stretched position yields the highest hypertrophy rates for the <strong>Biceps Brachii</strong>.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowCalf"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 60 140 L 100 140 L 100 80 L 140 80" fill="none" stroke="#333" stroke-width="15" stroke-linecap="round"/><path d="M 100 120 Q 120 100 100 80" fill="none" stroke="var(--accent-purple)" stroke-width="12" filter="url(#glowCalf)"/><rect x="20" y="140" width="60" height="20" fill="var(--accent-cyan)" rx="5"/><circle cx="100" cy="140" r="10" fill="#fff"/><line x1="130" y1="70" x2="160" y2="70" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Seated Calf Raise</h4><p>Bending the knee isolates the <strong>Soleus</strong>. Pause for 2 seconds at the bottom to kill the achilles stretch reflex.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowAbs"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 50 160 L 100 160 L 100 100 C 100 70, 70 70, 70 100" fill="none" stroke="#333" stroke-width="14" stroke-linecap="round"/><path d="M 90 100 Q 110 130 90 150" fill="none" stroke="var(--accent-orange)" stroke-width="12" filter="url(#glowAbs)"/><line x1="70" y1="100" x2="140" y2="40" stroke="#fff" stroke-width="3" stroke-dasharray="4 4"/><line x1="40" y1="160" x2="120" y2="160" stroke="var(--accent-cyan)" stroke-width="6"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Cable Crunch</h4><p>Allows for actual progressive overload of the <strong>Rectus Abdominis</strong>. Flex the spine, do not just hinge at the hips.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowMid"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><line x1="40" y1="140" x2="160" y2="60" stroke="var(--accent-cyan)" stroke-width="10" stroke-linecap="round"/><path d="M 120 85 L 70 120" stroke="#333" stroke-width="18" stroke-linecap="round"/><path d="M 100 100 L 100 160" stroke="#333" stroke-width="12" stroke-linecap="round"/><ellipse cx="90" cy="100" rx="15" ry="8" fill="var(--accent-purple)" transform="rotate(-35 90 100)" filter="url(#glowMid)"/><circle cx="100" cy="160" r="10" fill="#fff"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Chest-Supported Row</h4><p>Removes the lower back from the equation entirely, forcing the <strong>Lats and Rhomboids</strong> to do 100% of the pulling.</p></div></div>
+                    <div class="svg-card"><svg class="svg-canvas" viewBox="0 0 200 200"><defs><filter id="glowGlute"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M 40 100 L 100 100 L 140 160" fill="none" stroke="#333" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="95" cy="100" r="14" fill="var(--accent-orange)" filter="url(#glowGlute)"/><rect x="20" y="90" width="40" height="20" fill="var(--accent-cyan)" rx="5"/><line x1="100" y1="100" x2="100" y2="70" stroke="#fff" stroke-width="12" stroke-linecap="round"/></svg><div class="svg-desc"><h4 style="color:var(--accent-cyan); margin-bottom:5px;">Machine Glute Drive</h4><p>Provides extreme tension on the <strong>Gluteus Maximus</strong> in the fully shortened position. Squeeze hard at the top.</p></div></div>
                 </div>
             </div>
 
-            <!-- SCIENCE SUBTAB -->
+            <!-- SCIENCE & PHILOSOPHY SUBTAB -->
             <div id="atlas-science" class="atlas-section">
+                
+                <!-- Section 1: Nutrition & Mechanotransduction -->
                 <div class="essay-section">
-                    <h2 class="essay-title">Part I: Mechanotransduction</h2>
-                    <p class="essay-p">Muscle hypertrophy is not an accident; it is an evolutionary defense mechanism. When you subject tissue to heavy loads, you trigger mechanotransduction—the process by which your body converts severe mechanical tension into chemical signals. The master switch is mTORC1.</p>
+                    <h2 class="essay-title">Part I: Mechanotransduction & The Nitrogen Limit</h2>
+                    <p class="essay-p">Muscle hypertrophy is not an accident; it is an evolutionary defense mechanism. When you subject tissue to heavy loads, you trigger <span class="essay-highlight">mechanotransduction</span>—the process by which your body converts severe mechanical tension into chemical signals. The master switch in this process is <span class="essay-highlight">mTORC1</span>, the physiological "construction crew" of muscle protein synthesis.</p>
+                    <p class="essay-p">However, the fitness industry has sold a lucrative lie regarding protein. The science (proven by clinical meta-analysis) shows that the anabolic ceiling for protein is strictly <span class="essay-highlight">0.7g per pound (1.6g per kg)</span> of body weight. Beyond this threshold, your body physically lacks the workers to build more tissue. Pouring more bricks onto a construction site doesn't build a house faster; the excess nitrogen is stripped away, and the remaining calories are converted to expensive energy or stored directly as fat.</p>
+                    
+                    <div class="interactive-box">
+                        <h4 style="color:var(--accent-green); margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">🧪 The Nitrogen Ceiling Engine</h4>
+                        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:15px;">Calculate the exact mathematical cutoff for your muscle synthesis.</p>
+                        <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                            <input type="number" id="sim-bw" placeholder="Bodyweight" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
+                            <input type="number" id="sim-pro" placeholder="Daily Protein (g)" class="log-input" style="width:50%" oninput="window.HOS.updateProteinSim()">
+                        </div>
+                        <div id="sim-pro-result" style="font-size:0.85rem; color:var(--text-muted); margin-top:15px; border-left: 2px solid var(--accent-green); padding-left: 10px;">Enter your stats to compute synthesis limits.</div>
+                    </div>
                 </div>
+
+                <!-- Section 2: Sleep & Endocrinology -->
                 <div class="essay-section" style="border-left-color: var(--accent-purple);">
                     <h2 class="essay-title" style="color:var(--accent-purple);">Part II: The Dark Room (Endocrinology)</h2>
-                    <p class="essay-p">Training is merely the stimulus; actual muscle growth occurs exclusively in the dark. The ultimate factor deciding whether you lose fat or muscle during a recomp phase is nutrient partitioning, entirely dictated by your sleep architecture.</p>
+                    <p class="essay-p">Training is merely the stimulus; actual muscle growth occurs exclusively in the dark. The ultimate factor deciding whether you lose fat or muscle during a recomp phase is <span class="essay-highlight">nutrient partitioning</span>, which is entirely dictated by your sleep architecture.</p>
+                    <p class="essay-p">According to clinical data (Nedeltcheva et al., 2010), dropping your sleep from 8.5 hours to 5.5 hours creates a catastrophic hormonal environment. <span class="essay-highlight">Cortisol spikes violently and testosterone crashes.</span> As a survival mechanism, your body fiercely hoards adipose fat and begins metabolizing your hard-earned muscle tissue for energy. This is the infamous <span class="essay-highlight">18% Sleep Penalty</span>, where sleep deprivation shifts your weight loss from predominantly fat, to up to 75% muscle loss.</p>
+
+                    <div class="interactive-box" style="border-color:rgba(179, 136, 255, 0.3);">
+                        <h4 style="color:var(--accent-purple); margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">🧪 The Sleep Partitioning Simulator</h4>
+                        <p style="font-size:0.75rem; color:var(--text-muted);">Adjust your nightly sleep to see the physiological breakdown of your weight loss.</p>
+                        
+                        <div style="display:flex; justify-content:space-between; margin-top:20px; font-family:var(--font-data); font-size:0.85rem; color:white;">
+                            <span>4 Hrs</span><span id="sim-sleep-val" style="color:var(--accent-cyan); font-weight:bold; font-size:1.1rem; text-shadow: 0 0 10px var(--accent-cyan-glow);">7.5 Hrs</span><span>9 Hrs</span>
+                        </div>
+                        <input type="range" id="sim-sleep" class="sim-slider" min="4" max="9" step="0.5" value="7.5" oninput="window.HOS.updateSleepSim()">
+                        
+                        <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:0.7rem; font-weight:bold; text-transform:uppercase;">
+                            <span style="color:var(--accent-orange);">Fat Burned</span>
+                            <span style="color:var(--accent-purple);">Muscle Lost</span>
+                        </div>
+                        <div class="bar-container">
+                            <div id="bar-fat" class="bar-fat" style="width: 80%;">80%</div>
+                            <div id="bar-muscle" class="bar-muscle" style="width: 20%;">20%</div>
+                        </div>
+                        <p id="sim-sleep-desc" style="font-size:0.8rem; color:var(--text-muted); margin-top:15px; text-align:center; font-style: italic;">"Optimal hormonal environment. Fat is prioritized for fuel."</p>
+                    </div>
                 </div>
+                
+                <!-- Section 3: Supplements & Water Weight -->
                 <div class="essay-section" style="border-left-color: var(--accent-green);">
                     <h2 class="essay-title" style="color:var(--accent-green);">Part III: The Creatine Illusion</h2>
-                    <p class="essay-p">Creatine Monohydrate pulls water directly into the muscle cell. This causes a rapid gain of 2 to 3 lbs on the scale. Do not panic and drop your calories. Trust the mirror and ignore the scale for the first 30 days.</p>
+                    <p class="essay-p">When executing a body recomposition, the scale is a notorious liar. Dr. Eric Trexler's research reveals that <strong>Creatine Monohydrate</strong> (the only universally proven muscle supplement) pulls water directly into the muscle cell (intracellular hydration) to facilitate ATP production.</p>
+                    <p class="essay-p">This causes a rapid gain of <span class="essay-highlight">2 to 3 lbs (1 to 1.5 kg) of lean mass</span> in the first 2-4 weeks of training. If your Recomp Engine targets a loss of 0.5 lbs of fat per week, the creatine water-weight will mask your fat loss on the scale for an entire month. <strong style="color:var(--accent-orange);">Do not panic and drop your calories.</strong> Trust the mirror, trust your strength progression in the Command tab, and ignore the scale for the first 30 days.</p>
                 </div>
             </div>
         </main>
     </div>
 </div>
 
-<!-- REST TIMER -->
+<!-- FLOATING SMART REST TIMER -->
 <div class="rest-timer" id="rest-timer">
     <span class="timer-txt" id="timer-val" style="width: 50px; text-align: center;">00:00</span>
     <div style="display:flex; gap:5px; border-left: 1px solid var(--border-light); padding-left: 10px;">
-        <button class="timer-btn" onclick="window.HOS.startTimer(60)" style="color:var(--accent-cyan); border-color:var(--accent-cyan);">60s</button>
-        <button class="timer-btn" onclick="window.HOS.startTimer(90)" style="color:var(--accent-green); border-color:var(--accent-green);">90s</button>
-        <button class="timer-btn" onclick="window.HOS.stopTimer()" style="border-color:var(--text-muted); color:var(--text-muted);">⏹</button>
+        <button class="timer-btn" onclick="window.HOS.startTimer(60)" title="Pump (60s)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-cyan); border-color:var(--accent-cyan);">60s</button>
+        <button class="timer-btn" onclick="window.HOS.startTimer(90)" title="Hypertrophy (90s)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-green); border-color:var(--accent-green);">90s</button>
+        <button class="timer-btn" onclick="window.HOS.startTimer(180)" title="Heavy CNS (3m)" style="font-size:0.7rem; font-weight:bold; color:var(--accent-orange); border-color:var(--accent-orange);">3m</button>
+        <button class="timer-btn" onclick="window.HOS.stopTimer()" style="font-size:0.8rem; border-color:var(--text-muted); color:var(--text-muted);">⏹</button>
     </div>
 </div>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="app-nav" style="display: none;">
-    <div class="nav-item active" onclick="window.HOS.switchView('view-dash', this)">Command</div>
-    <div class="nav-item" onclick="window.HOS.switchView('view-programs', this)">Programs</div>
-    <div class="nav-item" onclick="window.HOS.switchView('view-matrix', this)">Matrix</div>
-    <div class="nav-item" onclick="window.HOS.switchView('view-lab', this)">Lab</div>
-    <div class="nav-item" onclick="window.HOS.switchView('view-atlas', this)">Atlas</div>
+    <div class="nav-item active" onclick="window.HOS.switchView('view-dash', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Command</div>
+    <div class="nav-item" onclick="window.HOS.switchView('view-matrix', this)"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Matrix</div>
+    <div class="nav-item" onclick="window.HOS.switchView('view-lab', this)"><svg viewBox="0 0 24 24"><path d="M10 2v7.31"></path><path d="M14 9.3V1.99"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.5 16.5h13"></path></svg> The Lab</div>
+    <div class="nav-item" onclick="window.HOS.switchView('view-atlas', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg> Atlas</div>
 </nav>
 
-<!-- LOAD SCRIPTS -->
-<script type="module" src="js/programs.js"></script>
-<script type="module" src="js/app.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC8oSFSnuxESP5AwXO2-GWHD8A-_0CvLnE",
+        authDomain: "gym-blueprint.firebaseapp.com",
+        projectId: "gym-blueprint",
+        storageBucket: "gym-blueprint.firebasestorage.app",
+        messagingSenderId: "1088980958398",
+        appId: "1:1088980958398:web:cc799f0a27afc196c532ef",
+        measurementId: "G-8KD1KYKQ9D"
+    };
+
+    let app, auth, db, analytics, useFirebase = false;
+    
+    if (firebaseConfig.apiKey) {
+        try { 
+            app = initializeApp(firebaseConfig); 
+            auth = getAuth(app); db = getFirestore(app); analytics = getAnalytics(app); useFirebase = true; 
+        } catch(e) { console.error("Firebase init failed", e); }
+    }
+
+    const MonthlyIntel = {
+        1: { top: "Welcome to Hypertrophy OS. This month is about laying the foundation using rigid machine paths to master tension.", bot: "Coach's Note: Don't chase weight yet, chase tension. Focus entirely on the strict 3-second eccentric." },
+        2: { top: "Frequency Shift. We transition to a 5-day split hitting legs twice to balance upper/lower volume and stability.", bot: "Coach's Note: You will be sorer this month due to frequency. Feed the machine with adequate protein and sleep." },
+        3: { top: "Volume Accumulation. Sets increase for compound lifts. We are pushing the total tonnage up significantly with Supersets.", bot: "Coach's Note: Monitor your sleep carefully. High volume demands extreme recovery. No junk sets." },
+        4: { top: "Heavy Tension & Isometrics. Reps drop, weight goes up. We are maximizing mechanical tension and using 4-second negatives.", bot: "Coach's Note: Take longer rests (90-120s) between heavy sets. Let your ATP completely replenish." },
+        5: { top: "Pre-Exhaust Phase. Isolate the muscle first, then hit the compound. Make 50kg feel like 100kg.", bot: "Coach's Note: Your ego will take a hit on the compound lifts because you are pre-fatigued. Let it." },
+        6: { top: "The Drop Zone. We push past failure on the final sets using Drop Sets and Rest-Pause. Peak metabolic stress.", bot: "Coach's Note: Leave absolutely nothing in the tank this month. You will deload after Week 24." }
+    };
+
+    const WeeklyGoals = {
+        1: "Foundation: 3-Second Eccentrics on every rep to trigger mTORC1.",
+        2: "Stability Check: Maintain perfect tension throughout cable movements.",
+        3: "Volume Accumulation: 4 sets per compound. Push closer to failure.",
+        4: "Heavy Loads: Decrease reps, increase weight. Maximize mechanical tension.",
+        5: "Cable Mastery: Perfect tension on the cables. Control the eccentric.",
+        6: "Mind-Muscle Sync: Do not drop the weight. Hold the stretch.",
+        7: "Unilateral Focus: Isolate each limb to fix strength imbalances.",
+        8: "Burnout Week: High reps to close out the stability block.",
+        9: "Supersets: Zero rest between exercises. Push through the lactic acid.",
+        10: "The Pump: Maximize blood flow with opposing supersets.",
+        11: "Density: Complete the workload in 15% less time than week 9.",
+        12: "Giant Sets: 3 exercises back to back. Total muscle fatigue.",
+        13: "Time Under Tension: 4 seconds down on every single rep.",
+        14: "Statue Hold: 2 second isometric hold at the bottom of the stretch.",
+        15: "1.5 Rep Method: A full rep, then a half rep. Doubles the tension.",
+        16: "Tempo Integration: Combine the 4s down with the 2s hold.",
+        17: "Pre-Exhaust: Isolate first, then compound. Make light weight feel heavy.",
+        18: "Mechanical Drop Sets: Move from harder to easier variations.",
+        19: "Pause-Go: Stop all momentum at the bottom. Pure concentric power.",
+        20: "Peak Volume: Highest total sets of the entire cycle. Survive.",
+        21: "The Drop Zone: Triple drop sets on the final set.",
+        22: "Rest-Pause: Hit failure, wait 15s, hit failure again.",
+        23: "Centurion: 100 total reps on the final movement of the day.",
+        24: "Victory Lap: Heaviest week. Test your 6-month strength gains."
+    };
+
+    /* --- VOLUME OPTIMIZED (6-12 Sets Per Week Rules) --- */
+    const wA = (d1, d2, d3, d4, d5) => ([
+        { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, 
+        { title: "Day 3: Leg Matrix", ex: d3 }, { title: "Day 4: Push Matrix II", ex: d4 }, 
+        { title: "Day 5: Pull Matrix II", ex: d5 }
+    ]);
+    const wB = (d1, d2, d3, d4, d5) => ([
+        { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, 
+        { title: "Day 3: Lower Matrix", ex: d3 }, { title: "Day 4: Upper Matrix", ex: d4 }, 
+        { title: "Day 5: Full Body Integration", ex: d5 }
+    ]);
+
+    const Blueprint = {};
+    for(let i=1; i<=24; i++) {
+        let t = "Tempo: 3s ↓";
+        let cSets = "3x10"; let iSets = "3x12"; let hSets = "3x15";
+        if (i >= 9 && i <= 12) { t = "Superset (No Rest)"; cSets = "4x10"; iSets = "4x12"; hSets = "3x15"; } 
+        if (i >= 13 && i <= 16) { t = "Tempo: 4s ↓, 2s Hold"; cSets = "3x8"; iSets = "3x10"; hSets = "3x12"; } 
+        if (i >= 17 && i <= 20) { t = "Pre-Exhaust"; cSets = "4x12"; iSets = "4x15"; hSets = "4x15"; } 
+        if (i >= 21 && i <= 24) { t = "Drop-Set to Failure"; cSets = "3x8"; iSets = "3x10"; hSets = "1xMax"; } 
+
+        if (Math.ceil(i/4) % 2 !== 0) {
+            // Month 1, 3, 5 - Day 1 explicitly preserves original 4 exercises for user's logged data!
+            Blueprint[i] = wA(
+                [["Converging Machine Press", cSets, t], ["Machine Shoulder Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Tricep Rope Pushdowns", iSets, t]],
+                [["Wide Lat Pulldowns", cSets, t], ["Seated Cable Rows", cSets, t], ["Machine Preacher Curls", iSets, t], ["Cable Crunches", hSets, t]],
+                [["Hack Squat", cSets, t], ["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Machine Glute Drive", iSets, t], ["Standing Calf Raises", hSets, t]],
+                [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Overhead Cable Ext", iSets, t], ["Seated Dip Machine", cSets, t]],
+                [["Underhand Lat Pulldown", cSets, t], ["Chest Supported DB Row", cSets, t], ["Face Pulls", hSets, t], ["Cable Hammer Curls", iSets, t]]
+            );
+        } else {
+            Blueprint[i] = wB(
+                [["Machine Chest Press", cSets, t], ["Arnold Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Single-Arm Pushdowns", iSets, t]],
+                [["Neutral Grip Pulldown", cSets, t], ["Seated Cable Rows", cSets, t], ["Reverse Pec Deck", iSets, t], ["Bayesian Cable Curls", iSets, t]],
+                [["Hack Squat", cSets, t], ["Single-Leg Press", cSets, t], ["Seated Leg Curls", iSets, t], ["Seated Calf Raises", hSets, t]],
+                [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Wide Lat Pulldowns", cSets, t], ["Tricep Rope Pushdowns", iSets, t]],
+                [["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Chest Supported DB Row", cSets, t], ["DB Bicep Curls", iSets, t]]
+            );
+        }
+    }
+
+    function getExerciseMeta(name) {
+        let n = name.toLowerCase(); let mod = "Machine"; let mus = "Core";
+        if(n.includes("cable") || n.includes("pulldown") || n.includes("pushdown") || n.includes("face pull") || n.includes("rope")) mod = "Cable";
+        if(n.includes("db ") || n.includes("dumbbell") || n.includes("arnold")) mod = "Free Weight";
+        if(n.includes("press") || n.includes("fly") || n.includes("pec") || n.includes("dip")) mus = "Chest";
+        if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold") || n.includes("face pull")) mus = "Shoulders";
+        if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back")) mus = "Back";
+        if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) mus = "Arms";
+        if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) mus = "Legs";
+        if(n.includes("leg press")) mus = "Legs"; if(n.includes("shoulder press")) mus = "Shoulders"; if(n.includes("leg curl")) mus = "Legs"; if(n.includes("face pull")) mus = "Shoulders"; 
+        return { muscle: mus, modality: mod };
+    }
+
+    const State = {
+        user: null, view: localStorage.getItem('h_v') || 'view-dash', unit: localStorage.getItem('h_u') || 'kg',
+        month: parseInt(localStorage.getItem('h_m')) || 1, week: parseInt(localStorage.getItem('h_w')) || 1,
+        labBw: localStorage.getItem('h_labBw') || '', dashMusc: localStorage.getItem('h_dMusc') || 'All',
+        dashMod: localStorage.getItem('h_dMod') || 'All', dashEx: localStorage.getItem('h_dEx') || '',
+        logs: JSON.parse(localStorage.getItem('h_l') || '{}'),
+        swaps: JSON.parse(localStorage.getItem('h_swaps') || '{}')
+    };
+
+    let syncTimer;
+    const Toast = (msg) => {
+        const el = document.getElementById('toast'); el.innerText = msg;
+        el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2500);
+    };
+
+    const syncToCloud = () => {
+        if(!useFirebase || !State.user) return;
+        clearTimeout(syncTimer);
+        syncTimer = setTimeout(async () => {
+            try { await setDoc(doc(db, "users", State.user.uid), { 
+                week: State.week, month: State.month, unit: State.unit, labBw: State.labBw,
+                dashMusc: State.dashMusc, dashMod: State.dashMod, dashEx: State.dashEx, logs: State.logs, swaps: State.swaps 
+            }, { merge: true }); } catch(e) { console.error("Cloud Sync Error", e); }
+        }, 2000);
+    };
+
+    // Force sync if the user closes the app or refreshes
+    window.addEventListener('beforeunload', () => {
+        if(useFirebase && State.user && syncTimer) {
+            clearTimeout(syncTimer);
+            // Synchronous local save just in case
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+        }
+    });
+
+    let exListCache =[];
+    function buildFilters() {
+        let rawList = new Set();
+        for(let w=1; w<=24; w++){ Blueprint[w].forEach(d => d.ex.forEach(e => rawList.add(e[0]))); }
+        exListCache = Array.from(rawList).map(e => ({ name: e, ...getExerciseMeta(e) })).sort((a,b) => a.name.localeCompare(b.name));
+        document.getElementById('filter-muscle').value = State.dashMusc;
+        window.HOS.updateModality(true); 
+    }
+
+    function renderChart() {
+        const exName = document.getElementById('analytics-ex').value;
+        const svg = document.getElementById('progression-chart'); svg.innerHTML = '';
+        if(!exName) return;
+
+        let dataPts =[];
+        for(let w=1; w<=24; w++){
+            let maxW = 0;
+            Object.keys(State.logs).forEach(k => {
+                if(k.startsWith(`w${w}_`) && k.includes(exName.replace(/\s/g,''))) {
+                    let wVal = parseFloat(State.logs[k].w); let rVal = parseInt(State.logs[k].r);
+                    if (rVal === 0 || wVal === 0) return; // Skip zeroed
+                    if(wVal > maxW) maxW = wVal;
+                }
+            });
+            if(maxW > 0) dataPts.push({w, maxW});
+        }
+
+        if(dataPts.length === 0) {
+            svg.innerHTML = `<text x="50%" y="50%" fill="#888" font-size="12" text-anchor="middle">No data logged yet.</text>`; return;
+        }
+
+        const w = svg.clientWidth || 300; const h = 200; const pad = 20;
+        const maxVal = Math.max(...dataPts.map(d=>d.maxW)) * 1.2; 
+        const wUnit = (w - pad*2) / Math.max(1, dataPts.length - 1);
+
+        for(let i=0; i<=4; i++){
+            const gridY = pad + (i * (h - pad*2) / 4);
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", pad); line.setAttribute("y1", gridY); line.setAttribute("x2", w - pad); line.setAttribute("y2", gridY);
+            line.setAttribute("stroke", "rgba(255,255,255,0.05)"); svg.appendChild(line);
+        }
+
+        let pathD = `M ${pad} ${h - pad - (dataPts[0].maxW/maxVal)*(h - pad*2)}`;
+        let fillD = `M ${pad} ${h-pad} L ${pad} ${h - pad - (dataPts[0].maxW/maxVal)*(h - pad*2)}`;
+
+        dataPts.forEach((pt, i) => {
+            const x = pad + (i * wUnit); const y = h - pad - ((pt.maxW/maxVal) * (h - pad*2));
+            if(i > 0) {
+                const prevX = pad + ((i-1)*wUnit); const prevY = h - pad - ((dataPts[i-1].maxW/maxVal)*(h - pad*2));
+                const cpx = prevX + (x-prevX)/2;
+                pathD += ` C ${cpx} ${prevY}, ${cpx} ${y}, ${x} ${y}`; fillD += ` C ${cpx} ${prevY}, ${cpx} ${y}, ${x} ${y}`;
+            }
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", 4);
+            circle.setAttribute("fill", "var(--accent-cyan)"); svg.appendChild(circle);
+
+            const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            txt.setAttribute("x", x); txt.setAttribute("y", y - 10);
+            txt.setAttribute("fill", "white"); txt.setAttribute("font-size", "10");
+            txt.setAttribute("text-anchor", "middle"); txt.textContent = pt.maxW; svg.appendChild(txt);
+        });
+
+        fillD += ` L ${pad + (dataPts.length-1)*wUnit} ${h-pad} Z`;
+        const grad = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        grad.setAttribute("id", "chartGrad"); grad.setAttribute("x1", "0"); grad.setAttribute("y1", "0"); grad.setAttribute("x2", "0"); grad.setAttribute("y2", "1");
+        grad.innerHTML = `<stop offset="0%" stop-color="var(--accent-cyan-glow)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>`; svg.appendChild(grad);
+        const fillPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        fillPath.setAttribute("d", fillD); fillPath.setAttribute("fill", "url(#chartGrad)"); svg.insertBefore(fillPath, svg.firstChild);
+        const linePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        linePath.setAttribute("d", pathD); linePath.setAttribute("fill", "none"); linePath.setAttribute("stroke", "var(--accent-cyan)"); linePath.setAttribute("stroke-width", "2"); svg.insertBefore(linePath, svg.firstChild);
+    }
+
+    window.renderMuscleGraph = function() {
+        const mg = document.getElementById('muscle-graph');
+        if(!mg) return;
+        const counts = { Chest:0, Back:0, Shoulders:0, Arms:0, Legs:0, Core:0 };
+        let maxC = 1;
+        
+        Object.keys(State.logs).forEach(k => {
+            const l = State.logs[k];
+            if(l.done) {
+                let rVal = parseInt(l.r); let wVal = parseFloat(l.w);
+                if (rVal === 0 || wVal === 0) return; // Skip zeroed
+                
+                const parts = k.split('_');
+                if(parts.length >= 3) {
+                    const exKey = parts[2];
+                    const ex = exListCache.find(e => e.name.replace(/\s/g,'') === exKey);
+                    if(ex && counts[ex.muscle] !== undefined) {
+                        counts[ex.muscle]++;
+                        if(counts[ex.muscle] > maxC) maxC = counts[ex.muscle];
+                    }
+                }
+            }
+        });
+
+        mg.innerHTML = '';
+        Object.keys(counts).forEach(m => {
+            const pct = (counts[m] / maxC) * 100;
+            mg.innerHTML += `
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:70px; font-size:0.75rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">${m}</div>
+                    <div style="flex:1; background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden;">
+                        <div style="width:${pct}%; height:100%; background:var(--accent-cyan); box-shadow:0 0 10px var(--accent-cyan-glow); transition:width 0.5s;"></div>
+                    </div>
+                    <div style="width:25px; font-size:0.8rem; color:white; font-family:var(--font-data); text-align:right;">${counts[m]}</div>
+                </div>
+            `;
+        });
+    }
+
+    function renderDashboard() {
+        let tSets=0; let dSets=0; let wDone=0;
+        for(let w=1; w<=24; w++){
+            Blueprint[w].forEach((day, dIdx) => {
+                let dS=0; let dD=0;
+                day.ex.forEach((e, eIdx) => {
+                    let sets = parseInt(e[1].split('x')[0]) || 3; 
+                    for(let s=1; s<=sets; s++){
+                        const l = State.logs[`w${w}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${s}`];
+                        let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
+                        if (l && (rVal === 0 || wVal === 0)) { /* Skip zeroed items */ } 
+                        else { dS++; if(l && l.done) { dSets++; dD++; } }
+                    }
+                });
+                if(dS > 0 && dS === dD) wDone++;
+            });
+        }
+        document.getElementById('stat-workouts').innerText = wDone;
+        document.getElementById('stat-sets').innerText = dSets;
+        renderChart(); window.renderMuscleGraph();
+    }
+
+    function updateDayProgress(k) {
+        const match = k.match(/w(\d+)_d(\d+)_/);
+        if(!match) return;
+        const w = parseInt(match[1]); const dIdx = parseInt(match[2]);
+        if(w !== State.week) return;
+
+        const day = Blueprint[w][dIdx];
+        let ts=0; let ds=0;
+        day.ex.forEach(e => {
+            let st = parseInt(e[1].split('x')[0])||3; 
+            for(let i=1; i<=st; i++){ 
+                const logK = `w${w}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${i}`;
+                const l = State.logs[logK];
+                let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
+                if (l && (rVal === 0 || wVal === 0)) { /* skip */ } 
+                else { ts++; if(l && l.done) ds++; }
+            }
+        });
+        const pct = ts>0 ? Math.round((ds/ts)*100) : 0;
+        const accordions = document.querySelectorAll('#days-container .day-accordion');
+        if(accordions[dIdx]) {
+            const prog = accordions[dIdx].querySelector('.day-prog');
+            if(prog) prog.innerText = `${pct}%`;
+        }
+        renderDashboard(); 
+    }
+
+    function updateUnitUI() {
+        document.getElementById('unit-kg').classList.toggle('active', State.unit === 'kg');
+        document.getElementById('unit-lbs').classList.toggle('active', State.unit === 'lbs');
+        document.getElementById('calc-bw').placeholder = `Enter Bodyweight (${State.unit.toUpperCase()})`;
+        if(State.labBw) { document.getElementById('calc-bw').value = State.labBw; window.HOS.calcRecomp(); }
+    }
+
+    function renderMatrix() {
+        const mSld = document.getElementById('month-slider'); mSld.innerHTML = '';
+        for(let i=1; i<=6; i++){
+            const b = document.createElement('div'); b.className = `month-btn ${i===State.month ? 'active':''}`; b.innerText = `Month ${i}`;
+            b.onclick = () => { State.month = i; State.week = ((i-1)*4)+1; localStorage.setItem('h_m', i); localStorage.setItem('h_w', State.week); syncToCloud(); renderMatrix(); }; mSld.appendChild(b);
+        }
+
+        const sld = document.getElementById('week-slider'); sld.innerHTML = '';
+        const startWk = ((State.month - 1) * 4) + 1;
+        for(let i=startWk; i<=startWk+3; i++){
+            const b = document.createElement('div'); b.className = `week-btn ${i===State.week ? 'active':''}`; b.innerText = `Wk ${i}`;
+            b.onclick = () => { State.week = i; localStorage.setItem('h_w', i); syncToCloud(); renderMatrix(); }; sld.appendChild(b);
+        }
+        
+        document.getElementById('month-intel-combined').innerHTML = `
+            <h4>📘 Month ${State.month} Overview</h4>
+            <p>${MonthlyIntel[State.month].top}</p>
+            <h4 style="color: white; margin-top: 15px;">Month ${State.month} Protocol</h4>
+            <p>${MonthlyIntel[State.month].bot}</p>
+        `;
+        document.getElementById('weekly-goal').innerHTML = `<strong>🎯 Week ${State.week} Goal:</strong> ${WeeklyGoals[State.week] || "Progressive Overload"}`;
+
+        const container = document.getElementById('days-container'); container.innerHTML = '';
+        Blueprint[State.week].forEach((day, dIdx) => {
+            let ts=0; let ds=0;
+            day.ex.forEach(e => {
+                let st = parseInt(e[1].split('x')[0])||3; 
+                for(let i=1; i<=st; i++){ 
+                    const k = `w${State.week}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${i}`;
+                    const l = State.logs[k];
+                    let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
+                    if (l && (rVal === 0 || wVal === 0)) { /* skip */ } 
+                    else { ts++; if(l && l.done) ds++; }
+                }
+            });
+            const pct = ts>0 ? Math.round((ds/ts)*100) : 0;
+
+            const card = document.createElement('div'); card.className = 'day-accordion';
+            card.innerHTML = `<div class="day-header" onclick="this.nextElementSibling.classList.toggle('open')"><h3>${day.title}</h3><span class="day-prog">${pct}%</span></div><div class="day-body"></div>`;
+            const body = card.querySelector('.day-body');
+            const unitLabel = State.unit === 'kg' ? 'KG' : 'LBS';
+
+            day.ex.forEach((e, eIdx) => {
+                let sets = parseInt(e[1].split('x')[0])||3;
+                let targetReps = e[1].split('x')[1] || "10";
+                if (targetReps === "Max") targetReps = "20";
+                let rows = ''; 
+
+                // Hidden Dropdown Swapper Logic
+                const origName = e[0];
+                const swapKey = `w${State.week}_d${dIdx}_e${eIdx}`;
+                const currentName = State.swaps[swapKey] || origName;
+                const exKeyClean = currentName.replace(/\s/g,'');
+                const exMeta = getExerciseMeta(origName); // get original muscle group
+                const validOptions = exListCache.filter(item => item.muscle === exMeta.muscle); // only show same muscle
+
+                let swapDropdown = `<select class="ex-swap-select" onchange="window.HOS.swapExercise(${State.week}, ${dIdx}, ${eIdx}, this.value, '${exKeyClean}')">`;
+                validOptions.forEach(opt => {
+                    swapDropdown += `<option value="${opt.name}" ${opt.name === currentName ? 'selected' : ''}>${opt.name}</option>`;
+                });
+                swapDropdown += `</select>`;
+
+                for(let s=1; s<=sets; s++){
+                    const k = `w${State.week}_d${dIdx}_${exKeyClean}_s${s}`;
+                    const l = State.logs[k] || {w:'',r:'', rir:'', done:false};
+                    
+                    let rVal = l.r !== '' ? parseInt(l.r) : parseInt(targetReps);
+                    if(isNaN(rVal)) rVal = 10;
+                    let rirVal = l.rir !== '' ? parseInt(l.rir) : 1; // Default to 1 RIR (close to failure)
+                    
+                    let rSelect = `<select class="log-input" style="width:45px; padding:4px;" onchange="window.HOS.save('${k}','r',this.value)">`;
+                    for(let r=0; r<=50; r++){ rSelect += `<option value="${r}" ${r === rVal ? 'selected' : ''}>${r}</option>`; }
+                    rSelect += `</select>`;
+
+                    // New RIR Select Dropdown
+                    let rirSelect = `<select class="log-input" style="width:45px; padding:4px; color:var(--accent-orange); border-color:rgba(255,61,0,0.3);" onchange="window.HOS.save('${k}','rir',this.value)">`;
+                    for(let rir=0; rir<=5; rir++){ rirSelect += `<option value="${rir}" ${rir === rirVal ? 'selected' : ''}>${rir}</option>`; }
+                    rirSelect += `</select>`;
+
+                    rows += `<tr class="${l.done ? 'done-row':''}">
+                        <td class="set-idx">${s}</td>
+                        <td><input type="number" step="0.5" class="log-input" value="${l.w}" placeholder="${unitLabel}" onchange="window.HOS.save('${k}','w',this.value)"></td>
+                        <td>${rSelect}</td>
+                        <td>${rirSelect}</td>
+                        <td><div class="check-btn ${l.done?'checked':''}" onclick="window.HOS.check('${k}',this,event)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div></td>
+                    </tr>`;
+                }
+
+                // Added <th>RIR</th> to the table header
+                body.innerHTML += `<div class="ex-card"><div class="ex-title">${swapDropdown}</div><div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div><table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>RIR</th><th>Log</th></tr>${rows}</table></div>`;
+            });
+            container.appendChild(card);
+        });
+
+        // Update the subtle reset button text dynamically
+        const resetBtn = document.getElementById('reset-month-btn');
+        if(resetBtn) resetBtn.innerText = `Reset Month ${State.month} Checkmarks`;
+        
+        renderDashboard();
+    }
+
+    window.HOS = {
+        switchAtlas: (sectionId, btn) => {
+            document.querySelectorAll('.atlas-section').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.atlas-tab').forEach(e => e.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            btn.classList.add('active');
+        },
+        swapExercise: (w, dIdx, eIdx, newEx, oldExKeyClean) => {
+            const swapKey = `w${w}_d${dIdx}_e${eIdx}`;
+            State.swaps[swapKey] = newEx;
+            localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+            
+            // Wipe out logs for the OLD exercise on this specific day to prevent ghost data
+            for(let s=1; s<=10; s++) {
+                delete State.logs[`w${w}_d${dIdx}_${oldExKeyClean}_s${s}`];
+            }
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            syncToCloud(); renderMatrix(); Toast("Exercise Swapped.");
+        },
+        resetMonth: () => {
+            if(!confirm(`WARNING: Resetting Month ${State.month}. The checkmarks will be cleared, but your numbers (Weight/Reps) will be saved safely for your Command Tab charts! Continue?`)) return;
+            const startWk = ((State.month - 1) * 4) + 1;
+            const endWk = startWk + 3;
+            for(let w = startWk; w <= endWk; w++) {
+                Object.keys(State.logs).forEach(k => {
+                    if(k.startsWith(`w${w}_`)) {
+                        // By ONLY setting done to false, we wipe the visual matrix completion
+                        // BUT perfectly preserve the raw numbers for the Command Tab Max Weight Chart!
+                        State.logs[k].done = false;
+                    }
+                });
+            }
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            syncToCloud(); renderMatrix(); Toast(`Month ${State.month} Checkboxes Reset!`);
+        },
+        updateProteinSim: () => {
+            const bwInput = parseFloat(document.getElementById('sim-bw').value);
+            const proInput = parseFloat(document.getElementById('sim-pro').value);
+            const resEl = document.getElementById('sim-pro-result');
+            
+            if(!bwInput || !proInput) { resEl.innerHTML = "Enter your stats to compute synthesis limits."; return; }
+
+            // Convert to LBS for the 0.7g/lb calculation
+            const bwLbs = State.unit === 'kg' ? bwInput * 2.20462 : bwInput;
+            const targetPro = Math.round(bwLbs * 0.7);
+
+            if(proInput <= targetPro) {
+                resEl.innerHTML = `<span style="color:var(--accent-green); font-weight:bold;">100% Utilized.</span> Every gram is actively fueling Muscle Protein Synthesis (mTORC1). You have room to increase up to ${targetPro}g.`;
+            } else {
+                const waste = Math.round(proInput - targetPro);
+                resEl.innerHTML = `<span style="color:var(--accent-orange); font-weight:bold;">Anabolic Ceiling Reached at ${targetPro}g.</span><br><br>The remaining <strong><span style="color:white;">${waste}g</span></strong> of protein provides 0% additional muscle growth. It is being stripped of nitrogen and oxidized for energy or stored as fat.`;
+            }
+        },
+        updateSleepSim: () => {
+            const val = parseFloat(document.getElementById('sim-sleep').value);
+            document.getElementById('sim-sleep-val').innerText = val + " Hrs";
+            
+            let fPct = 80; let mPct = 20; let msg = ""; let color = "var(--accent-cyan)";
+
+            if(val >= 8) { fPct = 85; mPct = 15; msg = "Peak Anabolism. Maximum fat oxidation active."; color = "var(--accent-green)"; }
+            else if(val === 7.5) { fPct = 80; mPct = 20; msg = "Optimal hormonal baseline. Fat prioritized for fuel."; color = "var(--accent-cyan)"; }
+            else if(val >= 6.5) { fPct = 65; mPct = 35; msg = "Slight cortisol elevation. Mild partition penalty."; color = "white"; }
+            else if(val === 6) { fPct = 50; mPct = 50; msg = "Testosterone suppression begins. Significant muscle wasting."; color = "var(--accent-orange)"; }
+            else if(val === 5.5) { fPct = 40; mPct = 60; msg = "Clinical Danger Zone: Body actively defends fat stores and metabolizes muscle."; color = "var(--accent-orange)"; }
+            else { fPct = 25; mPct = 75; msg = "Catabolic Crisis: Extreme cortisol spike. Muscle tissue heavily cannibalized for survival."; color = "red"; }
+
+            document.getElementById('bar-fat').style.width = fPct + "%";
+            document.getElementById('bar-fat').innerText = fPct + "%";
+            document.getElementById('bar-muscle').style.width = mPct + "%";
+            document.getElementById('bar-muscle').innerText = mPct + "%";
+            
+            const desc = document.getElementById('sim-sleep-desc');
+            desc.innerText = `"${msg}"`;
+            desc.style.color = color;
+            document.getElementById('sim-sleep-val').style.color = color;
+            document.getElementById('sim-sleep-val').style.textShadow = `0 0 10px ${color}`;
+        },
+        toggleUnit: () => {
+            State.unit = State.unit === 'kg' ? 'lbs' : 'kg';
+            localStorage.setItem('h_u', State.unit);
+            
+            const ratio = State.unit === 'lbs' ? 2.20462 : (1 / 2.20462);
+            Object.keys(State.logs).forEach(k => {
+                if(State.logs[k].w) {
+                    let parsed = parseFloat(State.logs[k].w);
+                    if(!isNaN(parsed)) State.logs[k].w = (Math.round(parsed * ratio * 2) / 2).toString();
+                }
+            });
+
+            if(State.labBw) {
+                let parsedBw = parseFloat(State.labBw);
+                if(!isNaN(parsedBw)) {
+                    State.labBw = Math.round(parsedBw * ratio).toString();
+                    localStorage.setItem('h_labBw', State.labBw);
+                }
+            }
+            
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            syncToCloud(); updateUnitUI(); if(State.view === 'view-matrix') renderMatrix();
+            Toast(`Converted Weights to ${State.unit.toUpperCase()}`);
+        },
+        switchView: (vId, btn) => {
+            document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
+            document.getElementById(vId).classList.add('active');
+            if(btn){ document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); btn.classList.add('active'); }
+            State.view = vId; localStorage.setItem('h_v', vId);
+            if(vId === 'view-dash') renderDashboard();
+        },
+        save: (k, f, v) => {
+            if(!State.logs[k]) State.logs[k] = {w:'',r:'',done:false};
+            State.logs[k][f] = v; localStorage.setItem('h_l', JSON.stringify(State.logs)); syncToCloud();
+            updateDayProgress(k);
+        },
+        check: (k, el, ev) => {
+            ev.stopPropagation();
+            if(!State.logs[k]) State.logs[k] = {w:'',r:'',done:false};
+            State.logs[k].done = !State.logs[k].done;
+            localStorage.setItem('h_l', JSON.stringify(State.logs)); syncToCloud();
+            
+            if(State.logs[k].done) { el.classList.add('checked'); el.closest('tr').classList.add('done-row'); } 
+            else { el.classList.remove('checked'); el.closest('tr').classList.remove('done-row'); }
+            updateDayProgress(k);
+        },
+        saveBW: (val) => { State.labBw = val; localStorage.setItem('h_labBw', val); syncToCloud(); window.HOS.calcRecomp(); },
+        calcRecomp: () => {
+            const bw = parseFloat(State.labBw); if(!bw) return;
+            if(State.unit === 'kg') {
+                document.getElementById('res-fat').innerText = (bw * 0.005).toFixed(2) + " kg/wk";
+                document.getElementById('res-cal').innerText = "-" + Math.round((bw * 0.005 * 7700) / 7) + " kcal/day";
+                document.getElementById('res-pro').innerText = Math.round(bw * 1.6) + " g/day";
+            } else {
+                document.getElementById('res-fat').innerText = (bw * 0.005).toFixed(2) + " lbs/wk";
+                document.getElementById('res-cal').innerText = "-" + Math.round((bw * 0.005 * 3500) / 7) + " kcal/day";
+                document.getElementById('res-pro').innerText = Math.round(bw * 0.7) + " g/day";
+            }
+            document.getElementById('calc-results').style.display = 'block';
+        },
+        startTimer: (sec) => {
+            clearInterval(window.tInt); let r = sec; document.getElementById('rest-timer').classList.add('active');
+            window.tInt = setInterval(() => {
+                r--; document.getElementById('timer-val').innerText = `${Math.floor(r/60).toString().padStart(2,'0')}:${(r%60).toString().padStart(2,'0')}`;
+                if(r<=0){ clearInterval(window.tInt); document.getElementById('rest-timer').classList.remove('active'); Toast("Rest complete. Execute."); }
+            }, 1000);
+        },
+        stopTimer: () => { clearInterval(window.tInt); document.getElementById('rest-timer').classList.remove('active'); },
+        logout: async () => { if(useFirebase) await signOut(auth); location.reload(); },
+        
+        updateModality: (isInit = false) => {
+            const m = document.getElementById('filter-muscle').value; State.dashMusc = m; localStorage.setItem('h_dMusc', m);
+            const modDrop = document.getElementById('filter-modality');
+            let validMods = new Set(); exListCache.forEach(e => { if(m === 'All' || e.muscle === m) validMods.add(e.modality); });
+            modDrop.innerHTML = '<option value="All">All Modalities</option>';
+            Array.from(validMods).sort().forEach(mod => { modDrop.innerHTML += `<option value="${mod}">${mod}</option>`; });
+            if(isInit) modDrop.value = State.dashMod;
+            window.HOS.updateExerciseDrop(isInit);
+        },
+        updateExerciseDrop: (isInit = false) => {
+            const m = document.getElementById('filter-muscle').value; const mod = document.getElementById('filter-modality').value;
+            State.dashMod = mod; localStorage.setItem('h_dMod', mod);
+            const exDrop = document.getElementById('analytics-ex'); exDrop.innerHTML = '<option value="">Select an exercise...</option>';
+            exListCache.forEach(e => { if((m === 'All' || e.muscle === m) && (mod === 'All' || e.modality === mod)) exDrop.innerHTML += `<option value="${e.name}">${e.name}</option>`; });
+            if(isInit && State.dashEx) exDrop.value = State.dashEx;
+            window.HOS.saveChartEx(); 
+        },
+        saveChartEx: () => {
+            const val = document.getElementById('analytics-ex').value; State.dashEx = val; localStorage.setItem('h_dEx', val);
+            syncToCloud(); renderChart();
+        }
+    };
+
+    const boot = () => {
+        document.getElementById('auth-gate').style.opacity = '0';
+        setTimeout(() => document.getElementById('auth-gate').style.display = 'none', 400);
+        document.getElementById('app-core').style.display = 'block'; document.getElementById('app-nav').style.display = 'flex';
+        updateUnitUI(); buildFilters(); window.HOS.switchView(State.view, document.querySelector(`.nav-item[onclick*="${State.view}"]`));
+        renderMatrix();
+    };
+
+    let isLogin = true;
+    document.getElementById('auth-toggle').onclick = () => {
+        isLogin = !isLogin; document.getElementById('auth-btn').innerText = isLogin ? "Initialize Connection" : "Create Profile";
+        document.getElementById('auth-toggle').innerText = isLogin ? "New user? Create profile." : "Existing user? Authenticate.";
+    };
+
+    document.getElementById('auth-form').onsubmit = async (e) => {
+        e.preventDefault();
+        if(!useFirebase) { Toast("Offline Mode Active."); return boot(); }
+        const em = document.getElementById('auth-email').value; const ps = document.getElementById('auth-pass').value;
+        document.getElementById('auth-btn').innerText = "Authenticating...";
+        try { if(isLogin) await signInWithEmailAndPassword(auth, em, ps); else await createUserWithEmailAndPassword(auth, em, ps);
+        } catch(err) { Toast(err.message.split(': ')[1] || err.message); document.getElementById('auth-btn').innerText = "Retry"; }
+    };
+
+    if(useFirebase) {
+        onAuthStateChanged(auth, async (u) => {
+            if(u) {
+                State.user = u;
+                try {
+                    const d = await getDoc(doc(db, "users", u.uid));
+                    if(d.exists()) {
+                        const data = d.data();
+                        State.month = data.month || State.month; State.week = data.week || State.week; 
+                        State.unit = data.unit || State.unit; State.labBw = data.labBw || State.labBw;
+                        State.dashMusc = data.dashMusc || State.dashMusc; State.dashMod = data.dashMod || State.dashMod;
+                        State.dashEx = data.dashEx || State.dashEx; State.logs = data.logs || State.logs;
+                        State.swaps = data.swaps || State.swaps;
+                        
+                        localStorage.setItem('h_m', State.month); localStorage.setItem('h_w', State.week); localStorage.setItem('h_u', State.unit);
+                        localStorage.setItem('h_labBw', State.labBw); localStorage.setItem('h_dMusc', State.dashMusc); localStorage.setItem('h_dMod', State.dashMod);
+                        localStorage.setItem('h_dEx', State.dashEx); localStorage.setItem('h_l', JSON.stringify(State.logs));
+                        localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+                    }
+                } catch(e) {}
+                boot();
+            } else { document.getElementById('auth-gate').style.display = 'flex'; document.getElementById('app-core').style.display = 'none'; }
+        });
+    }
+</script>
 </body>
 </html>
