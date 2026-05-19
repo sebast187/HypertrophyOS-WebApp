@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HypertrophyOS - 5-Day Pro Gym Protocol</title>
+    <title>Hypertrophy OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
 
@@ -141,8 +141,8 @@
         .day-body { display: none; padding: 0 15px 15px; border-top: 1px solid var(--border-light); }
         .day-body.open { display: block; animation: fadeUp 0.3s forwards; }
 
-        .ex-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-top: 15px; padding: 15px; }
-        .ex-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 5px; color: var(--accent-cyan); }
+        .ex-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-top: 15px; padding: 15px; position: relative; }
+        .ex-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 5px; color: var(--accent-cyan); padding-right: 25px; }
         .ex-meta { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; font-family: var(--font-data); font-weight: 700; background: rgba(255,255,255,0.1); }
 
@@ -160,6 +160,15 @@
         .check-btn.checked { background: var(--accent-green); border-color: var(--accent-green); }
         .check-btn svg { width: 16px; height: 16px; stroke: var(--bg-base); stroke-width: 4; fill: none; opacity: 0; }
         .check-btn.checked svg { opacity: 1; }
+
+        /* ==========================================================================
+           CUSTOM EXERCISES (ADD / DELETE)
+           ========================================================================== */
+        .del-ex-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: var(--text-muted); cursor: pointer; border: none; transition: var(--transition); }
+        .del-ex-btn:hover { color: var(--accent-orange); transform: scale(1.1); }
+        
+        .add-ex-btn { width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15); color: var(--accent-cyan); font-family: var(--font-ui); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: var(--transition); }
+        .add-ex-btn:hover { background: rgba(0,229,255,0.1); border-color: var(--accent-cyan); }
 
         /* ==========================================================================
            THE LAB & ATLAS
@@ -228,6 +237,9 @@
         .bar-container { display: flex; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; background: #222;}
         .bar-fat { background: var(--accent-orange); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #000; text-shadow: 0px 1px 2px rgba(255,255,255,0.3); }
         .bar-muscle { background: var(--accent-purple); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #fff; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); }
+
+        .svg-musc { transition: fill 0.4s ease, filter 0.4s ease; } /* Makes the human body glow */
+    
     </style>
 </head>
 <body>
@@ -238,7 +250,7 @@
 <div id="auth-gate">
     <div class="auth-box">
         <h1 style="font-size: 2.5rem; margin-bottom: 5px;">HYPERTROPHY<span style="color:var(--accent-cyan)">OS</span></h1>
-        <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">5-Day Gym Protocol</p>
+        <p style="color:var(--text-muted); font-size:0.8rem; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">Protocol Interface</p>
         <form id="auth-form">
             <input type="email" id="auth-email" placeholder="Email Address" required>
             <input type="password" id="auth-pass" placeholder="Password (Min 6)" required>
@@ -254,7 +266,7 @@
     
     <header>
         <div class="logo">
-            <p>World Gym Edition</p>
+            <p>System Active</p>
             <h1>Hypertrophy<span>OS</span></h1>
         </div>
         <div style="display:flex; align-items:center; gap:15px;">
@@ -335,9 +347,55 @@
         <!-- VIEW: THE LAB -->
         <main id="view-lab" class="view-section">
             <div class="glass-card">
-                <h3 style="color:var(--accent-cyan); margin-bottom:10px;">Muscle Distribution Graph</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Live tracked volume per muscle group (Active log sets executed).</p>
-                <div id="muscle-graph" style="display:flex; flex-direction:column; gap:10px;"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="color:var(--accent-cyan);">Muscle Distribution</h3>
+                    <select id="lab-week-filter" onchange="window.renderMuscleGraph()" style="background:rgba(0,0,0,0.5); color:white; border:1px solid var(--border-light); border-radius:6px; padding:4px 8px; font-size:0.8rem;">
+                        <!-- Options generated in JS -->
+                    </select>
+                </div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Live tracked volume per target muscle. Compound exercises uniquely distribute tension across multiple groups.</p>
+                <!-- HUMAN SVGs (Front and Back) Heatmap -->
+                <div style="display:flex; justify-content:center; gap:25px; margin-bottom:20px; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--border-light);">
+                    <!-- Anterior Model -->
+                    <div style="text-align:center;">
+                        <p style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold; letter-spacing:2px; margin-bottom:10px;">Anterior</p>
+                        <svg viewBox="0 0 100 200" width="100" height="200" style="background:transparent; overflow:visible;">
+                            <circle cx="50" cy="15" r="10" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Chest" d="M 38 30 H 62 L 60 48 L 50 53 L 40 48 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Core" d="M 40 50 L 50 55 L 60 50 L 56 75 H 44 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 36 30 L 24 38 L 28 50 L 38 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 64 30 L 76 38 L 72 50 L 62 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Biceps" d="M 28 52 L 20 68 L 26 72 L 32 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Biceps" d="M 72 52 L 80 68 L 74 72 L 68 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M 26 74 L 16 95 L 22 98 L 30 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path d="M 74 74 L 84 95 L 78 98 L 70 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path class="svg-musc svg-musc-Quads" d="M 42 80 H 58 L 62 120 H 52 L 50 100 L 48 120 H 38 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 40 125 H 48 L 46 160 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 52 125 H 60 L 58 160 H 54 Z" fill="rgba(255,255,255,0.05)"/>
+                        </svg>
+                    </div>
+                    <!-- Posterior Model -->
+                    <div style="text-align:center;">
+                        <p style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; font-weight:bold; letter-spacing:2px; margin-bottom:10px;">Posterior</p>
+                        <svg viewBox="0 0 100 200" width="100" height="200" style="background:transparent; overflow:visible;">
+                            <circle cx="50" cy="15" r="10" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Back" d="M 38 30 H 62 L 58 65 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 36 30 L 24 38 L 28 50 L 38 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Shoulders" d="M 64 30 L 76 38 L 72 50 L 62 45 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Triceps" d="M 28 52 L 20 68 L 26 72 L 32 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Triceps" d="M 72 52 L 80 68 L 74 72 L 68 56 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M 26 74 L 16 95 L 22 98 L 30 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path d="M 74 74 L 84 95 L 78 98 L 70 78 Z" fill="rgba(255,255,255,0.02)"/>
+                            <path class="svg-musc svg-musc-Glutes" d="M 40 68 H 60 L 62 82 L 50 86 L 38 82 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Hamstrings" d="M 40 85 H 60 L 58 120 H 52 L 50 105 L 48 120 H 38 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 40 125 H 48 L 46 160 H 42 Z" fill="rgba(255,255,255,0.05)"/>
+                            <path class="svg-musc svg-musc-Calves" d="M 52 125 H 60 L 58 160 H 54 Z" fill="rgba(255,255,255,0.05)"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Horizontal Bar Grid -->
+                <div id="muscle-graph" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;"></div>
             </div>
 
             <div class="glass-card">
@@ -533,7 +591,6 @@
         24: "Victory Lap: Heaviest week. Test your 6-month strength gains."
     };
 
-    /* --- VOLUME OPTIMIZED (6-12 Sets Per Week Rules) --- */
     const wA = (d1, d2, d3, d4, d5) => ([
         { title: "Day 1: Push Matrix", ex: d1 }, { title: "Day 2: Pull Matrix", ex: d2 }, 
         { title: "Day 3: Leg Matrix", ex: d3 }, { title: "Day 4: Push Matrix II", ex: d4 }, 
@@ -555,7 +612,6 @@
         if (i >= 21 && i <= 24) { t = "Drop-Set to Failure"; cSets = "3x8"; iSets = "3x10"; hSets = "1xMax"; } 
 
         if (Math.ceil(i/4) % 2 !== 0) {
-            // Month 1, 3, 5 - Day 1 explicitly preserves original 4 exercises for user's logged data!
             Blueprint[i] = wA(
                 [["Converging Machine Press", cSets, t], ["Machine Shoulder Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Tricep Rope Pushdowns", iSets, t]],
                 [["Wide Lat Pulldowns", cSets, t], ["Seated Cable Rows", cSets, t], ["Machine Preacher Curls", iSets, t], ["Cable Crunches", hSets, t]],
@@ -575,16 +631,30 @@
     }
 
     function getExerciseMeta(name) {
-        let n = name.toLowerCase(); let mod = "Machine"; let mus = "Core";
-        if(n.includes("cable") || n.includes("pulldown") || n.includes("pushdown") || n.includes("face pull") || n.includes("rope")) mod = "Cable";
-        if(n.includes("db ") || n.includes("dumbbell") || n.includes("arnold")) mod = "Free Weight";
-        if(n.includes("press") || n.includes("fly") || n.includes("pec") || n.includes("dip")) mus = "Chest";
-        if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold") || n.includes("face pull")) mus = "Shoulders";
-        if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back")) mus = "Back";
-        if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) mus = "Arms";
-        if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) mus = "Legs";
-        if(n.includes("leg press")) mus = "Legs"; if(n.includes("shoulder press")) mus = "Shoulders"; if(n.includes("leg curl")) mus = "Legs"; if(n.includes("face pull")) mus = "Shoulders"; 
-        return { muscle: mus, modality: mod };
+        let n = name.toLowerCase(); let mod = "Machine"; let mus = "Core"; let targets = ["Core"];
+        
+        if(n.includes("cable") || n.includes("pulldown") || n.includes("pushdown") || n.includes("face pull") || n.includes("rope") || n.includes("crunch")) mod = "Cable";
+        if(n.includes("db ") || n.includes("dumbbell") || n.includes("arnold") || n.includes("free")) mod = "Free Weight";
+        
+        // Granular targeting logic
+        if(n.includes("press") || n.includes("fly") || n.includes("pec")) { mus = "Chest"; targets = ["Chest"]; }
+        if(n.includes("dip")) { mus = "Chest"; targets = ["Chest", "Triceps", "Shoulders"]; }
+        if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold")) { mus = "Shoulders"; targets = ["Shoulders"]; }
+        if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back")) { mus = "Back"; targets = ["Back"]; }
+        if(n.includes("curl") && !n.includes("leg")) { mus = "Arms"; targets = ["Biceps"]; }
+        if(n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) { mus = "Arms"; targets = ["Triceps"]; }
+        if(n.includes("squat") || n.includes("leg press") || n.includes("extension") || n.includes("hack")) { mus = "Legs"; targets = ["Quads"]; }
+        if(n.includes("leg curl") || n.includes("hamstring")) { mus = "Legs"; targets = ["Hamstrings"]; }
+        if(n.includes("calf") || n.includes("calves")) { mus = "Legs"; targets = ["Calves"]; }
+        if(n.includes("glute")) { mus = "Legs"; targets = ["Glutes"]; }
+        
+        // Tricky Overrides
+        if(n.includes("shoulder press")) { mus = "Shoulders"; targets = ["Shoulders", "Triceps"]; }
+        if(n.includes("face pull")) { mus = "Shoulders"; targets = ["Shoulders", "Back"]; }
+        if(n.includes("crunch") || n.includes("core")) { mus = "Core"; targets = ["Core"]; }
+        if(n.includes("deadlift")) { mus = "Back"; targets = ["Back", "Hamstrings", "Glutes"]; }
+        
+        return { muscle: mus, modality: mod, targets: targets };
     }
 
     const State = {
@@ -593,7 +663,8 @@
         labBw: localStorage.getItem('h_labBw') || '', dashMusc: localStorage.getItem('h_dMusc') || 'All',
         dashMod: localStorage.getItem('h_dMod') || 'All', dashEx: localStorage.getItem('h_dEx') || '',
         logs: JSON.parse(localStorage.getItem('h_l') || '{}'),
-        swaps: JSON.parse(localStorage.getItem('h_swaps') || '{}')
+        swaps: JSON.parse(localStorage.getItem('h_swaps') || '{}'),
+        customEx: JSON.parse(localStorage.getItem('h_cx') || '{}')
     };
 
     let syncTimer;
@@ -608,18 +679,18 @@
         syncTimer = setTimeout(async () => {
             try { await setDoc(doc(db, "users", State.user.uid), { 
                 week: State.week, month: State.month, unit: State.unit, labBw: State.labBw,
-                dashMusc: State.dashMusc, dashMod: State.dashMod, dashEx: State.dashEx, logs: State.logs, swaps: State.swaps 
+                dashMusc: State.dashMusc, dashMod: State.dashMod, dashEx: State.dashEx, logs: State.logs, 
+                swaps: State.swaps, customEx: State.customEx 
             }, { merge: true }); } catch(e) { console.error("Cloud Sync Error", e); }
         }, 2000);
     };
 
-    // Force sync if the user closes the app or refreshes
     window.addEventListener('beforeunload', () => {
         if(useFirebase && State.user && syncTimer) {
             clearTimeout(syncTimer);
-            // Synchronous local save just in case
             localStorage.setItem('h_l', JSON.stringify(State.logs));
             localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+            localStorage.setItem('h_cx', JSON.stringify(State.customEx));
         }
     });
 
@@ -630,6 +701,46 @@
         exListCache = Array.from(rawList).map(e => ({ name: e, ...getExerciseMeta(e) })).sort((a,b) => a.name.localeCompare(b.name));
         document.getElementById('filter-muscle').value = State.dashMusc;
         window.HOS.updateModality(true); 
+    }
+    
+    function populateLabWeeks() {
+        const sel = document.getElementById('lab-week-filter');
+        sel.innerHTML = '<option value="All">All Weeks</option>';
+        for(let w=1; w<=24; w++) { sel.innerHTML += `<option value="${w}">Week ${w}</option>`; }
+    }
+
+    // --- Dynamic Exercise Resolution System ---
+    function getDayExercises(w, dIdx) {
+        let result = [];
+        const day = Blueprint[w][dIdx];
+        if(!day) return result;
+        
+        const deleted = State.customEx[`w${w}_d${dIdx}_deleted`] || [];
+        
+        day.ex.forEach((e, eIdx) => {
+            const id = `e${eIdx}`;
+            if (deleted.includes(id)) return;
+            const origName = e[0];
+            const currentName = State.swaps[`w${w}_d${dIdx}_${id}`] || origName;
+            result.push({
+                id: id, origName: origName, currentName: currentName,
+                cleanKey: currentName.replace(/\s/g,''), sets: e[1], tempo: e[2], isAdded: false
+            });
+        });
+        
+        const added = State.customEx[`w${w}_d${dIdx}_added`] || [];
+        added.forEach((a, aIdx) => {
+            const id = `a${aIdx}`;
+            if (deleted.includes(id)) return;
+            const origName = a.name;
+            const currentName = State.swaps[`w${w}_d${dIdx}_${id}`] || origName;
+            result.push({
+                id: id, origName: origName, currentName: currentName,
+                cleanKey: currentName.replace(/\s/g,''), sets: a.sets, tempo: a.tempo, isAdded: true
+            });
+        });
+        
+        return result;
     }
 
     function renderChart() {
@@ -643,7 +754,7 @@
             Object.keys(State.logs).forEach(k => {
                 if(k.startsWith(`w${w}_`) && k.includes(exName.replace(/\s/g,''))) {
                     let wVal = parseFloat(State.logs[k].w); let rVal = parseInt(State.logs[k].r);
-                    if (rVal === 0 || wVal === 0) return; // Skip zeroed
+                    if (rVal === 0 || wVal === 0) return; 
                     if(wVal > maxW) maxW = wVal;
                 }
             });
@@ -698,39 +809,67 @@
     window.renderMuscleGraph = function() {
         const mg = document.getElementById('muscle-graph');
         if(!mg) return;
-        const counts = { Chest:0, Back:0, Shoulders:0, Arms:0, Legs:0, Core:0 };
+        const weekFilter = document.getElementById('lab-week-filter') ? document.getElementById('lab-week-filter').value : "All";
+        
+        // Detailed list
+        const counts = { Chest:0, Back:0, Shoulders:0, Biceps:0, Triceps:0, Quads:0, Hamstrings:0, Calves:0, Glutes:0, Core:0 };
         let maxC = 1;
         
         Object.keys(State.logs).forEach(k => {
             const l = State.logs[k];
             if(l.done) {
                 let rVal = parseInt(l.r); let wVal = parseFloat(l.w);
-                if (rVal === 0 || wVal === 0) return; // Skip zeroed
+                if (rVal === 0 || wVal === 0) return;
                 
-                const parts = k.split('_');
+                const parts = k.split('_'); 
                 if(parts.length >= 3) {
+                    const wk = parts[0].substring(1);
+                    if (weekFilter !== "All" && wk !== weekFilter) return;
+                    
                     const exKey = parts[2];
                     const ex = exListCache.find(e => e.name.replace(/\s/g,'') === exKey);
-                    if(ex && counts[ex.muscle] !== undefined) {
-                        counts[ex.muscle]++;
-                        if(counts[ex.muscle] > maxC) maxC = counts[ex.muscle];
+                    if(ex) {
+                        ex.targets.forEach(t => {
+                            if(counts[t] !== undefined) {
+                                counts[t]++;
+                                if(counts[t] > maxC) maxC = counts[t];
+                            }
+                        });
                     }
                 }
             }
         });
 
+        // 1. Render the Horizontal Bars
         mg.innerHTML = '';
         Object.keys(counts).forEach(m => {
             const pct = (counts[m] / maxC) * 100;
             mg.innerHTML += `
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:70px; font-size:0.75rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">${m}</div>
-                    <div style="flex:1; background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden;">
+                    <div style="width:70px; font-size:0.65rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">${m}</div>
+                    <div style="flex:1; background:rgba(255,255,255,0.05); height:8px; border-radius:4px; overflow:hidden;">
                         <div style="width:${pct}%; height:100%; background:var(--accent-cyan); box-shadow:0 0 10px var(--accent-cyan-glow); transition:width 0.5s;"></div>
                     </div>
-                    <div style="width:25px; font-size:0.8rem; color:white; font-family:var(--font-data); text-align:right;">${counts[m]}</div>
+                    <div style="width:20px; font-size:0.75rem; color:white; font-family:var(--font-data); text-align:right;">${counts[m]}</div>
                 </div>
             `;
+        });
+
+        // 2. Light up the Human SVG Heat Map
+        Object.keys(counts).forEach(m => {
+            const svgs = document.querySelectorAll(`.svg-musc-${m}`);
+            const intensity = counts[m] / maxC; // 0.0 to 1.0
+            
+            svgs.forEach(path => {
+                if (intensity === 0) {
+                    path.style.fill = "rgba(255,255,255,0.05)";
+                    path.style.filter = "none";
+                } else {
+                    const alpha = 0.2 + (0.8 * intensity); // Glow calculation
+                    path.style.fill = `rgba(0, 229, 255, ${alpha})`;
+                    path.style.filter = `drop-shadow(0 0 ${5 + (15 * intensity)}px rgba(0, 229, 255, ${0.3 + (0.5 * intensity)}))`;
+                }
+            });
         });
     }
 
@@ -739,12 +878,13 @@
         for(let w=1; w<=24; w++){
             Blueprint[w].forEach((day, dIdx) => {
                 let dS=0; let dD=0;
-                day.ex.forEach((e, eIdx) => {
-                    let sets = parseInt(e[1].split('x')[0]) || 3; 
+                const activeExercises = getDayExercises(w, dIdx);
+                activeExercises.forEach(ex => {
+                    let sets = parseInt(ex.sets.split('x')[0]) || 3; 
                     for(let s=1; s<=sets; s++){
-                        const l = State.logs[`w${w}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${s}`];
+                        const l = State.logs[`w${w}_d${dIdx}_${ex.cleanKey}_s${s}`];
                         let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
-                        if (l && (rVal === 0 || wVal === 0)) { /* Skip zeroed items */ } 
+                        if (l && (rVal === 0 || wVal === 0)) { /* skip */ } 
                         else { dS++; if(l && l.done) { dSets++; dD++; } }
                     }
                 });
@@ -762,12 +902,12 @@
         const w = parseInt(match[1]); const dIdx = parseInt(match[2]);
         if(w !== State.week) return;
 
-        const day = Blueprint[w][dIdx];
+        const activeExercises = getDayExercises(w, dIdx);
         let ts=0; let ds=0;
-        day.ex.forEach(e => {
-            let st = parseInt(e[1].split('x')[0])||3; 
+        activeExercises.forEach(ex => {
+            let st = parseInt(ex.sets.split('x')[0])||3; 
             for(let i=1; i<=st; i++){ 
-                const logK = `w${w}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${i}`;
+                const logK = `w${w}_d${dIdx}_${ex.cleanKey}_s${i}`;
                 const l = State.logs[logK];
                 let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
                 if (l && (rVal === 0 || wVal === 0)) { /* skip */ } 
@@ -814,11 +954,13 @@
 
         const container = document.getElementById('days-container'); container.innerHTML = '';
         Blueprint[State.week].forEach((day, dIdx) => {
+            
+            const activeExercises = getDayExercises(State.week, dIdx);
             let ts=0; let ds=0;
-            day.ex.forEach(e => {
-                let st = parseInt(e[1].split('x')[0])||3; 
+            activeExercises.forEach(ex => {
+                let st = parseInt(ex.sets.split('x')[0])||3; 
                 for(let i=1; i<=st; i++){ 
-                    const k = `w${State.week}_d${dIdx}_${e[0].replace(/\s/g,'')}_s${i}`;
+                    const k = `w${State.week}_d${dIdx}_${ex.cleanKey}_s${i}`;
                     const l = State.logs[k];
                     let rVal = l ? parseInt(l.r) : 1; let wVal = l ? parseFloat(l.w) : 1;
                     if (l && (rVal === 0 || wVal === 0)) { /* skip */ } 
@@ -832,39 +974,34 @@
             const body = card.querySelector('.day-body');
             const unitLabel = State.unit === 'kg' ? 'KG' : 'LBS';
 
-            day.ex.forEach((e, eIdx) => {
-                let sets = parseInt(e[1].split('x')[0])||3;
-                let targetReps = e[1].split('x')[1] || "10";
+            activeExercises.forEach((ex) => {
+                let sets = parseInt(ex.sets.split('x')[0])||3;
+                let targetReps = ex.sets.split('x')[1] || "10";
                 if (targetReps === "Max") targetReps = "20";
                 let rows = ''; 
 
-                // Hidden Dropdown Swapper Logic
-                const origName = e[0];
-                const swapKey = `w${State.week}_d${dIdx}_e${eIdx}`;
-                const currentName = State.swaps[swapKey] || origName;
-                const exKeyClean = currentName.replace(/\s/g,'');
-                const exMeta = getExerciseMeta(origName); // get original muscle group
-                const validOptions = exListCache.filter(item => item.muscle === exMeta.muscle); // only show same muscle
+                const exMeta = getExerciseMeta(ex.origName);
+                let validOptions = exListCache.filter(item => item.muscle === exMeta.muscle);
+                if (ex.isAdded) validOptions = exListCache; // Added exercises can swap to any body part!
 
-                let swapDropdown = `<select class="ex-swap-select" onchange="window.HOS.swapExercise(${State.week}, ${dIdx}, ${eIdx}, this.value, '${exKeyClean}')">`;
+                let swapDropdown = `<select class="ex-swap-select" onchange="window.HOS.swapExercise(${State.week}, ${dIdx}, '${ex.id}', this.value, '${ex.cleanKey}')">`;
                 validOptions.forEach(opt => {
-                    swapDropdown += `<option value="${opt.name}" ${opt.name === currentName ? 'selected' : ''}>${opt.name}</option>`;
+                    swapDropdown += `<option value="${opt.name}" ${opt.name === ex.currentName ? 'selected' : ''}>${opt.name}</option>`;
                 });
                 swapDropdown += `</select>`;
 
                 for(let s=1; s<=sets; s++){
-                    const k = `w${State.week}_d${dIdx}_${exKeyClean}_s${s}`;
+                    const k = `w${State.week}_d${dIdx}_${ex.cleanKey}_s${s}`;
                     const l = State.logs[k] || {w:'',r:'', rir:'', done:false};
                     
                     let rVal = l.r !== '' ? parseInt(l.r) : parseInt(targetReps);
                     if(isNaN(rVal)) rVal = 10;
-                    let rirVal = l.rir !== '' ? parseInt(l.rir) : 1; // Default to 1 RIR (close to failure)
+                    let rirVal = l.rir !== '' ? parseInt(l.rir) : 1; 
                     
                     let rSelect = `<select class="log-input" style="width:45px; padding:4px;" onchange="window.HOS.save('${k}','r',this.value)">`;
                     for(let r=0; r<=50; r++){ rSelect += `<option value="${r}" ${r === rVal ? 'selected' : ''}>${r}</option>`; }
                     rSelect += `</select>`;
 
-                    // New RIR Select Dropdown
                     let rirSelect = `<select class="log-input" style="width:45px; padding:4px; color:var(--accent-orange); border-color:rgba(255,61,0,0.3);" onchange="window.HOS.save('${k}','rir',this.value)">`;
                     for(let rir=0; rir<=5; rir++){ rirSelect += `<option value="${rir}" ${rir === rirVal ? 'selected' : ''}>${rir}</option>`; }
                     rirSelect += `</select>`;
@@ -878,13 +1015,25 @@
                     </tr>`;
                 }
 
-                // Added <th>RIR</th> to the table header
-                body.innerHTML += `<div class="ex-card"><div class="ex-title">${swapDropdown}</div><div class="ex-meta"><span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${e[1]}</span><span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${e[2]}</span></div><table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>RIR</th><th>Log</th></tr>${rows}</table></div>`;
+                body.innerHTML += `
+                <div class="ex-card">
+                    <button class="del-ex-btn" title="Remove Exercise" onclick="window.HOS.delExercise(${State.week}, ${dIdx}, '${ex.id}', '${ex.cleanKey}')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    </button>
+                    <div class="ex-title">${swapDropdown}</div>
+                    <div class="ex-meta">
+                        <span class="badge" style="color:var(--accent-orange); border:1px solid var(--accent-orange);">${ex.sets}</span>
+                        <span class="badge" style="color:var(--accent-cyan); border:1px solid var(--accent-cyan);">${ex.tempo}</span>
+                    </div>
+                    <table class="log-table"><tr><th>Set</th><th>${unitLabel}</th><th>Reps</th><th>RIR</th><th>Log</th></tr>${rows}</table>
+                </div>`;
             });
+            
+            body.innerHTML += `<button class="add-ex-btn" onclick="window.HOS.addExercise(${State.week}, ${dIdx})">+ Add Exercise</button>`;
+            
             container.appendChild(card);
         });
 
-        // Update the subtle reset button text dynamically
         const resetBtn = document.getElementById('reset-month-btn');
         if(resetBtn) resetBtn.innerText = `Reset Month ${State.month} Checkmarks`;
         
@@ -898,17 +1047,42 @@
             document.getElementById(sectionId).classList.add('active');
             btn.classList.add('active');
         },
-        swapExercise: (w, dIdx, eIdx, newEx, oldExKeyClean) => {
-            const swapKey = `w${w}_d${dIdx}_e${eIdx}`;
+        swapExercise: (w, dIdx, exId, newEx, oldExKeyClean) => {
+            const swapKey = `w${w}_d${dIdx}_${exId}`;
             State.swaps[swapKey] = newEx;
             localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
             
-            // Wipe out logs for the OLD exercise on this specific day to prevent ghost data
             for(let s=1; s<=10; s++) {
                 delete State.logs[`w${w}_d${dIdx}_${oldExKeyClean}_s${s}`];
             }
             localStorage.setItem('h_l', JSON.stringify(State.logs));
             syncToCloud(); renderMatrix(); Toast("Exercise Swapped.");
+        },
+        addExercise: (w, dIdx) => {
+            const addedKey = `w${w}_d${dIdx}_added`;
+            if(!State.customEx[addedKey]) State.customEx[addedKey] = [];
+            
+            State.customEx[addedKey].push({
+                name: "Machine Chest Press", // User can swap this via the new logic to ANY exercise!
+                sets: "3x10",
+                tempo: "Tempo: 3s ↓"
+            });
+            
+            localStorage.setItem('h_cx', JSON.stringify(State.customEx));
+            syncToCloud(); renderMatrix(); Toast("Added. Tap title to change it.");
+        },
+        delExercise: (w, dIdx, exId, cleanKey) => {
+            if(!confirm("Remove this exercise from the session?")) return;
+            const delKey = `w${w}_d${dIdx}_deleted`;
+            if(!State.customEx[delKey]) State.customEx[delKey] = [];
+            State.customEx[delKey].push(exId);
+            
+            // Clean logs so they don't impact percent completion
+            for(let s=1; s<=10; s++){ delete State.logs[`w${w}_d${dIdx}_${cleanKey}_s${s}`]; }
+            
+            localStorage.setItem('h_cx', JSON.stringify(State.customEx));
+            localStorage.setItem('h_l', JSON.stringify(State.logs));
+            syncToCloud(); renderMatrix(); Toast("Exercise Removed.");
         },
         resetMonth: () => {
             if(!confirm(`WARNING: Resetting Month ${State.month}. The checkmarks will be cleared, but your numbers (Weight/Reps) will be saved safely for your Command Tab charts! Continue?`)) return;
@@ -916,11 +1090,7 @@
             const endWk = startWk + 3;
             for(let w = startWk; w <= endWk; w++) {
                 Object.keys(State.logs).forEach(k => {
-                    if(k.startsWith(`w${w}_`)) {
-                        // By ONLY setting done to false, we wipe the visual matrix completion
-                        // BUT perfectly preserve the raw numbers for the Command Tab Max Weight Chart!
-                        State.logs[k].done = false;
-                    }
+                    if(k.startsWith(`w${w}_`)) State.logs[k].done = false;
                 });
             }
             localStorage.setItem('h_l', JSON.stringify(State.logs));
@@ -933,7 +1103,6 @@
             
             if(!bwInput || !proInput) { resEl.innerHTML = "Enter your stats to compute synthesis limits."; return; }
 
-            // Convert to LBS for the 0.7g/lb calculation
             const bwLbs = State.unit === 'kg' ? bwInput * 2.20462 : bwInput;
             const targetPro = Math.round(bwLbs * 0.7);
 
@@ -1065,7 +1234,7 @@
         document.getElementById('auth-gate').style.opacity = '0';
         setTimeout(() => document.getElementById('auth-gate').style.display = 'none', 400);
         document.getElementById('app-core').style.display = 'block'; document.getElementById('app-nav').style.display = 'flex';
-        updateUnitUI(); buildFilters(); window.HOS.switchView(State.view, document.querySelector(`.nav-item[onclick*="${State.view}"]`));
+        updateUnitUI(); buildFilters(); populateLabWeeks(); window.HOS.switchView(State.view, document.querySelector(`.nav-item[onclick*="${State.view}"]`));
         renderMatrix();
     };
 
@@ -1097,11 +1266,12 @@
                         State.dashMusc = data.dashMusc || State.dashMusc; State.dashMod = data.dashMod || State.dashMod;
                         State.dashEx = data.dashEx || State.dashEx; State.logs = data.logs || State.logs;
                         State.swaps = data.swaps || State.swaps;
+                        State.customEx = data.customEx || State.customEx;
                         
                         localStorage.setItem('h_m', State.month); localStorage.setItem('h_w', State.week); localStorage.setItem('h_u', State.unit);
                         localStorage.setItem('h_labBw', State.labBw); localStorage.setItem('h_dMusc', State.dashMusc); localStorage.setItem('h_dMod', State.dashMod);
                         localStorage.setItem('h_dEx', State.dashEx); localStorage.setItem('h_l', JSON.stringify(State.logs));
-                        localStorage.setItem('h_swaps', JSON.stringify(State.swaps));
+                        localStorage.setItem('h_swaps', JSON.stringify(State.swaps)); localStorage.setItem('h_cx', JSON.stringify(State.customEx));
                     }
                 } catch(e) {}
                 boot();
