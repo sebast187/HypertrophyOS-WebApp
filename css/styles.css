@@ -2,9 +2,10 @@
 .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 .remove-btn { border: 1px solid var(--text-muted); color: var(--text-muted); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: all 0.2s; background: transparent; padding-bottom: 2px;}
 .remove-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
-.add-ex-wrapper { margin-top: 15px; border: 1px dashed var(--border-light); border-radius: 12px; padding: 10px; text-align: center; }
-.add-ex-select { background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: bold; outline: none; border: none; width: 100%; text-align: center; text-align-last: center; cursor: pointer; }
-.add-ex-select option { background: var(--bg-panel-solid); color: white; }
+.add-ex-wrapper { margin-top: 15px; border: 1px dashed var(--border-light); border-radius: 12px; padding: 10px; text-align: center; transition: var(--transition); }
+.add-ex-wrapper:hover { border-color: var(--accent-cyan); background: rgba(0, 229, 255, 0.05); }
+.add-ex-select { background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: bold; outline: none; border: none; width: 100%; text-align: center; text-align-last: center; cursor: pointer; text-transform: uppercase; }
+.add-ex-select option { background: var(--bg-panel-solid); color: white; text-transform: none; }
 
 /* EXERCISE SWAP & ATLAS TABS CSS */
 .ex-swap-select { appearance: none; background: transparent; color: var(--accent-cyan); font-size: 1.05rem; font-weight: 800; border: none; outline: none; cursor: pointer; width: 100%; text-overflow: ellipsis; }
