@@ -1,0 +1,29 @@
+/* ADD / REMOVE EXERCISE STYLES */
+.ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.remove-btn { border: 1px solid var(--text-muted); color: var(--text-muted); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: all 0.2s; background: transparent; padding-bottom: 2px;}
+.remove-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+.add-ex-wrapper { margin-top: 15px; border: 1px dashed var(--border-light); border-radius: 12px; padding: 10px; text-align: center; }
+.add-ex-select { background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: bold; outline: none; border: none; width: 100%; text-align: center; text-align-last: center; cursor: pointer; }
+.add-ex-select option { background: var(--bg-panel-solid); color: white; }
+
+/* EXERCISE SWAP & ATLAS TABS CSS */
+.ex-swap-select { appearance: none; background: transparent; color: var(--accent-cyan); font-size: 1.05rem; font-weight: 800; border: none; outline: none; cursor: pointer; width: 100%; text-overflow: ellipsis; }
+.ex-swap-select option { background: var(--bg-panel-solid); color: white; font-size: 0.9rem; }
+.atlas-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
+.atlas-tab { padding: 8px 15px; color: var(--text-muted); font-weight: bold; font-size: 0.85rem; border-radius: 20px; cursor: pointer; border: 1px solid transparent; transition: var(--transition); }
+.atlas-tab.active { color: var(--accent-purple); background: rgba(179, 136, 255, 0.1); border-color: var(--accent-purple); }
+.atlas-section { display: none; animation: fadeUp 0.3s forwards; }
+.atlas-section.active { display: block; }
+
+/* SCIENCE ESSAY & INTERACTIVE SIMULATORS */
+.essay-section { margin-top: 25px; border-left: 2px solid var(--accent-cyan); padding-left: 15px; }
+.essay-title { font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.essay-p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; text-align: justify; }
+.essay-highlight { color: white; font-weight: bold; }
+
+.interactive-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin: 20px 0; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+.sim-slider { width: 100%; appearance: none; background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; outline: none; margin: 15px 0; }
+.sim-slider::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-purple); cursor: pointer; box-shadow: 0 0 10px var(--accent-purple); }
+.bar-container { display: flex; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; background: #222;}
+.bar-fat { background: var(--accent-orange); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #000; text-shadow: 0px 1px 2px rgba(255,255,255,0.3); }
+.bar-muscle { background: var(--accent-purple); transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #fff; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); }
