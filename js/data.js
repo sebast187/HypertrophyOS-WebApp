@@ -46,46 +46,69 @@ const wB = (d1, d2, d3, d4, d5) => ([
     { title: "Day 5: Full Body Integration", ex: d5 }
 ]);
 
-export function generateBlueprint() {
-    const bp = {};
-    for(let i=1; i<=24; i++) {
-        let t = "Tempo: 3s ↓";
-        let cSets = "3x10"; let iSets = "3x12"; let hSets = "3x15";
-        if (i >= 9 && i <= 12) { t = "Superset (No Rest)"; cSets = "4x10"; iSets = "4x12"; hSets = "3x15"; } 
-        if (i >= 13 && i <= 16) { t = "Tempo: 4s ↓, 2s Hold"; cSets = "3x8"; iSets = "3x10"; hSets = "3x12"; } 
-        if (i >= 17 && i <= 20) { t = "Pre-Exhaust"; cSets = "4x12"; iSets = "4x15"; hSets = "4x15"; } 
-        if (i >= 21 && i <= 24) { t = "Drop-Set to Failure"; cSets = "3x8"; iSets = "3x10"; hSets = "1xMax"; } 
+export const Programs = {
+    "5-Day OS": function() {
+        const bp = {};
+        for(let i=1; i<=24; i++) {
+            let t = "Tempo: 3s ↓"; let cSets = "3x10"; let iSets = "3x12"; let hSets = "3x15";
+            if (i >= 9 && i <= 12) { t = "Superset (No Rest)"; cSets = "4x10"; iSets = "4x12"; hSets = "3x15"; } 
+            if (i >= 13 && i <= 16) { t = "Tempo: 4s ↓, 2s Hold"; cSets = "3x8"; iSets = "3x10"; hSets = "3x12"; } 
+            if (i >= 17 && i <= 20) { t = "Pre-Exhaust"; cSets = "4x12"; iSets = "4x15"; hSets = "4x15"; } 
+            if (i >= 21 && i <= 24) { t = "Drop-Set to Failure"; cSets = "3x8"; iSets = "3x10"; hSets = "1xMax"; } 
 
-        if (Math.ceil(i/4) % 2 !== 0) {
-            bp[i] = wA(
-                [["Converging Machine Press", cSets, t], ["Machine Shoulder Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Tricep Rope Pushdowns", iSets, t]],
-                [["Wide Lat Pulldowns", cSets, t], ["Seated Cable Rows", cSets, t], ["Machine Preacher Curls", iSets, t], ["Cable Crunches", hSets, t]],
-                [["Hack Squat", cSets, t], ["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Machine Glute Drive", iSets, t], ["Standing Calf Raises", hSets, t]],
-                [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Overhead Cable Ext", iSets, t], ["Seated Dip Machine", cSets, t]],
-                [["Underhand Lat Pulldown", cSets, t], ["Chest Supported DB Row", cSets, t], ["Face Pulls", hSets, t], ["Cable Hammer Curls", iSets, t]]
-            );
-        } else {
-            bp[i] = wB(
-                [["Machine Chest Press", cSets, t], ["Arnold Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Single-Arm Pushdowns", iSets, t]],
-                [["Neutral Grip Pulldown", cSets, t], ["Seated Cable Rows", cSets, t], ["Reverse Pec Deck", iSets, t], ["Bayesian Cable Curls", iSets, t]],
-                [["Hack Squat", cSets, t], ["Single-Leg Press", cSets, t], ["Seated Leg Curls", iSets, t], ["Seated Calf Raises", hSets, t]],
-                [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Wide Lat Pulldowns", cSets, t], ["Tricep Rope Pushdowns", iSets, t]],
-                [["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Chest Supported DB Row", cSets, t], ["DB Bicep Curls", iSets, t]]
-            );
+            if (Math.ceil(i/4) % 2 !== 0) {
+                bp[i] = wA(
+                    [["Converging Machine Press", cSets, t], ["Machine Shoulder Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Tricep Rope Pushdowns", iSets, t]],
+                    [["Wide Lat Pulldowns", cSets, t], ["Seated Cable Rows", cSets, t], ["Machine Preacher Curls", iSets, t], ["Cable Crunches", hSets, t]],
+                    [["Hack Squat", cSets, t], ["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Machine Glute Drive", iSets, t], ["Standing Calf Raises", hSets, t]],
+                    [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Overhead Cable Ext", iSets, t], ["Seated Dip Machine", cSets, t]],
+                    [["Underhand Lat Pulldown", cSets, t], ["Chest Supported DB Row", cSets, t], ["Face Pulls", hSets, t], ["Cable Hammer Curls", iSets, t]]
+                );
+            } else {
+                bp[i] = wB(
+                    [["Machine Chest Press", cSets, t], ["Arnold Press", cSets, t], ["Cable Lateral Raises", iSets, t], ["Single-Arm Pushdowns", iSets, t]],
+                    [["Neutral Grip Pulldown", cSets, t], ["Seated Cable Rows", cSets, t], ["Reverse Pec Deck", iSets, t], ["Bayesian Cable Curls", iSets, t]],
+                    [["Hack Squat", cSets, t], ["Single-Leg Press", cSets, t], ["Seated Leg Curls", iSets, t], ["Seated Calf Raises", hSets, t]],
+                    [["Incline Machine Press", cSets, t], ["Cable Chest Flys", iSets, t], ["Wide Lat Pulldowns", cSets, t], ["Tricep Rope Pushdowns", iSets, t]],
+                    [["Leg Press", cSets, t], ["Lying Leg Curls", iSets, t], ["Chest Supported DB Row", cSets, t], ["DB Bicep Curls", iSets, t]]
+                );
+            }
         }
+        return bp;
+    },
+    "Titan 4-Day": function() {
+        const bp = {};
+        for(let i=1; i<=24; i++) {
+            bp[i] = [
+                { title: "Day 1: Heavy Squat & Legs", ex: [["Barbell Squat", "4x5", "RPE 8"], ["Leg Press", "3x10", "Tempo: 3s ↓"], ["Lying Leg Curls", "3x12", "Tempo: 3s ↓"], ["Seated Calf Raises", "4x15", "Pause"]] },
+                { title: "Day 2: Heavy Bench & Push", ex: [["Barbell Bench Press", "4x5", "RPE 8"], ["Incline DB Press", "3x10", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x10", "Tempo: 3s ↓"], ["Tricep Rope Pushdowns", "3x12", "Squeeze"]] },
+                { title: "Day 3: Heavy Deadlift & Pull", ex: [["Barbell Deadlift", "3x5", "RPE 8.5"], ["Wide Lat Pulldowns", "3x10", "Tempo: 3s ↓"], ["Chest Supported Row", "3x10", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x12", "Squeeze"]] },
+                { title: "Day 4: Hypertrophy Accessories", ex: [["Hack Squat", "3x12", "Tempo: 4s ↓"], ["Converging Machine Press", "3x12", "Tempo: 4s ↓"], ["Cable Lateral Raises", "4x15", "Burnout"], ["Cable Crunches", "3x15", "Squeeze"]] }
+            ];
+        }
+        return bp;
+    },
+    "Foundation 3-Day": function() {
+        const bp = {};
+        for(let i=1; i<=24; i++) {
+            bp[i] = [
+                { title: "Day 1: Full Body A", ex: [["Hack Squat", "3x10", "Tempo: 3s ↓"], ["Converging Machine Press", "3x10", "Tempo: 3s ↓"], ["Wide Lat Pulldowns", "3x10", "Tempo: 3s ↓"], ["Cable Lateral Raises", "3x12", "Squeeze"]] },
+                { title: "Day 2: Full Body B", ex: [["Leg Press", "3x10", "Tempo: 3s ↓"], ["Machine Shoulder Press", "3x10", "Tempo: 3s ↓"], ["Seated Cable Rows", "3x10", "Tempo: 3s ↓"], ["Tricep Rope Pushdowns", "3x12", "Squeeze"]] },
+                { title: "Day 3: Full Body C", ex: [["Lying Leg Curls", "4x12", "Tempo: 3s ↓"], ["Incline Machine Press", "3x10", "Tempo: 3s ↓"], ["Underhand Lat Pulldown", "3x10", "Tempo: 3s ↓"], ["Machine Preacher Curls", "3x12", "Squeeze"]] }
+            ];
+        }
+        return bp;
     }
-    return bp;
-}
+};
 
 export function getExerciseMeta(name) {
     let n = name.toLowerCase(); let mod = "Machine"; let mus = "Core";
     if(n.includes("cable") || n.includes("pulldown") || n.includes("pushdown") || n.includes("face pull") || n.includes("rope")) mod = "Cable";
-    if(n.includes("db ") || n.includes("dumbbell") || n.includes("arnold")) mod = "Free Weight";
+    if(n.includes("db ") || n.includes("dumbbell") || n.includes("barbell")) mod = "Free Weight";
     if(n.includes("press") || n.includes("fly") || n.includes("pec") || n.includes("dip")) mus = "Chest";
     if(n.includes("shoulder") || n.includes("lateral") || n.includes("front raise") || n.includes("arnold") || n.includes("face pull")) mus = "Shoulders";
-    if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back")) mus = "Back";
+    if(n.includes("lat ") || n.includes("row") || n.includes("pull") || n.includes("back") || n.includes("deadlift")) mus = "Back";
     if(n.includes("curl") || n.includes("ext") || n.includes("pushdown") || n.includes("skullcrusher")) mus = "Arms";
     if(n.includes("leg") || n.includes("squat") || n.includes("calf") || n.includes("glute")) mus = "Legs";
-    if(n.includes("leg press")) mus = "Legs"; if(n.includes("shoulder press")) mus = "Shoulders"; if(n.includes("leg curl")) mus = "Legs"; if(n.includes("face pull")) mus = "Shoulders"; 
     return { muscle: mus, modality: mod };
 }
